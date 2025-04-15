@@ -16,7 +16,7 @@ class Button extends StatelessWidget {
           color: kPrimaryColor,
           borderRadius: BorderRadius.circular(12),
         ),
-        width: double.infinity,
+        width: 300,
         height: 60,
         child: Center(
           child: Text(
