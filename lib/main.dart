@@ -1,8 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/ClientAndProStart.dart';
+import 'package:home_service/Pages/SuceesScreen.dart';
+import 'package:home_service/Pages/SuceesScreenAsPro.dart';
 import 'package:home_service/Pages/homepage.dart';
+import 'package:home_service/Pages/homepageForPro.dart';
 import 'package:home_service/Pages/login.dart';
+import 'package:home_service/Pages/loginAsPro.dart';
 import 'package:home_service/Pages/register.dart';
+import 'package:home_service/Pages/registerAsPro.dart';
 import 'package:home_service/Pages/startpage.dart';
 import 'package:home_service/firebase_options.dart';
 import 'package:home_service/widgets/navigationbar.dart';
@@ -24,8 +30,14 @@ class Homeservice extends StatelessWidget {
       routes: {
         LoginPage.id: (context) => LoginPage(),
         RegisterPage.id: (context) => RegisterPage(),
+        Loginaspro.id: (context) => Loginaspro(),
+        Registeraspro.id: (context) => Registeraspro(),
         Homepage.id: (context) => Homepage(),
+        Homepageforpro.id: (context) => Homepageforpro(),
         Navigationbar.id: (context) => Navigationbar(),
+        Clientandprostart.id: (context) => Clientandprostart(),
+        SuccessScreen.id: (context) => SuccessScreen(),
+        Suceesscreenaspro.id: (context) => Suceesscreenaspro(),
       },
       debugShowCheckedModeBanner: false,
       home: Startpage(),

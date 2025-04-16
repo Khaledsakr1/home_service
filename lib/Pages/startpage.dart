@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/login.dart';
+import 'package:home_service/Pages/ClientAndProStart.dart';
 import 'package:home_service/widgets/button.dart';
 
 class Startpage extends StatefulWidget {
@@ -90,7 +90,7 @@ class _StartpageState extends State<Startpage> {
                     if (index == StartpageData.length - 1)
                       Button(
                         ontap: () {
-                          Navigator.pushNamed(context, LoginPage.id);
+                          Navigator.pushNamed(context, Clientandprostart.id);
                         },
                         title: 'Let\'s Start....',
                       ),

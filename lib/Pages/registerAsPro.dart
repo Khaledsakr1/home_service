@@ -6,16 +6,16 @@ import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+class Registeraspro extends StatefulWidget {
+  Registeraspro({super.key});
 
-  static String id = 'registerpage';
+  static String id = 'register page as pro';
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<Registeraspro> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<Registeraspro> {
   String? Email;
 
   String? Password;
@@ -43,7 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Row(
                     children: [
                       Text(
-                        'Sign up as a client',
+                        'Sign up as a pro',
                         style: TextStyle(
                           fontSize: 25,
                           color: kPrimaryColor,

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/SuceesScreen.dart';
 import 'package:home_service/Pages/register.dart';
 import 'package:home_service/constants/constants.dart';
 import 'package:home_service/helper/show_snackbar.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
-import 'package:home_service/widgets/navigationbar.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Row(
                     children: [
                       Text(
-                        'Sign in',
+                        'Sign in as a client',
                         style: TextStyle(
                           fontSize: 25,
                           color: kPrimaryColor,
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                         try {
                           await UserLogin();
                           ShowSnackBar(context, 'Login Successful! Welcome');
-                          Navigator.pushNamed(context, Navigationbar.id,
+                          Navigator.pushNamed(context, SuccessScreen.id,
                               arguments: Email);
                         } on FirebaseAuthException {
                           ShowSnackBar(context,

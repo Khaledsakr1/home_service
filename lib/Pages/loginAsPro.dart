@@ -1,21 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/SuceesScreenAsPro.dart';
+import 'package:home_service/Pages/registerAsPro.dart';
 import 'package:home_service/constants/constants.dart';
 import 'package:home_service/helper/show_snackbar.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+class Loginaspro extends StatefulWidget {
+  Loginaspro({super.key});
 
-  static String id = 'registerpage';
-
+  static String id = 'login page as pro';
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<Loginaspro> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<Loginaspro> {
   String? Email;
 
   String? Password;
@@ -38,12 +39,16 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 120),
-                  Image.asset(ksignup , width: 200, height: 200,),
-                 const SizedBox(height: 60),
+                  Image.asset(
+                    ksignin,
+                    width: 200,
+                    height: 200,
+                  ),
+                  const SizedBox(height: 60),
                   const Row(
                     children: [
                       Text(
-                        'Sign up as a client',
+                        'Sign in as a pro',
                         style: TextStyle(
                           fontSize: 25,
                           color: kPrimaryColor,
@@ -59,7 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onchanged: (data) {
                       Email = data;
                     },
-                    headtextfield: 'Create New Email',
+                    headtextfield: 'Enter Your Email',
                   ),
                   const SizedBox(
                     height: 20,
@@ -69,7 +74,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     onchanged: (data) {
                       Password = data;
                     },
-                    headtextfield: 'Create New Password',
+                    //hint: 'Password',
+                    headtextfield: 'Enter Your Password',
                   ),
                   const SizedBox(
                     height: 20,
@@ -77,28 +83,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   Button(
                     ontap: () async {
                       if (formKey.currentState!.validate()) {
+                        FocusScope.of(context).unfocus();
                         isloading = true;
                         setState(() {});
                         try {
-                          await UserRegister();
-                          ShowSnackBar(
-                              context, 'Registering Successfully Go And Login');
-                          Navigator.pop(context);
-                        } on FirebaseAuthException catch (ex) {
-                          if (ex.code == 'weak-password') {
-                            ShowSnackBar(context, 'Weak Password');
-                          } else if (ex.code == 'email-already-in-use') {
-                            ShowSnackBar(context, 'Email already exist');
-                          } else {
-                            ShowSnackBar(context, 'There was an Error');
-                          }
+                          await UserLogin();
+                          ShowSnackBar(context, 'Login Successful! Welcome');
+                          Navigator.pushNamed(context, Suceesscreenaspro.id,
+                              arguments: Email);
+                        } on FirebaseAuthException {
+                          ShowSnackBar(context,
+                              'There was an error in your email or password');
                         }
 
                         isloading = false;
                         setState(() {});
                       } else {}
                     },
-                    title: 'Create account',
+                    title: 'Login',
                   ),
                   const SizedBox(
                     height: 5,
@@ -107,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'have an account?',
+                        'Don\'t have an account?',
                         style: TextStyle(
                             color: Colors.black54,
                             fontSize: 14,
@@ -117,10 +119,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.pushNamed(context, Registeraspro.id);
                         },
                         child: const Text(
-                          '  Sign in',
+                          '  Sign up',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold, 
@@ -138,9 +140,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> UserRegister() async {
+  Future<void> UserLogin() async {
     // ignore: unused_local_variable
     UserCredential user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: Email!, password: Password!);
+        .signInWithEmailAndPassword(email: Email!, password: Password!);
   }
 }
