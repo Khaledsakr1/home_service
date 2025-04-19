@@ -100,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() {});
                       } else {}
                     },
+                    
                     title: 'Login',
                   ),
                   const SizedBox(

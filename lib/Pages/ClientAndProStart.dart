@@ -19,30 +19,51 @@ class Clientandprostart extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.account_circle,
-                  size: 80,
-                  color: Colors.blueGrey,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Welcome!',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Choose Sign in type:',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                // صورة توضيحية بدلاً من الايقونة
+                Image.asset(
+                  'assets/images/what.png',
+                  height: 200,
                 ),
                 const SizedBox(height: 30),
 
+                // النص العلوي
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                    children: [
+                      TextSpan(
+                          text: 'Welcome to ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                      TextSpan(
+                          text: 'logo',
+                          style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20)),
+                      TextSpan(
+                          text: '!',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                const Text(
+                  'Before we begin, we want to know if you are a customer or a technician. Please choose which one you are.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+                const SizedBox(height: 50),
+
                 // زر تسجيل الدخول كعميل
                 Button(
-                  title: 'Sign in as a client',
+                  icon: Icons.person,
+                  title: 'client',
                   ontap: () {
                     Navigator.pushNamed(context, LoginPage.id);
                   },
@@ -51,7 +72,8 @@ class Clientandprostart extends StatelessWidget {
 
                 // زر تسجيل الدخول كمحترف
                 Button(
-                  title: 'Sign in as a Pro',
+                  icon: Icons.engineering,
+                  title: 'technical',
                   ontap: () {
                     Navigator.pushNamed(context, Loginaspro.id);
                   },

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class TitleWithSeeAll extends StatelessWidget {
   final String title;
-
-  const TitleWithSeeAll({required this.title});
+  final VoidCallback? ontap;
+  const TitleWithSeeAll({required this.title, this.ontap,});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,12 @@ class TitleWithSeeAll extends StatelessWidget {
             title,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Text(
-            'See all >',
-            style: TextStyle(color: Colors.green),
+          GestureDetector(
+            onTap: ontap,
+            child: Text(
+              'See all >',
+              style: TextStyle(color: Colors.green),
+            ),
           ),
         ],
       ),
