@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween, // توزيع كل العناصر
                         children: [
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 55),
                           Image.asset(
                             ksignin,
                             width: 200,
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             headtextfield: 'Enter Your Password',
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 60),
                           Button(
                             ontap: () async {
                               if (formKey.currentState!.validate()) {
@@ -90,6 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                                   await _authService.userLogin(Email!, Password!, context);
                                   Navigator.pushNamed(context, SuccessScreen.id,
                                       arguments: Email);
+                                  ShowSnackBar(context, 'Login successfully welcome!');  
                                 } catch (e) {
                                   ShowSnackBar(context, 'Login failed. Please try again.');
                                 }
