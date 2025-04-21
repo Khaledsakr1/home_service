@@ -16,23 +16,40 @@ class Homepage extends StatelessWidget {
     {'title': 'Best Control ', 'image': 'assets/images/pest control.png'},
   ];
 
-
   final List<Map<String, String>> homeserviceIMG = const [
-    {'title': 'Apartment Finishing', 'image': 'assets/images/Apartment finish.jpg'},
+    {
+      'title': 'Apartment Finishing',
+      'image': 'assets/images/Apartment finish.jpg'
+    },
     {'title': 'Door Carpenter', 'image': 'assets/images/door carprnter.jpg'},
     {'title': 'Interior Design', 'image': 'assets/images/interior design.jpg'},
   ];
 
   final List<Map<String, String>> repairserviceIMG = const [
-    {'title': 'Air conditioning maintenance and installation', 'image': 'assets/images/Air condition.jpg'},
-    {'title': 'Installing surveillance cameras', 'image': 'assets/images/installing cameras.jpg'},
-    {'title': 'Plumbing Establishment', 'image': 'assets/images/Plumbing establishing.png'},
+    {
+      'title': 'Air conditioning maintenance and installation',
+      'image': 'assets/images/Air condition.jpg'
+    },
+    {
+      'title': 'Installing surveillance cameras',
+      'image': 'assets/images/installing cameras.jpg'
+    },
+    {
+      'title': 'Plumbing Establishment',
+      'image': 'assets/images/Plumbing establishing.png'
+    },
   ];
 
   final List<Map<String, String>> transportationserviceIMG = const [
     {'title': 'Furniture Moving', 'image': 'assets/images/furniture.png'},
-    {'title': 'Furniture lifting winch', 'image': 'assets/images/Furniture lifting winch.jpg'},
-    {'title': 'delivery services', 'image': 'assets/images/delivery services.jpg'},
+    {
+      'title': 'Furniture lifting winch',
+      'image': 'assets/images/Furniture lifting winch.jpg'
+    },
+    {
+      'title': 'delivery services',
+      'image': 'assets/images/delivery services.jpg'
+    },
   ];
 
   @override
@@ -88,10 +105,7 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-
-
           TitleWithSeeAll(title: 'Home Services'),
-         
           SizedBox(
             height: 200,
             child: ListView.builder(
@@ -105,9 +119,7 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-
           TitleWithSeeAll(title: 'Repair and Installation'),
-
           SizedBox(
             height: 230,
             child: ListView.builder(
@@ -121,10 +133,8 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-          
           TitleWithSeeAll(title: 'Transportation Services'),
-
-           SizedBox(
+          SizedBox(
             height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -137,7 +147,6 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-          
         ],
       ),
     );
