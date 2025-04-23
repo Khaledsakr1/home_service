@@ -8,12 +8,7 @@ class SuccessScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.green),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        leading: const BackButton(color: Colors.green),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
