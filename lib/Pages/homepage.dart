@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/seeall_servicepage.dart';
 import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/PopularServicelist.dart';
 import 'package:home_service/widgets/RepairandInstallationlist.dart';
@@ -105,7 +106,45 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-          TitleWithSeeAll(title: 'Home Services'),
+          TitleWithSeeAll(
+            title: 'Home Services',
+            ontap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SeeallServicepage(
+                    pageTitle: 'Home Services',
+                    services: [
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Apartment finish.jpg',
+                          title: 'Apartment Finishing'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
           SizedBox(
             height: 200,
             child: ListView.builder(
@@ -119,7 +158,45 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-          TitleWithSeeAll(title: 'Repair and Installation'),
+          TitleWithSeeAll(
+            title: 'Repair and Installation',
+            ontap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SeeallServicepage(
+                    pageTitle: 'Repair and Installation',
+                    services: [
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/Air condition.jpg',
+                          title: 'Air condition'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
           SizedBox(
             height: 230,
             child: ListView.builder(
@@ -133,7 +210,45 @@ class Homepage extends StatelessWidget {
               },
             ),
           ),
-          TitleWithSeeAll(title: 'Transportation Services'),
+          TitleWithSeeAll(
+            title: 'Transportation Services',
+            ontap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SeeallServicepage(
+                    pageTitle: 'Transportation Services',
+                    services: [
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                      ServiceItem(
+                          imageUrl: 'assets/images/furnature moving.png',
+                          title: 'Furniture Moving'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
           SizedBox(
             height: 200,
             child: ListView.builder(

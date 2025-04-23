@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/NotificationsScreen.dart';
+import 'package:home_service/Pages/ChatBotScreen.dart';
 import 'package:home_service/Pages/RequestsScreen.dart';
 import 'package:home_service/Pages/SettingsScreen.dart';
+import 'package:home_service/Pages/StartNewProject.dart';
 import 'package:home_service/Pages/homepage.dart';
 
 class Navigationbar extends StatefulWidget {
@@ -18,7 +19,7 @@ class _NavigationbarState extends State<Navigationbar> {
   final List<Widget> _pages = [
     Homepage(),
     Requestsscreen(),
-    Notificationsscreen(),
+    ChatBot(),
     Settingsscreen(),
   ];
 
@@ -29,6 +30,10 @@ class _NavigationbarState extends State<Navigationbar> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // action للزر الدائري الأوسط
+          Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Startnewproject()),
+    );
         },
         backgroundColor: Colors.green,
         child: const Icon(

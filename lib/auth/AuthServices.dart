@@ -15,8 +15,8 @@ class AuthService {
         password: password,
       );
       return user;
+    // ignore: unused_catch_clause
     } on FirebaseAuthException catch (e) {
-      ShowSnackBar(context, 'Error: ${e.message}');
       return null;
     }
   }
