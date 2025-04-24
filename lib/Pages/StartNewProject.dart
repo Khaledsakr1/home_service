@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/typeofserviceoptions.dart';
 import 'package:home_service/widgets/BudgetSlider.dart';
+import 'package:home_service/widgets/DetailsInput.dart';
 import 'package:home_service/widgets/ImagePicker.dart';
 import 'package:home_service/widgets/Optiontile.dart';
 import 'package:home_service/widgets/TextField2.dart';
@@ -37,10 +39,27 @@ class _NewProjectScreenState extends State<Startnewproject> {
             const SizedBox(height: 16),
             Textfield2(hint: 'Project name'),
             const SizedBox(height: 10),
-            OptionTile(title: 'type of service'),
-            OptionTile(title: 'Apartment type & size'),
-            OptionTile(title: 'Preferred style'),
-            OptionTile(title: 'Material quality'),
+            OptionTile(
+              title: 'type of service',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Typeofserviceoptions()),
+                );
+              },
+            ),
+            OptionTile(
+              title: 'Apartment type & size',
+              onTap: () {},
+            ),
+            OptionTile(
+              title: 'Preferred style',
+              onTap: () {},
+            ),
+            OptionTile(
+              title: 'Material quality',
+              onTap: () {},
+            ),
             const SizedBox(height: 20),
             BudgetSlider(
               value: _budgetValue,
@@ -51,11 +70,25 @@ class _NewProjectScreenState extends State<Startnewproject> {
               },
             ),
             const SizedBox(height: 10),
-            OptionTile(title: 'Location'),
+            OptionTile(
+              title: 'Location',
+              onTap: () {},
+            ),
             const SizedBox(height: 10),
-            _buildImagePicker(),
+            ImagePicker(
+                images: [
+                  'assets/images/1..png',
+                  'assets/images/2..png',
+                  'assets/images/3..png',
+                  'assets/images/1..png',
+                  'assets/images/2..png',
+                  'assets/images/3..png',
+                ],
+                onAddImage: () {
+                  // open gallery
+                }),
             const SizedBox(height: 10),
-            _buildDetailsInput(),
+            DetailsInput(),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -68,66 +101,6 @@ class _NewProjectScreenState extends State<Startnewproject> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildImagePicker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("Add images (optional)"),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 80,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              _imagePreview("assets/images/sample1.jpg"),
-              _imagePreview("assets/images/sample2.jpg"),
-              _imagePreview("assets/images/sample3.jpg"),
-              _addImageButton(),
-            ],
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _imagePreview(String path) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      width: 70,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(image: AssetImage(path), fit: BoxFit.cover),
-      ),
-    );
-  }
-
-  Widget _addImageButton() {
-    return GestureDetector(
-      onTap: () {
-        // افتح معرض الصور أو الكاميرا
-      },
-      child: Container(
-        width: 70,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.green),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Icon(Icons.add, color: Colors.green),
-      ),
-    );
-  }
-
-  Widget _buildDetailsInput() {
-    return TextField(
-      maxLines: 5,
-      decoration: InputDecoration(
-        hintText: "Specify the details of what you want.",
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.all(12),
       ),
     );
   }

@@ -20,14 +20,17 @@ class BudgetSlider extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text("Budget Range", style: TextStyle(fontWeight: FontWeight.bold)),
           Slider(
+           activeColor: Color(0xFF2CB34F),
+           thumbColor: Color(0xFF2CB34F),
+           inactiveColor: Color(0xffC0E8CA),
             min: 0,
             max: 400000,
             value: value,
-            divisions: 40,
+            //divisions: 40,
             onChanged: onChanged,
           ),
           Text("Selected: ${value.toInt()} EGP"),
