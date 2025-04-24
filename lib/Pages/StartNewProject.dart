@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/typeofserviceoptions.dart';
 import 'package:home_service/widgets/BudgetSlider.dart';
 import 'package:home_service/widgets/DetailsInput.dart';
 import 'package:home_service/widgets/ImagePicker.dart';
 import 'package:home_service/widgets/Optiontile.dart';
+import 'package:home_service/widgets/Optiontile1.dart';
 import 'package:home_service/widgets/TextField2.dart';
 import 'package:home_service/widgets/button.dart';
 
@@ -14,6 +14,7 @@ class Startnewproject extends StatefulWidget {
 
 class _NewProjectScreenState extends State<Startnewproject> {
   double _budgetValue = 100000;
+  bool _isVisible = false; // للتحكم في ظهور الويدجت
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +40,40 @@ class _NewProjectScreenState extends State<Startnewproject> {
             const SizedBox(height: 16),
             Textfield2(hint: 'Project name'),
             const SizedBox(height: 10),
+            
+            // هنا نقوم بتعديل الـ OptionTile
             OptionTile(
-              title: 'type of service',
+              title: 'Type of service',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Typeofserviceoptions()),
-                );
+                setState(() {
+                  _isVisible = !_isVisible; // عكس الحالة عند الضغط
+                });
               },
             ),
+            
+            // الويدجت الذي سيظهر عند الضغط على "Type of service"
+            AnimatedSize(
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: _isVisible
+                  ? Optiontile1(
+                      title: 'Type of service',
+                      options: [
+                        'Apartment finishing',
+                        'Cleaning',
+                        'Plumber',
+                        'Electrical',
+                        'Furniture moving',
+                        'Air conditioning maintenance',
+                        'Finishing in installments'
+                      ],
+                      onSelected: (value) {
+                        print("Selected: $value");
+                      },
+                    )
+                  : SizedBox.shrink(), // إخفاء الويدجت عند عدم تفعيله
+            ),
+
             OptionTile(
               title: 'Apartment type & size',
               onTap: () {},
