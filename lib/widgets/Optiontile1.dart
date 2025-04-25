@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/widgets/Optionsize.dart';
 import 'package:home_service/widgets/button.dart';
 
 class Optiontile1 extends StatefulWidget {
@@ -32,13 +33,14 @@ class _Optiontile1State extends State<Optiontile1> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Text(widget.title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const Spacer(),
-            ],
+          Center(
+            child: Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
@@ -50,7 +52,7 @@ class _Optiontile1State extends State<Optiontile1> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.green),
+                borderSide: const BorderSide(color: Colors.green),
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -65,12 +67,20 @@ class _Optiontile1State extends State<Optiontile1> {
             onChanged: (value) {
               setState(() => selectedOption = value);
             },
-            style: TextStyle(
-                color: Colors.black), // اللون النص داخل القائمة المنبثقة
-            iconEnabledColor: Colors.green, // لون السهم
+            style: const TextStyle(color: Colors.black),
+            iconEnabledColor: Colors.green,
             isExpanded: true,
           ),
           const SizedBox(height: 16),
+
+          if (selectedOption == 'Villa' || 
+              selectedOption == 'House' || 
+              selectedOption == 'Commercial stores' ||  
+              selectedOption == 'Gym') ...[
+            const Optionsize(),
+            const SizedBox(height: 16),
+          ],
+
           Button(title: 'ok')
         ],
       ),
