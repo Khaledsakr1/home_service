@@ -63,7 +63,10 @@ class SuccessScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                 Navigator.pushNamed(context, Navigationbar.id);
+                 Navigator.pushAndRemoveUntil(context, 
+                 MaterialPageRoute(builder: (context) => const Navigationbar()),
+              (Route<dynamic> route) => false, // هذه المعاملات تحذف كل الصفحات السابقة
+                 );
                 },
                 child: const Text(
                   'next',

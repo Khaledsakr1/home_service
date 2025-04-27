@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/ChatBotScreen.dart';
 import 'package:home_service/Pages/RequestsScreen.dart';
 import 'package:home_service/Pages/SettingsScreen.dart';
+import 'package:home_service/Pages/StartChatBot.dart';
 import 'package:home_service/Pages/StartNewProject.dart';
 import 'package:home_service/Pages/homepage.dart';
 
@@ -19,7 +19,7 @@ class _NavigationbarState extends State<Navigationbar> {
   final List<Widget> _pages = [
     Homepage(),
     Requestsscreen(),
-    ChatBot(),
+    Startchatbot(),
     Settingsscreen(),
   ];
 
@@ -39,7 +39,7 @@ class _NavigationbarState extends State<Navigationbar> {
         child: const Icon(
           Icons.add,
           size: 30,
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
