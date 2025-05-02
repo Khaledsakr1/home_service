@@ -45,7 +45,7 @@ class _NavigationbarState extends State<Navigationbar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        notchMargin: 15,
+        notchMargin: 20,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 9.0),
           child: SizedBox(

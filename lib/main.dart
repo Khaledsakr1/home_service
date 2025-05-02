@@ -13,7 +13,7 @@ import 'package:home_service/Pages/startpage.dart';
 import 'package:home_service/firebase_options.dart';
 import 'package:home_service/widgets/navigationbar.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
