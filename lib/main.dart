@@ -12,6 +12,7 @@ import 'package:home_service/Pages/registerAsPro.dart';
 import 'package:home_service/Pages/startpage.dart';
 import 'package:home_service/firebase_options.dart';
 import 'package:home_service/widgets/navigationbar.dart';
+import 'package:home_service/widgets/navigationbarPro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ class Homeservice extends StatelessWidget {
         Homepage.id: (context) => Homepage(),
         Homepageforpro.id: (context) => Homepageforpro(),
         Navigationbar.id: (context) => Navigationbar(),
+        NavigationbarPro.id: (context) => NavigationbarPro(),
         Clientandprostart.id: (context) => Clientandprostart(),
         SuccessScreen.id: (context) => SuccessScreen(),
         Suceesscreenaspro.id: (context) => Suceesscreenaspro(),

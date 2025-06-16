@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/widgets/navigationbar.dart';
 
 class ChatBotScreen extends StatelessWidget {
   const ChatBotScreen({super.key});
@@ -13,11 +12,7 @@ class ChatBotScreen extends StatelessWidget {
           color: Colors.green,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const Navigationbar()),
-              (Route<dynamic> route) => false, // هذه تقوم بحذف كل الصفحات السابقة
-            );
+            Navigator.pop(context);
           },
         ),
         title: const Text('ChatBot'),

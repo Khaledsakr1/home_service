@@ -92,7 +92,7 @@ class Homepage extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-          SectionTitle(title: 'Popular Services'),
+          SectionTitle(title: 'Services'),
           SizedBox(
             height: 120,
             child: ListView.builder(

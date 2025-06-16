@@ -9,6 +9,7 @@ import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/social_icon_button.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
@@ -44,7 +45,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: Form(
                       key: formKey,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // توزيع كل العناصر
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween, // توزيع كل العناصر
                         children: [
                           const SizedBox(height: 55),
                           Image.asset(
@@ -81,49 +83,29 @@ class _LoginPageState extends State<LoginPage> {
                             headtextfield: 'Enter Your Password',
                           ),
                           const SizedBox(height: 60),
-                          /*
-                           Button(
+                          Button(
                             ontap: () async {
                               if (formKey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
-                                setState(() => isloading = true);
+                                isloading = true;
+                                setState(() {});
                                 try {
-                                  // استخدم الوظيفة من AuthService
-                                  await _authService.userLogin(Email!, Password!, context);
+                                  await UserLogin();
+                                  ShowSnackBar(
+                                      context, 'Login Successful! Welcome');
                                   Navigator.pushNamed(context, SuccessScreen.id,
                                       arguments: Email);
-                                  ShowSnackBar(context, 'Login successfully welcome!');  
-                                } catch (e) {
-                                  ShowSnackBar(context, 'Login failed. Please try again.');
+                                } on FirebaseAuthException {
+                                  ShowSnackBar(context,
+                                      'There was an error in your email or password');
                                 }
-                                setState(() => isloading = false);
-                              }
+
+                                isloading = false;
+                                setState(() {});
+                              } else {}
                             },
                             title: 'Login',
                           ),
-                         */
-                         Button(
-                    ontap: () async {
-                      if (formKey.currentState!.validate()) {
-                        FocusScope.of(context).unfocus();
-                        isloading = true;
-                        setState(() {});
-                        try {
-                          await UserLogin();
-                          ShowSnackBar(context, 'Login Successful! Welcome');
-                          Navigator.pushNamed(context, SuccessScreen.id,
-                              arguments: Email);
-                        } on FirebaseAuthException {
-                          ShowSnackBar(context,
-                              'There was an error in your email or password');
-                        }
-
-                        isloading = false;
-                        setState(() {});
-                      } else {}
-                    },
-                    title: 'Login',
-                  ),
                           const SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -187,7 +169,8 @@ class _LoginPageState extends State<LoginPage> {
                               SocialIconButton(
                                 imagePath: 'assets/images/google.png',
                                 onTap: () {
-                                  _authService.signInWithGoogle(context); // تسجيل بجوجل
+                                  _authService
+                                      .signInWithGoogle(context); // تسجيل بجوجل
                                 },
                               ),
                               const SizedBox(width: 20),
@@ -212,10 +195,10 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-   Future<void> UserLogin() async {
+
+  Future<void> UserLogin() async {
     // ignore: unused_local_variable
     UserCredential user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: Email!, password: Password!);
   }
 }
-

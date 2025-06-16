@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/Pages/ChatBotScreen.dart';
 import 'package:home_service/widgets/button.dart';
-import 'package:home_service/widgets/navigationbar.dart';
+import 'package:home_service/widgets/navigationbarPro.dart';
 
 class Chatbotwelcome extends StatelessWidget {
   const Chatbotwelcome({super.key});
@@ -14,11 +14,10 @@ class Chatbotwelcome extends StatelessWidget {
           color: Colors.green,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // استخدم pushAndRemoveUntil للانتقال مباشرة إلى Navigationbar
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const Navigationbar()),
-              (Route<dynamic> route) => false, // هذه المعاملات تحذف كل الصفحات السابقة
+              MaterialPageRoute(builder: (context) => const NavigationbarPro()),
+              (Route<dynamic> route) => false,
             );
           },
         ),

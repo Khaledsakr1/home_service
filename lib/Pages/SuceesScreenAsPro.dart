@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/homepageForPro.dart';
+import 'package:home_service/widgets/navigationbarPro.dart';
 
 class Suceesscreenaspro extends StatelessWidget {
   const Suceesscreenaspro({super.key});
@@ -68,7 +68,10 @@ class Suceesscreenaspro extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                 Navigator.pushNamed(context, Homepageforpro.id);
+                 Navigator.pushAndRemoveUntil(context, 
+                 MaterialPageRoute(builder: (context) => const NavigationbarPro()),
+              (Route<dynamic> route) => false, // هذه المعاملات تحذف كل الصفحات السابقة
+                 );
                 },
                 child: const Text(
                   'next',
