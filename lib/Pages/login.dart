@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:home_service/Pages/SuceesScreen.dart';
 import 'package:home_service/Pages/register.dart';
@@ -80,7 +81,8 @@ class _LoginPageState extends State<LoginPage> {
                             headtextfield: 'Enter Your Password',
                           ),
                           const SizedBox(height: 60),
-                          Button(
+                          /*
+                           Button(
                             ontap: () async {
                               if (formKey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
@@ -99,6 +101,29 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             title: 'Login',
                           ),
+                         */
+                         Button(
+                    ontap: () async {
+                      if (formKey.currentState!.validate()) {
+                        FocusScope.of(context).unfocus();
+                        isloading = true;
+                        setState(() {});
+                        try {
+                          await UserLogin();
+                          ShowSnackBar(context, 'Login Successful! Welcome');
+                          Navigator.pushNamed(context, SuccessScreen.id,
+                              arguments: Email);
+                        } on FirebaseAuthException {
+                          ShowSnackBar(context,
+                              'There was an error in your email or password');
+                        }
+
+                        isloading = false;
+                        setState(() {});
+                      } else {}
+                    },
+                    title: 'Login',
+                  ),
                           const SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -187,4 +212,10 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+   Future<void> UserLogin() async {
+    // ignore: unused_local_variable
+    UserCredential user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: Email!, password: Password!);
+  }
 }
+
