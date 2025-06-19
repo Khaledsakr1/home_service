@@ -3,7 +3,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:home_service/Pages/SuceesScreen.dart';
 import 'package:home_service/Pages/SuceesScreenAsPro.dart';
-import 'package:home_service/helper/show_snackbar.dart';
+import 'package:home_service/helper/ErrorMessage.dart';
+import 'package:home_service/helper/OverlayMessage.dart';
 
 class AuthService {
   // تسجيل دخول المستخدم باستخدام البريد الإلكتروني وكلمة المرور
@@ -27,7 +28,11 @@ class AuthService {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        ShowSnackBar(context, 'Login cancelled by user.');
+        showErrorOverlayMessage(
+          context,
+          errorMessage: "Something went wrong!",
+          subMessage: "Login cancelled by user",
+        );
         return;
       }
 
@@ -39,10 +44,17 @@ class AuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-      ShowSnackBar(context, 'Login with Google successful!');
+      showCustomOverlayMessage(
+        context,
+        message: "Login With Google Successful! Welcome",
+      );
       Navigator.pushNamed(context, SuccessScreen.id);
     } catch (e) {
-      ShowSnackBar(context, 'Error during Google Sign-In : ${e.toString()}');
+      showErrorOverlayMessage(
+        context,
+        errorMessage: "Something went wrong!",
+        subMessage: "Error during Google Sign-In : ${e.toString()}",
+      );
     }
   }
 
@@ -51,7 +63,11 @@ class AuthService {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        ShowSnackBar(context, 'Login cancelled by user.');
+        showErrorOverlayMessage(
+          context,
+          errorMessage: "Something went wrong!",
+          subMessage: "Login cancelled by user",
+        );
         return;
       }
 
@@ -63,10 +79,17 @@ class AuthService {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-      ShowSnackBar(context, 'Login with Google successful!');
+      showCustomOverlayMessage(
+        context,
+        message: "Login With Google Successful! Welcome",
+      );
       Navigator.pushNamed(context, Suceesscreenaspro.id);
     } catch (e) {
-      ShowSnackBar(context, 'Error during Google Sign-In : ${e.toString()}');
+      showErrorOverlayMessage(
+        context,
+        errorMessage: "Something went wrong!",
+        subMessage: "Error during Google Sign-In : ${e.toString()}",
+      );
     }
   }
 }
