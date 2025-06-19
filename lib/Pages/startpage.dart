@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/Pages/ClientAndProStart.dart';
+import 'package:home_service/helper/OverlayMessage.dart';
 import 'package:home_service/widgets/button.dart';
 
 class Startpage extends StatefulWidget {
@@ -56,9 +57,9 @@ class _StartpageState extends State<Startpage> {
                       StartpageData[index]["image"]!,
                       height: 300,
                     ),
-      
+
                     const SizedBox(height: 40),
-      
+
                     Text(
                       StartpageData[index]["title"]!,
                       style: const TextStyle(
@@ -67,9 +68,9 @@ class _StartpageState extends State<Startpage> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-      
+
                     const SizedBox(height: 20),
-      
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Text(
@@ -83,13 +84,21 @@ class _StartpageState extends State<Startpage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-      
+
                     const SizedBox(height: 70),
-      
+
                     // Show the button only on the last page
                     if (index == StartpageData.length - 1)
                       Button(
                         ontap: () {
+
+                          showCustomOverlayMessage(
+                            context,
+                            message: "Welcome!",
+                            subMessage: "Choose you are a client or technical",
+                            
+                          );
+
                           Navigator.pushNamed(context, Clientandprostart.id);
                         },
                         title: 'Let\'s Start....',
@@ -99,7 +108,7 @@ class _StartpageState extends State<Startpage> {
               },
             ),
           ),
-      
+
           // Dots Indicator at bottom
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +126,7 @@ class _StartpageState extends State<Startpage> {
               ),
             ),
           ),
-      
+
           const SizedBox(height: 30),
         ],
       ),

@@ -4,7 +4,8 @@ import 'package:home_service/Pages/SuceesScreen.dart';
 import 'package:home_service/Pages/register.dart';
 import 'package:home_service/auth/AuthServices.dart';
 import 'package:home_service/constants/constants.dart';
-import 'package:home_service/helper/show_snackbar.dart';
+import 'package:home_service/helper/ErrorMessage.dart';
+import 'package:home_service/helper/OverlayMessage.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/social_icon_button.dart';
@@ -91,13 +92,19 @@ class _LoginPageState extends State<LoginPage> {
                                 setState(() {});
                                 try {
                                   await UserLogin();
-                                  ShowSnackBar(
-                                      context, 'Login Successful! Welcome');
+                                  showCustomOverlayMessage(
+                                    context,
+                                    message: "Login Successful! Welcome",
+                                  );
                                   Navigator.pushNamed(context, SuccessScreen.id,
                                       arguments: Email);
                                 } on FirebaseAuthException {
-                                  ShowSnackBar(context,
-                                      'There was an error in your email or password');
+                                  showErrorOverlayMessage(
+                                    context,
+                                    errorMessage: "Something went wrong!",
+                                    subMessage:
+                                        "There was an error in your email or password",
+                                  );
                                 }
 
                                 isloading = false;

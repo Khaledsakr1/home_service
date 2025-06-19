@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ChatBotScreen extends StatelessWidget {
-  const ChatBotScreen({super.key});
+class ChatBotScreenPro extends StatelessWidget {
+  const ChatBotScreenPro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ChatBotScreen extends StatelessWidget {
         title: const Text('ChatBot'),
       ),
       body: const Center(
-        child: Text('Welcome to ChatBot Screen for client'),
+        child: Text('Welcome to ChatBot Screen for technical'),
       ),
     );
   }

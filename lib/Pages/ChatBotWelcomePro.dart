@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/ChatBotScreen.dart';
+import 'package:home_service/Pages/ChatBotScreenPro.dart';
 import 'package:home_service/widgets/button.dart';
-import 'package:home_service/widgets/navigationbar.dart';
+import 'package:home_service/widgets/navigationbarPro.dart';
 
-class Chatbotwelcome extends StatelessWidget {
-  const Chatbotwelcome({super.key});
+class ChatbotwelcomePro extends StatelessWidget {
+  const ChatbotwelcomePro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class Chatbotwelcome extends StatelessWidget {
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const Navigationbar()),
+              MaterialPageRoute(builder: (context) => const NavigationbarPro()),
               (Route<dynamic> route) => false,
             );
           },
@@ -46,19 +46,22 @@ class Chatbotwelcome extends StatelessWidget {
                     style: TextStyle(fontSize: 20, color: Colors.black),
                     children: [
                       TextSpan(
-                          text: 'Welcome to ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
+                        text: 'Welcome to ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
                       TextSpan(
-                          text: 'chatbot',
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20)),
+                        text: 'chatbot',
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
                       TextSpan(
-                          text: '!',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20)),
+                        text: '!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
                     ],
                   ),
                 ),
@@ -76,12 +79,14 @@ class Chatbotwelcome extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 const SizedBox(height: 50),
+
                 Button(
                   title: 'Get Started',
                   ontap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatBotScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => ChatBotScreenPro()),
                     );
                   },
                 )

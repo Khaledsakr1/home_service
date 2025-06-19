@@ -4,7 +4,8 @@ import 'package:home_service/Pages/SuceesScreenAsPro.dart';
 import 'package:home_service/Pages/registerAsPro.dart';
 import 'package:home_service/auth/AuthServices.dart';
 import 'package:home_service/constants/constants.dart';
-import 'package:home_service/helper/show_snackbar.dart';
+import 'package:home_service/helper/ErrorMessage.dart';
+import 'package:home_service/helper/OverlayMessage.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/social_icon_button.dart';
@@ -83,7 +84,6 @@ class _LoginPageState extends State<Loginaspro> {
                             headtextfield: 'Enter Your Password',
                           ),
                           const SizedBox(height: 60),
-                        
                           Button(
                             ontap: () async {
                               if (formKey.currentState!.validate()) {
@@ -92,14 +92,20 @@ class _LoginPageState extends State<Loginaspro> {
                                 setState(() {});
                                 try {
                                   await UserLogin();
-                                  ShowSnackBar(
-                                      context, 'Login Successful! Welcome');
+                                  showCustomOverlayMessage(
+                                    context,
+                                    message: "Login Successful! Welcome",
+                                  );
                                   Navigator.pushNamed(
                                       context, Suceesscreenaspro.id,
                                       arguments: Email);
                                 } on FirebaseAuthException {
-                                  ShowSnackBar(context,
-                                      'There was an error in your email or password');
+                                  showErrorOverlayMessage(
+                                    context,
+                                    errorMessage: "Something went wrong!",
+                                    subMessage:
+                                        "There was an error in your email or password",
+                                  );
                                 }
 
                                 isloading = false;
@@ -172,8 +178,8 @@ class _LoginPageState extends State<Loginaspro> {
                               SocialIconButton(
                                 imagePath: 'assets/images/google.png',
                                 onTap: () {
-                                  _authService
-                                      .signInWithGooglePro(context); // تسجيل بجوجل
+                                  _authService.signInWithGooglePro(
+                                      context); // تسجيل بجوجل
                                 },
                               ),
                               const SizedBox(width: 20),

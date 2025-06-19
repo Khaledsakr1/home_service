@@ -54,7 +54,7 @@ class Clientandprostart extends StatelessWidget {
                 const SizedBox(height: 15),
 
                 const Text(
-                  'Before we begin, we want to know if you are a customer or a technician. Please choose which one you are.',
+                  'Before we begin, we want to know if you are a client or a technician. Please choose which one you are.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
