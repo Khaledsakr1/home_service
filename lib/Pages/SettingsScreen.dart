@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/SettingsMyProfile.dart';
 import 'package:home_service/Pages/StartNewProject.dart';
 import 'package:home_service/widgets/Optiontile.dart';
 
@@ -12,13 +13,6 @@ class Settingsscreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          color: Colors.green,
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: const Text(
           'Settings',
           style: TextStyle(
@@ -37,9 +31,9 @@ class Settingsscreen extends StatelessWidget {
                 child: ClipOval(
                   child: Image.asset(
                     'assets/images/Image.png',
-                    width: 100, 
+                    width: 100,
                     height: 100,
-                    fit: BoxFit.contain, 
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -63,7 +57,7 @@ class Settingsscreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Startnewproject()),
+                MaterialPageRoute(builder: (context) => Settingsmyprofile()),
               );
             },
           ),

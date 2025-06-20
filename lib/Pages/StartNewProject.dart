@@ -24,16 +24,21 @@ class _NewProjectScreenState extends State<Startnewproject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Start a New Project",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: const BackButton(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
           color: Colors.green,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text(
+          'Start a new project',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         centerTitle: true,
       ),
@@ -135,17 +140,17 @@ class _NewProjectScreenState extends State<Startnewproject> {
                   : SizedBox.shrink(), // إخفاء الويدجت عند عدم تفعيله
             ),
             OptionTile(
-              title: 'Material quality',
-              onTap: () {
-                setState(() {
+                title: 'Material quality',
+                onTap: () {
+                  setState(() {
                     _isMaterialQualityvisible =
                         !_isMaterialQualityvisible; // عكس الحالة عند الضغط
                   });
-              }),
-              AnimatedSize(
+                }),
+            AnimatedSize(
               duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              child:  _isMaterialQualityvisible
+              child: _isMaterialQualityvisible
                   ? Optiontile2(
                       title: 'Material quality',
                       options: [
@@ -170,17 +175,17 @@ class _NewProjectScreenState extends State<Startnewproject> {
             ),
             const SizedBox(height: 10),
             OptionTile(
-              title: 'Location',
-              onTap: () {
-                setState(() {
+                title: 'Location',
+                onTap: () {
+                  setState(() {
                     _isLocationvisible =
                         !_isLocationvisible; // عكس الحالة عند الضغط
                   });
-              }),
-             AnimatedSize(
+                }),
+            AnimatedSize(
               duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              child:  _isLocationvisible
+              child: _isLocationvisible
                   ? Optiontile3()
                   : SizedBox.shrink(), // إخفاء الويدجت عند عدم تفعيله
             ),

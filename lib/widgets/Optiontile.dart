@@ -26,7 +26,10 @@ class OptionTile extends StatelessWidget {
         leading: leadingIcon != null 
             ? Icon(leadingIcon, color: Colors.grey.shade700) 
             : null,
-        title: Text(title),
+        title: Text(
+        title,
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         subtitle: subtitle != null ? Text(subtitle!) : null,
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,

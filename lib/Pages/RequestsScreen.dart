@@ -43,9 +43,13 @@ class _RequestsscreenState extends State<Requestsscreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Requests', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
+        title: const Text(
+          'Requests',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         centerTitle: true,
       ),
       body: Padding(
