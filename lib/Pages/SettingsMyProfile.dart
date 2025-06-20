@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/Pages/StartNewProject.dart';
+import 'package:home_service/Pages/SettingsMyProfile_Address.dart';
+import 'package:home_service/Pages/SettingsMyProfile_Information.dart';
+import 'package:home_service/Pages/SettingsMyProfile_MobileNumber.dart';
 import 'package:home_service/widgets/Optiontile.dart';
 
 class Settingsmyprofile extends StatelessWidget {
@@ -40,7 +42,7 @@ class Settingsmyprofile extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Startnewproject()),
+                    MaterialPageRoute(builder: (context) => SettingsmyprofileInformation()),
                   );
                 },
               ),
@@ -51,7 +53,7 @@ class Settingsmyprofile extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Startnewproject()),
+                    MaterialPageRoute(builder: (context) => SettingsmyprofileMobilenumber()),
                   );
                 },
               ),
@@ -62,7 +64,7 @@ class Settingsmyprofile extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Startnewproject()),
+                    MaterialPageRoute(builder: (context) => SettingsmyprofileAddress()),
                   );
                 },
               ),
