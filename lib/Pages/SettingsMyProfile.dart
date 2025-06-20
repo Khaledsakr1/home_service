@@ -64,7 +64,7 @@ class Settingsmyprofile extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsmyprofileAddress()),
+                    MaterialPageRoute(builder: (context) => SettingsmyprofileAddresses()),
                   );
                 },
               ),
