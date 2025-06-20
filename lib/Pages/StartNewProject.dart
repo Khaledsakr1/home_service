@@ -211,7 +211,7 @@ class _NewProjectScreenState extends State<Startnewproject> {
                 ontap: () {
                   // save data
                 },
-                title: 'next',
+                title: 'Next',
               ),
             ),
           ],

@@ -1,10 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/constants/constants.dart';
+import 'package:home_service/widgets/Textfield.dart';
+import 'package:home_service/widgets/Button.dart';
 
 class SettingsmyprofileInformation extends StatelessWidget {
   const SettingsmyprofileInformation({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        elevation: 0,
+        leading: IconButton(
+          color: Colors.white,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Profile information',
+          style: TextStyle(
+             fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white
+          ),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const SizedBox(height: 16),
+          Center(
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  radius: 55,
+                  backgroundColor: Colors.grey.shade200,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/Image.png',
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  radius: 16,
+                  backgroundColor: kPrimaryColor,
+                  child: const Icon(Icons.camera_alt,
+                      size: 16, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Textfield(
+            headtextfield: 'first name',
+          ),
+          const SizedBox(height: 12),
+          const Textfield(
+            headtextfield: 'last name',
+          ),
+          const SizedBox(height: 12),
+          const Textfield(
+            headtextfield: 'Company name',
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'This is your public profile name.',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          const SizedBox(height: 12),
+          const Textfield(
+            headtextfield: 'Email',
+          ),
+          const SizedBox(height: 130),
+          Button(
+            title: 'Save',
+            ontap: () {
+              // Handle save logic
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
