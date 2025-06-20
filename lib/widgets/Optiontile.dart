@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 
 class OptionTile extends StatelessWidget {
   final String title;
+  final String? subtitle;
+  final IconData? leadingIcon;
   final VoidCallback? onTap;
 
-  const OptionTile({Key? key, required this.title, this.onTap}) : super(key: key);
+  const OptionTile({
+    Key? key,
+    required this.title,
+    this.subtitle,
+    this.leadingIcon,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,11 @@ class OptionTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
+        leading: leadingIcon != null 
+            ? Icon(leadingIcon, color: Colors.grey.shade700) 
+            : null,
         title: Text(title),
+        subtitle: subtitle != null ? Text(subtitle!) : null,
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
       ),
