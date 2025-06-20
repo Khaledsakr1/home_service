@@ -22,14 +22,14 @@ class Textfield2 extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.grey.shade300, // نفس اللون اللي في الصورة
+            color: Colors.grey.shade300,
             width: 1.2,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.grey.shade400,
+            color: Colors.grey.shade300,
             width: 1.5,
           ),
           borderRadius: BorderRadius.circular(12),
