@@ -42,7 +42,7 @@ class Settingsdataandprivacy extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SettingsdataandprivacyDeactivateacc()),
+                        builder: (context) => SettingsDataAndPrivacyDeactivateAcc()),
                   );
                 },
               ),
@@ -54,7 +54,7 @@ class Settingsdataandprivacy extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SettingsdataandprivacyDeleteacc()),
+                        builder: (context) => SettingsDataAndPrivacyDeleteAcc()),
                   );
                 },
               ),
