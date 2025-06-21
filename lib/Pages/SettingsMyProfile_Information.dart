@@ -59,26 +59,30 @@ class SettingsmyprofileInformation extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const Textfield(
-            headtextfield: 'first name',
+            title: 'First name',
+            headtextfield: 'Enter your first name',
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 7),
           const Textfield(
-            headtextfield: 'last name',
+            title: 'Last name',
+            headtextfield: 'Enter your last name',
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 7),
           const Textfield(
-            headtextfield: 'Company name',
+          title: 'Company name',
+            headtextfield: 'Enter your company name',
           ),
           const SizedBox(height: 4),
           const Text(
             'This is your public profile name.',
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 7),
           const Textfield(
-            headtextfield: 'Email',
+          title: 'Email address',
+            headtextfield: 'Enter your email',
           ),
-          const SizedBox(height: 130),
+          const SizedBox(height: 20),
           Button(
             title: 'Save',
             ontap: () {

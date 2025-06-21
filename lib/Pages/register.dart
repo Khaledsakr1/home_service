@@ -38,7 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
               key: formKey,
               child: Column(
                 children: [
-                  const SizedBox(height: 120),
+                  const SizedBox(height: 90),
                   Image.asset(
                     ksignup,
                     width: 200,
@@ -64,6 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onchanged: (data) {
                       Email = data;
                     },
+                    title: 'Email address',
                     headtextfield: 'Create New Email',
                   ),
                   const SizedBox(
@@ -74,6 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onchanged: (data) {
                       Password = data;
                     },
+                    title: 'Password',
                     headtextfield: 'Create New Password',
                   ),
                   const SizedBox(

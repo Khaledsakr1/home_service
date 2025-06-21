@@ -63,19 +63,6 @@ class Settingsscreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           OptionTile(
-            leadingIcon: Icons.account_balance_wallet,
-            title: 'Safe',
-            subtitle:
-                'Top up your account, check your balance, and manage your payment preferences.',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Startnewproject()),
-              );
-            },
-          ),
-          const SizedBox(height: 12),
-          OptionTile(
             leadingIcon: Icons.lock_reset,
             title: 'Change Password',
             subtitle: 'Update and manage your password.',

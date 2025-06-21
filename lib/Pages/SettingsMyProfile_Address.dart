@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/SettingsMyProfile_AddressEdit.dart';
 import 'package:home_service/constants/constants.dart';
 
 class SettingsmyprofileAddresses extends StatelessWidget {
@@ -113,7 +114,12 @@ class SettingsmyprofileAddresses extends StatelessWidget {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // action هنا
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SettingsmyprofileAddressedit()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPrimaryColor,

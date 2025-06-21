@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment:
                             MainAxisAlignment.spaceBetween, // توزيع كل العناصر
                         children: [
-                          const SizedBox(height: 55),
+                          const SizedBox(height: 40),
                           Image.asset(
                             ksignin,
                             width: 200,
@@ -73,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                             onchanged: (data) {
                               Email = data;
                             },
+                            title: 'Email address',
                             headtextfield: 'Enter Your Email',
                           ),
                           const SizedBox(height: 20),
@@ -81,9 +82,10 @@ class _LoginPageState extends State<LoginPage> {
                             onchanged: (data) {
                               Password = data;
                             },
+                            title: 'Password',
                             headtextfield: 'Enter Your Password',
                           ),
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 20),
                           Button(
                             ontap: () async {
                               if (formKey.currentState!.validate()) {
