@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/Pages/SettingsChangePassword.dart';
+import 'package:home_service/Pages/SettingsDataAndPrivacy.dart';
 import 'package:home_service/Pages/SettingsMyProfile.dart';
-import 'package:home_service/Pages/StartNewProject.dart';
+import 'package:home_service/Pages/SettingsNotification.dart';
 import 'package:home_service/widgets/Optiontile.dart';
 
 class Settingsscreen extends StatelessWidget {
@@ -69,7 +71,7 @@ class Settingsscreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Startnewproject()),
+                MaterialPageRoute(builder: (context) => Settingschangepassword()),
               );
             },
           ),
@@ -82,7 +84,7 @@ class Settingsscreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Startnewproject()),
+                MaterialPageRoute(builder: (context) => Settingsnotification()),
               );
             },
           ),
@@ -94,7 +96,7 @@ class Settingsscreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Startnewproject()),
+                MaterialPageRoute(builder: (context) => Settingsdataandprivacy()),
               );
             },
           ),

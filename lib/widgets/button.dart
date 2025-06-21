@@ -4,12 +4,17 @@ import 'package:home_service/constants/constants.dart';
 class Button extends StatelessWidget {
   final VoidCallback? ontap;
   final String title;
-  final IconData? icon; // صارت nullable
+  final IconData? icon;
+  final Color? backgroundColor;
+  final Color? textColor;
+
   const Button({
     Key? key,
     this.ontap,
     required this.title,
     this.icon,
+    this.backgroundColor,
+    this.textColor,
   }) : super(key: key);
 
   @override
@@ -18,7 +23,7 @@ class Button extends StatelessWidget {
       onTap: ontap,
       child: Container(
         decoration: BoxDecoration(
-          color: kPrimaryColor,
+          color: backgroundColor ?? kPrimaryColor,
           borderRadius: BorderRadius.circular(12),
         ),
         width: 300,
@@ -28,17 +33,17 @@ class Button extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, color: Colors.white),
+                Icon(icon, color: textColor ?? Colors.white),
                 const SizedBox(width: 8),
               ],
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
-                  color: Colors.white,
+                  color: textColor ?? Colors.white,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
-                  shadows: [
+                  shadows: const [
                     Shadow(
                       color: Colors.black45,
                       blurRadius: 50,
