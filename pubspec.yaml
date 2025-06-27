@@ -1,0 +1,39 @@
+name: home_service
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  modal_progress_hud_nsn: ^0.5.1
+  google_sign_in: ^6.2.2
+  http: ^1.4.0
+  mime: ^2.0.0
+  http_parser: ^4.1.2
+  image_picker: ^1.0.7
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.3
+  dartz: ^0.10.1
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.5
+  get_it: ^7.7.0
+  equatable: ^2.0.5
+  concentric_transition: ^1.0.3
+  jwt_decoder: ^2.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+
+
