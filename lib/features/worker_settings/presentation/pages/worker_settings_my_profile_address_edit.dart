@@ -114,7 +114,7 @@ void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
         leading: IconButton(
           color: Colors.green,
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context, true),
         ),
         centerTitle: true,
         title: const Text(

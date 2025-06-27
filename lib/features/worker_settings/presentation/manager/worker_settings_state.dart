@@ -18,3 +18,6 @@ class WorkerSettingsError extends WorkerSettingsState {
   final String message;
   WorkerSettingsError(this.message);
 }
+
+class WorkerSettingsPasswordChangeSuccess extends WorkerSettingsState {}
+

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/change_worker_password.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/fetch_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
@@ -58,6 +59,7 @@ class WorkerSettingsmyprofile extends StatelessWidget {
                           fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
                           updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
                           updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
+                           changePasswordUseCase: ChangePassword(repo)
                         ),
                         child: const WorkerSettingsmyprofileInformation(),
                       );
@@ -81,6 +83,7 @@ class WorkerSettingsmyprofile extends StatelessWidget {
                           fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
                           updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
                           updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
+                           changePasswordUseCase: ChangePassword(repo)
                         ),
                         child: const WorkerSettingsmyprofileMobilenumber(),
                       );
@@ -104,6 +107,7 @@ class WorkerSettingsmyprofile extends StatelessWidget {
                           fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
                           updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
                           updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
+                           changePasswordUseCase: ChangePassword(repo)
                         ),
                         child: const WorkerSettingsmyprofileAddresses(),
                       );

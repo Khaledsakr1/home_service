@@ -25,6 +25,7 @@ import 'package:home_service/features/services/presentation/manager/services_cub
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
 import 'package:home_service/features/worker_settings/domain/repositories/worker_settings_repository.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/change_worker_password.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/fetch_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
@@ -116,7 +117,8 @@ sl.registerFactory(
     () => WorkerSettingsCubit(
       fetchWorkerProfileUseCase: sl(),
       updateWorkerProfileUseCase: sl(),
-      updateProfilePictureUseCase: sl()
+      updateProfilePictureUseCase: sl(),
+      changePasswordUseCase: sl(),
     ),
   );
 
@@ -124,6 +126,7 @@ sl.registerFactory(
   sl.registerLazySingleton(() => FetchWorkerProfile(sl()));
   sl.registerLazySingleton(() => UpdateWorkerProfile(sl()));
   sl.registerLazySingleton(() => UpdateWorkerProfileWithImage(sl()));
+  sl.registerLazySingleton(() => ChangePassword(sl()));
 
   // Repository
   sl.registerLazySingleton<WorkerSettingsRepository>(

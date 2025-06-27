@@ -6,13 +6,18 @@ import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
 import 'package:home_service/injection_container.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class WorkerSettingsRemoteDataSource {
   Future<WorkerProfileUpdateModel> fetchWorkerProfile();
   Future<void> updateWorkerProfile(
       WorkerProfileUpdateModel profile);
   Future<void> updateProfilePicture(File image);
+
+    Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  });
   
 }
 
@@ -86,5 +91,36 @@ class WorkerSettingsRemoteDataSourceImpl
   }
 }
 
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    final token = sl<TokenService>().token;
+    if (token == null) throw Exception('No token found');
 
+    final url = Uri.parse('$baseUrl/api/Account/change-password');
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        "currentPassword": currentPassword,
+        "newPassword": newPassword,
+        "confirmPassword": confirmPassword,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      String errorMsg = "Failed to change password";
+      try {
+        errorMsg = json.decode(response.body)["message"] ?? errorMsg;
+      } catch (_) {}
+      throw Exception(errorMsg);
+    }
+  }
 }
+

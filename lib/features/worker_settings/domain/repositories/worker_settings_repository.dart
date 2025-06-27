@@ -7,5 +7,10 @@ abstract class WorkerSettingsRepository {
   Future<WorkerProfileUpdateModel> fetchWorkerProfile();
   Future<void> updateWorkerProfile(WorkerProfileUpdateModel profile);
   Future<void> updateProfilePicture(File image);
+    Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  });
 
 }

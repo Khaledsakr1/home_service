@@ -25,4 +25,17 @@ class WorkerSettingsRepositoryImpl implements WorkerSettingsRepository {
 Future<void> updateProfilePicture(File image) {
   return remoteDataSource.updateProfilePicture(image);
 }
+
+@override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) {
+    return remoteDataSource.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    );
+  }
 }
