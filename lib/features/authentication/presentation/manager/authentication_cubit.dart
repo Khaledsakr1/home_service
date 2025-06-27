@@ -26,14 +26,21 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required this.registerWorkerUseCase,
   }) : super(AuthenticationInitial());
 
-  Future<void> registerCustomer(Customer customer) async {
-    emit(AuthenticationLoading());
-    final failureOrSuccess = await registerCustomerUseCase(customer);
-    failureOrSuccess.fold(
-      (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
-      (token) => emit(AuthenticationSuccess(token)),
-    );
-  }
+Future<void> registerCustomer(Customer customer) async {
+  emit(AuthenticationLoading());
+  final failureOrSuccess = await registerCustomerUseCase(customer);
+  failureOrSuccess.fold(
+    (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
+    (token) async {
+      // SAVE TOKEN just like login
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      sl<TokenService>().token = token;
+      emit(AuthenticationSuccess(token));
+    },
+  );
+}
+
 
   Future<void> checkEmail(String email) async {
     emit(AuthenticationLoading());
@@ -72,15 +79,20 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         print('AuthenticationCubit registerWorker failure: $failure');
         emit(AuthenticationError(_mapFailureToMessage(failure)));
       },
-      (token) {
-        print('AuthenticationCubit registerWorker success token: $token');
-        if (token == null || token.isEmpty) {
-          print('AuthenticationCubit registerWorker invalid token');
-          emit(AuthenticationError('Invalid token received'));
-        } else {
-          emit(AuthenticationSuccess(token));
-        }
-      },
+(token) async {
+  print('AuthenticationCubit registerWorker success token: $token');
+  if (token == null || token.isEmpty) {
+    print('AuthenticationCubit registerWorker invalid token');
+    emit(AuthenticationError('Invalid token received'));
+  } else {
+    // SAVE TOKEN exactly like login
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    sl<TokenService>().token = token;
+    emit(AuthenticationSuccess(token));
+  }
+},
+
     );
   }
 

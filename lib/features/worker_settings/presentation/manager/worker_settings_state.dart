@@ -21,3 +21,7 @@ class WorkerSettingsError extends WorkerSettingsState {
 
 class WorkerSettingsPasswordChangeSuccess extends WorkerSettingsState {}
 
+
+class WorkerSettingsDeleteSuccess extends WorkerSettingsState {}
+
+class WorkerSettingsDeactivateSuccess extends WorkerSettingsState {}

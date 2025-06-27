@@ -9,13 +9,12 @@ import 'package:home_service/features/worker_settings/domain/usecases/fetch_work
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
-import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile_address.dart';
-import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile_information.dart';
-import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile_mobile_number.dart';
+import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_data_and_privacy_deactivate_acc.dart';
+import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_data_and_privacy_delete_acc.dart';
 import 'package:home_service/widgets/Optiontile.dart';
 
-class WorkerSettingsmyprofile extends StatelessWidget {
-  const WorkerSettingsmyprofile({super.key});
+class WorkerSettingsdataandprivacy extends StatelessWidget {
+  const WorkerSettingsdataandprivacy({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class WorkerSettingsmyprofile extends StatelessWidget {
           },
         ),
         title: const Text(
-          'My Profile',
+          'Data and privacy',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -46,9 +45,9 @@ class WorkerSettingsmyprofile extends StatelessWidget {
           Column(
             children: [
               OptionTile(
-                title: 'Profile information',
+                title: 'Deactivate my account',
                 subtitle:
-                    'Edit your profile picture, name, surname, and email.',
+                    'Temporarily deactivate your profile without losing your data. You can reactivate at any time.',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -60,64 +59,41 @@ class WorkerSettingsmyprofile extends StatelessWidget {
                         create: (_) => WorkerSettingsCubit(
                           fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
                           updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
-                          updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
-                           changePasswordUseCase: ChangePassword(repo),
-                           deleteAccountUseCase: DeleteAccount(repo),
-                            deactivateAccountUseCase: DeactivateAccount(repo),
-                        ),
-                        child: const WorkerSettingsmyprofileInformation(),
-                      );
-                    }),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              OptionTile(
-                title: 'Mobile phone number',
-                subtitle: 'Modify your mobile phone number',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      final repo = WorkerSettingsRepositoryImpl(
-                        remoteDataSource: WorkerSettingsRemoteDataSourceImpl(),
-                      );
-                      return BlocProvider(
-                        create: (_) => WorkerSettingsCubit(
-                          fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
-                          updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
-                          updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
-                           changePasswordUseCase: ChangePassword(repo),
-                            deleteAccountUseCase: DeleteAccount(repo),
-                          deactivateAccountUseCase: DeactivateAccount(repo),
-                        ),
-                        child: const WorkerSettingsmyprofileMobilenumber(),
-                      );
-                    }),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              OptionTile(
-                title: 'Address Preferences',
-                subtitle: 'Edit your address preference',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                                        MaterialPageRoute(builder: (context) {
-                      final repo = WorkerSettingsRepositoryImpl(
-                        remoteDataSource: WorkerSettingsRemoteDataSourceImpl(),
-                      );
-                      return BlocProvider(
-                        create: (_) => WorkerSettingsCubit(
-                          fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
-                          updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
-                          updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
+                          updateProfilePictureUseCase:
+                              UpdateWorkerProfileWithImage(repo),
                           changePasswordUseCase: ChangePassword(repo),
                           deleteAccountUseCase: DeleteAccount(repo),
                           deactivateAccountUseCase: DeactivateAccount(repo),
                         ),
-                        child: const WorkerSettingsmyprofileAddresses(),
+                        child:
+                            const WorkerSettingsDataAndPrivacyDeactivateAcc(),
+                      );
+                    }),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              OptionTile(
+                title: 'Delete my account',
+                subtitle: 'Permanently delete all your data.',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      final repo = WorkerSettingsRepositoryImpl(
+                        remoteDataSource: WorkerSettingsRemoteDataSourceImpl(),
+                      );
+                      return BlocProvider(
+                        create: (_) => WorkerSettingsCubit(
+                          fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
+                          updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
+                          updateProfilePictureUseCase:
+                              UpdateWorkerProfileWithImage(repo),
+                          changePasswordUseCase: ChangePassword(repo),
+                          deleteAccountUseCase: DeleteAccount(repo),
+                          deactivateAccountUseCase: DeactivateAccount(repo),
+                        ),
+                        child: const WorkerSettingsDataAndPrivacyDeleteAcc(),
                       );
                     }),
                   );

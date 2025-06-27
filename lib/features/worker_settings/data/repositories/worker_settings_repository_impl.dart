@@ -38,4 +38,15 @@ Future<void> updateProfilePicture(File image) {
       confirmPassword: confirmPassword,
     );
   }
+
+    @override
+  Future<void> deleteAccount() {
+    return remoteDataSource.deleteAccount();
+  }
+
+    @override
+      Future<void> deactivateAccount() {
+    return remoteDataSource.deactivateAccount();
+  }
+
 }

@@ -13,4 +13,8 @@ abstract class WorkerSettingsRepository {
     required String confirmPassword,
   });
 
+  Future<void> deleteAccount();
+  Future<void> deactivateAccount();
+
+
 }

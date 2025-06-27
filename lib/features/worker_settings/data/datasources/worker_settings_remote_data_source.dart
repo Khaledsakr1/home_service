@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/deactivate_account.dart';
 import 'package:home_service/injection_container.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,10 @@ abstract class WorkerSettingsRemoteDataSource {
     required String newPassword,
     required String confirmPassword,
   });
-  
+
+    Future<void> deleteAccount();
+
+    Future<void> deactivateAccount();
 }
 
 class WorkerSettingsRemoteDataSourceImpl
@@ -122,5 +126,58 @@ class WorkerSettingsRemoteDataSourceImpl
       throw Exception(errorMsg);
     }
   }
+
+    @override
+  Future<void> deleteAccount() async {
+    final token = sl<TokenService>().token;
+    if (token == null) throw Exception('No token found');
+
+    final url = Uri.parse('$baseUrl/api/Account/deleteAccount');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete account');
+    }
+  }
+
+  //   @override
+  // Future<void> deactivateAccount() async {
+  //   final token = sl<TokenService>().token;
+  //   if (token == null) throw Exception('No token found');
+  //   final response = await http.post(
+  //     Uri.parse('$baseUrl/api/Account/deleteAccount'),
+  //     headers: {
+  //       'Authorization': 'Bearer $token',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   );
+  //   if (response.statusCode != 200) {
+  //     throw Exception('Failed to deactivate account');
+  //   }
+  // }
+
+    @override
+      Future<void> deactivateAccount() async {
+    final token = sl<TokenService>().token;
+    if (token == null) throw Exception('No token found');
+
+    final url = Uri.parse('$baseUrl/api/Account/deleteAccount');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete account');
+    }
+  }
 }
+
 

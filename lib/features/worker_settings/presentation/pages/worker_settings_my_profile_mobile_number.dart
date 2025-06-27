@@ -19,7 +19,7 @@ class WorkerSettingsmyprofileMobilenumber extends StatefulWidget {
 class _WorkerSettingsmyprofileMobilenumberState
     extends State<WorkerSettingsmyprofileMobilenumber> {
   final TextEditingController phoneController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String countryCode = "+20";
 
@@ -29,10 +29,9 @@ class _WorkerSettingsmyprofileMobilenumberState
     context.read<WorkerSettingsCubit>().fetchProfile();
   }
 
-void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
-  phoneController.text = stripCountryCode(profile.phoneNumber ?? '');
-}
-
+  void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
+    phoneController.text = stripCountryCode(profile.phoneNumber ?? '');
+  }
 
   @override
   void dispose() {
@@ -40,21 +39,19 @@ void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
     super.dispose();
   }
 
-Future<void> _savePhone() async {
+  Future<void> _savePhone() async {
     if (!_formKey.currentState!.validate()) {
-    // Invalid! Do NOT save
-    return;
+      // Invalid! Do NOT save
+      return;
+    }
+
+    final phoneWithCountry = '+20${phoneController.text.trim()}';
+    final updateModel = WorkerProfileUpdateModel(
+      phoneNumber: phoneWithCountry,
+      // ...other unchanged fields if necessary
+    );
+    context.read<WorkerSettingsCubit>().updateProfile(updateModel);
   }
-
-  final phoneWithCountry = '+20${phoneController.text.trim()}';
-  final updateModel = WorkerProfileUpdateModel(
-    phoneNumber: phoneWithCountry,
-    // ...other unchanged fields if necessary
-  );
-  context.read<WorkerSettingsCubit>().updateProfile(updateModel);
-}
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +80,8 @@ Future<void> _savePhone() async {
       body: BlocConsumer<WorkerSettingsCubit, WorkerSettingsState>(
         listener: (context, state) {
           if (state is WorkerSettingsUpdateSuccess) {
-            showCustomOverlayMessage(context, message: 'Phone number updated successfully');
+            showCustomOverlayMessage(context,
+                message: 'Phone number updated successfully');
           } else if (state is WorkerSettingsError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: ${state.message}')),
@@ -95,7 +93,8 @@ Future<void> _savePhone() async {
         },
         builder: (context, state) {
           if (state is WorkerSettingsLoading) {
-            return const Center(child: CircularProgressIndicator(color: kPrimaryColor));
+            return const Center(
+                child: CircularProgressIndicator(color: kPrimaryColor));
           } else if (state is WorkerSettingsError) {
             return Center(
               child: Text(
@@ -118,55 +117,55 @@ Future<void> _savePhone() async {
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 24),
-      Form(
-              key: _formKey,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Styled +20 Container
-                  Container(
-                    height: 58,
-                    margin: const EdgeInsets.only(top: 0), // adjust if needed
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Row(
-                      children: [
-                        Text(
-                          '+20',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+              Form(
+                key: _formKey,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Styled +20 Container
+                    Container(
+                      height: 58,
+                      margin: const EdgeInsets.only(top: 0), // adjust if needed
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        children: [
+                          Text(
+                            '+20',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(Icons.arrow_drop_down, color: Colors.white),
-                      ],
+                          SizedBox(width: 4),
+                          Icon(Icons.arrow_drop_down, color: Colors.white),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Textfield(
-                      controller: phoneController,
-                      title: 'Phone Number',
-                      headtextfield: 'Enter your phone number',
-                      inputType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Required Field';
-                        }
-                        if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                          return 'Please enter a valid phone number';
-                        }
-                        return null;
-                      },
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Textfield(
+                        controller: phoneController,
+                        title: 'Phone Number',
+                        headtextfield: 'Enter your phone number',
+                        inputType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Required Field';
+                          }
+                          if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                            return 'Please enter a valid phone number';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
               const SizedBox(height: 380),
               Button(
                 title: 'Save',
@@ -179,7 +178,6 @@ Future<void> _savePhone() async {
     );
   }
 }
-
 
 String stripCountryCode(String phone) {
   if (phone.startsWith('+20')) {

@@ -165,7 +165,7 @@ class _WorkerSettingsmyprofileInformationState
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
-                                        'assets/images/Image.png',
+                                        'assets/images/profile_default.png',
                                         width: 100,
                                         height: 100,
                                         fit: BoxFit.contain,
@@ -173,7 +173,7 @@ class _WorkerSettingsmyprofileInformationState
                                     },
                                   )
                                 : Image.asset(
-                                    'assets/images/Image.png',
+                                    'assets/images/profile_default.png',
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.contain,

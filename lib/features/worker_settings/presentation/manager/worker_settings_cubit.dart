@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/change_worker_password.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/deactivate_account.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/delete_account.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import '../../domain/usecases/fetch_worker_profile.dart';
 import '../../domain/usecases/update_worker_profile.dart';
@@ -14,6 +16,8 @@ class WorkerSettingsCubit extends Cubit<WorkerSettingsState> {
   final UpdateWorkerProfile updateWorkerProfileUseCase;
   final UpdateWorkerProfileWithImage updateProfilePictureUseCase;
   final ChangePassword changePasswordUseCase;
+  final DeleteAccount deleteAccountUseCase;
+  final DeactivateAccount deactivateAccountUseCase;
 
 
   WorkerSettingsCubit({
@@ -21,7 +25,8 @@ class WorkerSettingsCubit extends Cubit<WorkerSettingsState> {
     required this.updateWorkerProfileUseCase,
     required this.updateProfilePictureUseCase,
     required this.changePasswordUseCase,
-
+    required this.deleteAccountUseCase,
+    required this.deactivateAccountUseCase,
   }) : super(WorkerSettingsInitial());
 
   Future<void> fetchProfile() async {
@@ -76,4 +81,23 @@ class WorkerSettingsCubit extends Cubit<WorkerSettingsState> {
     }
   }
   
+    Future<void> deleteAccount() async {
+    emit(WorkerSettingsLoading());
+    try {
+      await deleteAccountUseCase();
+      emit(WorkerSettingsDeleteSuccess());
+    } catch (e) {
+      emit(WorkerSettingsError(e.toString()));
+    }
+  }
+
+   Future<void> deactivateAccount() async {
+    emit(WorkerSettingsLoading());
+    try {
+      await deactivateAccountUseCase();
+      emit(WorkerSettingsDeactivateSuccess());
+    } catch (e) {
+      emit(WorkerSettingsError(e.toString()));
+    }
+  }
 }

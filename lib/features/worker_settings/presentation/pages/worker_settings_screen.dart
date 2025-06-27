@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/utils/clear_token.dart';
+import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/change_worker_password.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/deactivate_account.dart';
+import 'package:home_service/features/worker_settings/domain/usecases/delete_account.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/fetch_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_change_password.dart';
-import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_dataAndprivacy.dart';
+import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_data_and_privacy.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_notification.dart';
 import 'package:home_service/widgets/Optiontile.dart';
@@ -91,7 +95,9 @@ class WorkerSettingsscreen extends StatelessWidget {
                       updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
                       updateProfilePictureUseCase:
                           UpdateWorkerProfileWithImage(repo),
-                      changePasswordUseCase: ChangePassword(repo)
+                      changePasswordUseCase: ChangePassword(repo),
+                      deleteAccountUseCase: DeleteAccount(repo),
+                      deactivateAccountUseCase: DeactivateAccount(repo),
                     ),
                     child: const WorkerSettingschangepassword(),
                   );
@@ -123,6 +129,19 @@ class WorkerSettingsscreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => WorkerSettingsdataandprivacy()),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          OptionTile(
+            leadingIcon: Icons.logout,
+            title: 'Logout',
+            subtitle: 'Logout from your account.',
+            onTap: () async {
+              await clearTokenOnLogout();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                LoginAsWorker.id,
+                (route) => false,
               );
             },
           ),
