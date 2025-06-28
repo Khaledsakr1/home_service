@@ -1,58 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
+import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/pages/see_all_services_page.dart';
 import 'package:home_service/features/worker_home/presentation/pages/ServiceDetailsPage.dart';
-import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/PopularServicelist.dart';
+import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/RepairandInstallationlist.dart';
 import 'package:home_service/widgets/TitleWithSeeAll.dart';
 
-class HomepageForWorker extends StatelessWidget {
+
+class HomepageForWorker extends StatefulWidget {
   const HomepageForWorker({super.key});
   static String id = 'home page for worker';
 
-  final List<Map<String, String>> popularservicesIMG = const [
-    {'title': 'House Cleaning', 'image': 'assets/images/house cleaning.png'},
-    {'title': 'Electrical', 'image': 'assets/images/electrical.png'},
-    {'title': 'Furniture Moving', 'image': 'assets/images/furniture.png'},
-    {'title': 'Water Filter', 'image': 'assets/images/water filter.png'},
-    {'title': 'Pest Control', 'image': 'assets/images/pest control.png'},
-  ];
+  @override
+  State<HomepageForWorker> createState() => _HomepageForWorkerState();
+}
 
-  final List<Map<String, String>> homeserviceIMG = const [
-    {
-      'title': 'Apartment Finishing',
-      'image': 'assets/images/Apartment finish.jpg'
-    },
-    {'title': 'Door Carpenter', 'image': 'assets/images/door carprnter.jpg'},
-    {'title': 'Interior Design', 'image': 'assets/images/interior design.jpg'},
-  ];
+class _HomepageForWorkerState extends State<HomepageForWorker> {
+  final Map<String, String> serviceCategoryMap = {
+    'House Cleaning': 'Jobs',
+    'Electrical': 'Jobs',
+    'Furniture Moving': 'Jobs',
+    'Water Filter': 'Jobs',
+    'Pest Control': 'Jobs',
+    'Apartment Finishing': 'Home Jobs',
+    'Door Carpenter': 'Home Jobs',
+    'Interior Design': 'Home Jobs',
+    'Air Conditioning Maintenance And Installation': 'Repair and Installation',
+    'Installing Surveillance Cameras': 'Repair and Installation',
+    'Plumbing Establishment': 'Repair and Installation',
+    // Add more as needed
+  };
 
-  final List<Map<String, String>> repairserviceIMG = const [
-    {
-      'title': 'Air conditioning maintenance and installation',
-      'image': 'assets/images/Air condition.jpg'
-    },
-    {
-      'title': 'Installing surveillance cameras',
-      'image': 'assets/images/installing cameras.jpg'
-    },
-    {
-      'title': 'Plumbing Establishment',
-      'image': 'assets/images/Plumbing establishing.png'
-    },
-  ];
-
-  final List<Map<String, String>> transportationserviceIMG = const [
-    {'title': 'Furniture Moving', 'image': 'assets/images/furniture.png'},
-    {
-      'title': 'Furniture lifting winch',
-      'image': 'assets/images/Furniture lifting winch.jpg'
-    },
-    {
-      'title': 'Delivery Services',
-      'image': 'assets/images/delivery services.jpg'
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    context.read<ServicesCubit>().fetchServices();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,184 +76,148 @@ class HomepageForWorker extends StatelessWidget {
           ],
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const SectionTitle(title: 'Jobs'),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: popularservicesIMG.length,
-              itemBuilder: (context, index) {
-                final service = popularservicesIMG[index];
-                final title = service['title'];
-                final image = service['image'];
+      body: BlocBuilder<ServicesCubit, ServicesState>(
+        builder: (context, state) {
+          if (state is ServicesLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is ServicesLoaded) {
+            final allServices = state.services;
+            List<Service> jobs = allServices.where((s) => serviceCategoryMap[s.name] == 'Jobs').toList();
+            List<Service> homeJobs = allServices.where((s) => serviceCategoryMap[s.name] == 'Home Jobs').toList();
+            List<Service> repair = allServices.where((s) => serviceCategoryMap[s.name] == 'Repair and Installation').toList();
 
-                if (title == null || image == null) return const SizedBox();
-
-                return GestureDetector(
-                  onTap: () {
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                // Jobs section
+                TitleWithSeeAll(
+                  title: 'Jobs',
+                  ontap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ServiceDetailsPage(
-                          title: title,
-                          image: image,
+                        builder: (context) => SeeallServicepage(
+                          pageTitle: 'Jobs',
+                          services: jobs,
                         ),
                       ),
                     );
                   },
-                  child: PopularServiceList(title, image),
-                );
-              },
-            ),
-          ),
-          TitleWithSeeAll(
-            title: 'Home Jobs',
-            ontap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SeeallServicepage(
-                    pageTitle: 'Home Jobs',
-                    services: homeserviceIMG
-                        .map((service) => ServiceItem(
-                              imageUrl: service['image'] ?? '',
-                              title: service['title'] ?? '',
-                            ))
-                        .toList(),
+                ),
+                SizedBox(
+                  height: 120,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: jobs.length,
+                    itemBuilder: (context, index) {
+                      final service = jobs[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ServiceDetailsPage(
+                                title: service.name,
+                                image: service.imageUrl,
+                              ),
+                            ),
+                          );
+                        },
+                        child: PopularServiceList(service.name, service.imageUrl),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: homeserviceIMG.length,
-              itemBuilder: (context, index) {
-                final service = homeserviceIMG[index];
-                final title = service['title'];
-                final image = service['image'];
 
-                if (title == null || image == null) return const SizedBox();
-
-                return GestureDetector(
-                  onTap: () {
+                // Home Jobs section
+                TitleWithSeeAll(
+                  title: 'Home Jobs',
+                  ontap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ServiceDetailsPage(
-                          title: title,
-                          image: image,
+                        builder: (context) => SeeallServicepage(
+                          pageTitle: 'Home Jobs',
+                          services: homeJobs,
                         ),
                       ),
                     );
                   },
-                  child: HomeServicelist(title, image),
-                );
-              },
-            ),
-          ),
-          TitleWithSeeAll(
-            title: 'Repair and Installation',
-            ontap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SeeallServicepage(
-                    pageTitle: 'Repair and Installation',
-                    services: repairserviceIMG
-                        .map((service) => ServiceItem(
-                              imageUrl: service['image'] ?? '',
-                              title: service['title'] ?? '',
-                            ))
-                        .toList(),
+                ),
+                SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: homeJobs.length,
+                    itemBuilder: (context, index) {
+                      final service = homeJobs[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ServiceDetailsPage(
+                                title: service.name,
+                                image: service.imageUrl,
+                              ),
+                            ),
+                          );
+                        },
+                        child: HomeServicelist(service.name, service.imageUrl),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 230,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: repairserviceIMG.length,
-              itemBuilder: (context, index) {
-                final service = repairserviceIMG[index];
-                final title = service['title'];
-                final image = service['image'];
 
-                if (title == null || image == null) return const SizedBox();
-
-                return GestureDetector(
-                  onTap: () {
+                // Repair & Installation section
+                TitleWithSeeAll(
+                  title: 'Repair and Installation',
+                  ontap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ServiceDetailsPage(
-                          title: title,
-                          image: image,
+                        builder: (context) => SeeallServicepage(
+                          pageTitle: 'Repair and Installation',
+                          services: repair,
                         ),
                       ),
                     );
                   },
-                  child: Repairandinstallationlist(title, image),
-                );
-              },
-            ),
-          ),
-          TitleWithSeeAll(
-            title: 'Transportation Services',
-            ontap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SeeallServicepage(
-                    pageTitle: 'Transportation Services',
-                    services: transportationserviceIMG
-                        .map((service) => ServiceItem(
-                              imageUrl: service['image'] ?? '',
-                              title: service['title'] ?? '',
-                            ))
-                        .toList(),
+                ),
+                SizedBox(
+                  height: 230,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: repair.length,
+                    itemBuilder: (context, index) {
+                      final service = repair[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ServiceDetailsPage(
+                                title: service.name,
+                                image: service.imageUrl,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Repairandinstallationlist(service.name, service.imageUrl),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: transportationserviceIMG.length,
-              itemBuilder: (context, index) {
-                final service = transportationserviceIMG[index];
-                final title = service['title'];
-                final image = service['image'];
-
-                if (title == null || image == null) return const SizedBox();
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ServiceDetailsPage(
-                          title: title,
-                          image: image,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Repairandinstallationlist(title, image),
-                );
-              },
-            ),
-          ),
-        ],
+                // Add more sections if needed...
+              ],
+            );
+          }
+          if (state is ServicesError) {
+            return Center(child: Text(state.message));
+          }
+          return Container();
+        },
       ),
     );
   }

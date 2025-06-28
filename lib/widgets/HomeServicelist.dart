@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/core/utils/image_helper.dart';
+
+// Paste the helper here or import it if it's in another file
 
 class HomeServicelist extends StatelessWidget {
   final String title;
@@ -15,18 +18,18 @@ class HomeServicelist extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
+            child: buildImage(
               imageUrl,
               height: 150,
               width: 190,
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13 , fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 13 , fontWeight: FontWeight.w500),
           ),
         ],
       ),

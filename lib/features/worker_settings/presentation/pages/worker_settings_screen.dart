@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/core/utils/clear_token.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
@@ -59,7 +60,7 @@ class _WorkerSettingsscreenState extends State<WorkerSettingsscreen> {
                     CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors.grey.shade200,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
+                      child: const CircularProgressIndicator(strokeWidth: 2, color: kPrimaryColor),
                     ),
                     const SizedBox(width: 12),
                     const Text(

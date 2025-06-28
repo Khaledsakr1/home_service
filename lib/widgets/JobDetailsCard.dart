@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/core/utils/image_helper.dart';
 import 'package:home_service/features/worker_home/presentation/pages/ViewDetails.dart';
 import 'package:home_service/widgets/Button.dart';
 
 class JobsDetailsCard extends StatelessWidget {
   final String title;
   final String image;
-  final String status; // new
+  final String status;
   final VoidCallback? onDelete;
 
   const JobsDetailsCard({
     super.key,
     required this.title,
     required this.image,
-    this.status = "normal", // default
+    this.status = "normal",
     this.onDelete,
   });
 
@@ -37,18 +38,12 @@ class JobsDetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // الصورة + النصوص جنبها
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  image,
-                  height: 90,
-                  width: 90,
-                  fit: BoxFit.cover,
-                ),
+                child: buildImage(image, width: 90, height: 90),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -104,8 +99,6 @@ class JobsDetailsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-
-          // الحالة بناءً على الـ status
           status == "pending"
               ? Row(
                   children: [

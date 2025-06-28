@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:home_service/features/services/data/models/service_model.dart';
 import 'package:http/http.dart' as http;
@@ -28,5 +27,3 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
     }
   }
 }
-
-

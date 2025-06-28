@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/core/utils/image_helper.dart';
 
 class PopularServiceList extends StatelessWidget {
   final String title;
@@ -16,7 +17,7 @@ class PopularServiceList extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
+            child: buildImage(
               imageUrl,
               height: 70,
               width: 80,
@@ -30,23 +31,6 @@ class PopularServiceList extends StatelessWidget {
             style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  const SectionTitle({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(
-        title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
