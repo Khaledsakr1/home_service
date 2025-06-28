@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/widgets/Button.dart';
 
-class Viewdetails extends StatelessWidget {
+class Requestviewdetails extends StatelessWidget {
   final String title;
   final String image;
 
-  Viewdetails({Key? key, required this.title, required this.image})
+  Requestviewdetails({Key? key, required this.title, required this.image})
       : super(key: key);
 
   // قائمة الصور (مؤقتًا صور من assets)

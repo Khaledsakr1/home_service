@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/features/worker_home/presentation/pages/ServiceViewDetails.dart';
 import 'package:home_service/widgets/JobDetailsCard.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
@@ -16,24 +17,23 @@ class ServiceDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        elevation: 0,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          color: Colors.white,
+          color: Colors.green,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        centerTitle: true,
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        title: const Text(
+          'Jobs',
+          style: TextStyle(
             fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -43,18 +43,20 @@ class ServiceDetailsPage extends StatelessWidget {
               JobsDetailsCard(
                 title: title,
                 image: image,
+                showAcceptButton: false,
+                ViewdetailsPage: Serviceviewdetails(),
               ),
               JobsDetailsCard(
                 title: "Fix AC Unit",
                 image: image,
-                status: "pending",
-                onDelete: (){
-                // للحذف
-                },
+                showAcceptButton: false,
+                ViewdetailsPage: Serviceviewdetails(),
               ),
               JobsDetailsCard(
                 title: "Install Washing Machine",
                 image: image,
+                showAcceptButton: false,
+                ViewdetailsPage: Serviceviewdetails(),
               ),
             ],
           ),
