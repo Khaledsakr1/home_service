@@ -11,14 +11,26 @@ import 'package:home_service/features/worker_settings/domain/usecases/fetch_work
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
+import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_state.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_change_password.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_data_and_privacy.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_notification.dart';
 import 'package:home_service/widgets/Optiontile.dart';
-
-class WorkerSettingsscreen extends StatelessWidget {
+class WorkerSettingsscreen extends StatefulWidget {
   const WorkerSettingsscreen({super.key});
+
+  @override
+  State<WorkerSettingsscreen> createState() => _WorkerSettingsscreenState();
+}
+
+class _WorkerSettingsscreenState extends State<WorkerSettingsscreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the profile when this screen loads
+    context.read<WorkerSettingsCubit>().fetchProfile();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,31 +50,99 @@ class WorkerSettingsscreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 35,
-                backgroundColor: Colors.grey.shade200,
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/profile_default.png',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'Khaled Sakr',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-            ],
+          /// -- CHANGE THIS ROW ONLY --
+          BlocBuilder<WorkerSettingsCubit, WorkerSettingsState>(
+            builder: (context, state) {
+              if (state is WorkerSettingsLoading) {
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.grey.shade200,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Loading...',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                );
+              } else if (state is WorkerSettingsLoaded) {
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.grey.shade200,
+                      child: ClipOval(
+                        child: state.workerProfile.profilePictureUrl != null
+                            ? Image.network(
+                                state.workerProfile.profilePictureUrl!,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                  'assets/images/profile_default.png',
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.contain,
+                                ),
+                              )
+                            : Image.asset(
+                                'assets/images/profile_default.png',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.contain,
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      state.workerProfile.name ?? 'No Name',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                // Default fallback for other states
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.grey.shade200,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/images/profile_default.png',
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'No Name',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
+          /// -- REST OF YOUR UI BELOW THIS LINE (NO CHANGE NEEDED) --
           const SizedBox(height: 24),
           OptionTile(
             leadingIcon: Icons.person,
