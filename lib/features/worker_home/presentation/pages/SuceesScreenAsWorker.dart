@@ -74,4 +74,3 @@ class SuceesscreenasWorker extends StatelessWidget {
   }
 }
 
-
