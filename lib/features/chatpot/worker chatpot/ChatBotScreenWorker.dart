@@ -18,7 +18,7 @@ class ChatBotScreenPro extends StatelessWidget {
         title: const Text('ChatBot'),
       ),
       body: const Center(
-        child: Text('Welcome to ChatBot Screen for technicall'),
+        child: Text('Welcome to ChatBot Screen for technical'),
       ),
     );
   }
