@@ -125,8 +125,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             const SizedBox(height: 20),
 
             SectionDivider(),
-            const Text("Highlights", style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            SectionTitle("Highlights"),
             const Text("• Hired 6 times"),
             const Text("• 10 employees"),
             const Text("• 11 years in business"),
@@ -134,13 +133,12 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             const SizedBox(height: 20),
 
             SectionDivider(),
-            const Text("Payment methods", style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            SectionTitle("Payment methods"),
             const Text("Credit Card, Cash, Vodafone cash, ..."),
             const SizedBox(height: 20),
 
             SectionDivider(),
-            const Text("Social media", style: TextStyle(fontWeight: FontWeight.bold)),
+            SectionTitle("Social media"),
             const SizedBox(height: 8),
             Row(
               children: const [
@@ -243,16 +241,23 @@ class SectionDivider extends StatelessWidget {
   }
 }
 
-// Section title with optional key
+// Section title with unified style
 class SectionTitle extends StatelessWidget {
   final String title;
-  final Key? key;
-  const SectionTitle(this.title, {this.key}) : super(key: key);
+  const SectionTitle(this.title, {super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 }
