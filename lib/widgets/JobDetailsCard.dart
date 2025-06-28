@@ -7,15 +7,19 @@ import 'package:home_service/widgets/Button.dart';
 class JobsDetailsCard extends StatelessWidget {
   final String title;
   final String image;
-  final String status;
+  final String status; // new
   final VoidCallback? onDelete;
+  final Widget? ViewdetailsPage;
+  final bool showAcceptButton;
 
   const JobsDetailsCard({
     super.key,
     required this.title,
     required this.image,
-    this.status = "normal",
+    this.status = "normal", // default
     this.onDelete,
+    this.ViewdetailsPage,
+    this.showAcceptButton = true,
   });
 
   @override
@@ -50,18 +54,19 @@ class JobsDetailsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    if (title != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            title!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                     const SizedBox(height: 8),
                     const Row(
                       children: [
@@ -138,41 +143,41 @@ class JobsDetailsCard extends StatelessWidget {
                 )
               : Row(
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: Button(
-                          title: "Accept",
-                          ontap: () {
-                            showCustomOverlayMessage(
-                              context,
-                              message: "Request Accepted",
-                              subMessage:
-                                  "You can now view the project details.",
-                            );
-                          },
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          icon: Icons.check,
+                    if (showAcceptButton)
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: Button(
+                            title: "Accept",
+                            ontap: () {
+                              showCustomOverlayMessage(
+                                context,
+                                message: "Request Accepted",
+                                subMessage:
+                                    "You can now view the project details.",
+                              );
+                            },
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            icon: Icons.check,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
+                    if (showAcceptButton) const SizedBox(width: 10),
                     Expanded(
                       child: SizedBox(
                         height: 50,
                         child: Button(
                           title: "View details",
                           ontap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>  Viewdetails(
-                                  title: title,
-                                  image: image,
+                            if (ViewdetailsPage != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ViewdetailsPage!,
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
                           backgroundColor: Colors.white,
                           textColor: Colors.green,

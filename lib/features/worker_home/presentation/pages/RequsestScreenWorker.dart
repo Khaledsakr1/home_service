@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/worker_home/presentation/pages/ServiceViewDetails.dart';
+import 'package:home_service/features/worker_home/presentation/pages/RequestViewDetails.dart';
 import 'package:home_service/widgets/JobDetailsCard.dart';
 
-class ServiceDetailsPage extends StatelessWidget {
-  final String title;
-  final String image;
-
-  const ServiceDetailsPage({
-    super.key,
-    required this.title,
-    required this.image,
-  });
+class RequestsscreenWorker extends StatelessWidget {
+  const RequestsscreenWorker({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +19,7 @@ class ServiceDetailsPage extends StatelessWidget {
           },
         ),
         title: const Text(
-          'Jobs',
+          'Requests',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -40,23 +33,23 @@ class ServiceDetailsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              JobsDetailsCard(
-                title: title,
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
+               JobsDetailsCard(
+                title: "Water Filter",
+                image: "assets/images/water filter.png",
+                ViewdetailsPage: Requestviewdetails(title: 'Water Filter', image: ''),
               ),
               JobsDetailsCard(
-                title: "Fix AC Unit",
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
+                title: "Air Condition",
+                image: "assets/images/Air condition.jpg",
+                status: "pending",
+                onDelete: () {
+                  // للحذف
+                },
               ),
-              JobsDetailsCard(
+               JobsDetailsCard(
                 title: "Install Washing Machine",
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
+                image: "assets/images/house cleaning.png",
+                ViewdetailsPage: Requestviewdetails(title: 'Install Washing Machine', image: ''),
               ),
             ],
           ),
