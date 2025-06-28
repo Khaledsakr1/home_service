@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/deactivate_account.dart';
 import 'package:home_service/injection_container.dart';
 import 'package:http/http.dart' as http;
 

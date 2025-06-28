@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/features/services/presentation/pages/see_all_services_page.dart';
+import 'package:home_service/features/worker_home/presentation/pages/ServiceDetailsPage.dart';
 import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/PopularServicelist.dart';
 import 'package:home_service/widgets/RepairandInstallationlist.dart';
@@ -14,7 +15,7 @@ class HomepageForWorker extends StatelessWidget {
     {'title': 'Electrical', 'image': 'assets/images/electrical.png'},
     {'title': 'Furniture Moving', 'image': 'assets/images/furniture.png'},
     {'title': 'Water Filter', 'image': 'assets/images/water filter.png'},
-    {'title': 'Best Control ', 'image': 'assets/images/pest control.png'},
+    {'title': 'Pest Control', 'image': 'assets/images/pest control.png'},
   ];
 
   final List<Map<String, String>> homeserviceIMG = const [
@@ -48,7 +49,7 @@ class HomepageForWorker extends StatelessWidget {
       'image': 'assets/images/Furniture lifting winch.jpg'
     },
     {
-      'title': 'delivery services',
+      'title': 'Delivery Services',
       'image': 'assets/images/delivery services.jpg'
     },
   ];
@@ -92,54 +93,50 @@ class HomepageForWorker extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const SectionTitle(title: 'jobs'),
+          const SectionTitle(title: 'Jobs'),
           SizedBox(
             height: 120,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: popularservicesIMG.length,
               itemBuilder: (context, index) {
-                return PopularServiceList(
-                  popularservicesIMG[index]['title']!,
-                  popularservicesIMG[index]['image']!,
+                final service = popularservicesIMG[index];
+                final title = service['title'];
+                final image = service['image'];
+
+                if (title == null || image == null) return const SizedBox();
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ServiceDetailsPage(
+                          title: title,
+                          image: image,
+                        ),
+                      ),
+                    );
+                  },
+                  child: PopularServiceList(title, image),
                 );
               },
             ),
           ),
           TitleWithSeeAll(
-            title: 'Home jobs',
+            title: 'Home Jobs',
             ontap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SeeallServicepage(
-                    pageTitle: 'Home jobs',
-                    services: [
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Apartment finish.jpg',
-                          title: 'Apartment Finishing'),
-                    ],
+                    pageTitle: 'Home Jobs',
+                    services: homeserviceIMG
+                        .map((service) => ServiceItem(
+                              imageUrl: service['image'] ?? '',
+                              title: service['title'] ?? '',
+                            ))
+                        .toList(),
                   ),
                 ),
               );
@@ -151,9 +148,25 @@ class HomepageForWorker extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: homeserviceIMG.length,
               itemBuilder: (context, index) {
-                return HomeServicelist(
-                  homeserviceIMG[index]['title']!,
-                  homeserviceIMG[index]['image']!,
+                final service = homeserviceIMG[index];
+                final title = service['title'];
+                final image = service['image'];
+
+                if (title == null || image == null) return const SizedBox();
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ServiceDetailsPage(
+                          title: title,
+                          image: image,
+                        ),
+                      ),
+                    );
+                  },
+                  child: HomeServicelist(title, image),
                 );
               },
             ),
@@ -166,32 +179,12 @@ class HomepageForWorker extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => SeeallServicepage(
                     pageTitle: 'Repair and Installation',
-                    services: [
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/Air condition.jpg',
-                          title: 'Air condition'),
-                    ],
+                    services: repairserviceIMG
+                        .map((service) => ServiceItem(
+                              imageUrl: service['image'] ?? '',
+                              title: service['title'] ?? '',
+                            ))
+                        .toList(),
                   ),
                 ),
               );
@@ -203,9 +196,25 @@ class HomepageForWorker extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: repairserviceIMG.length,
               itemBuilder: (context, index) {
-                return Repairandinstallationlist(
-                  repairserviceIMG[index]['title']!,
-                  repairserviceIMG[index]['image']!,
+                final service = repairserviceIMG[index];
+                final title = service['title'];
+                final image = service['image'];
+
+                if (title == null || image == null) return const SizedBox();
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ServiceDetailsPage(
+                          title: title,
+                          image: image,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Repairandinstallationlist(title, image),
                 );
               },
             ),
@@ -218,32 +227,12 @@ class HomepageForWorker extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => SeeallServicepage(
                     pageTitle: 'Transportation Services',
-                    services: [
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                      ServiceItem(
-                          imageUrl: 'assets/images/furnature moving.png',
-                          title: 'Furniture Moving'),
-                    ],
+                    services: transportationserviceIMG
+                        .map((service) => ServiceItem(
+                              imageUrl: service['image'] ?? '',
+                              title: service['title'] ?? '',
+                            ))
+                        .toList(),
                   ),
                 ),
               );
@@ -255,9 +244,25 @@ class HomepageForWorker extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: transportationserviceIMG.length,
               itemBuilder: (context, index) {
-                return Repairandinstallationlist(
-                  transportationserviceIMG[index]['title']!,
-                  transportationserviceIMG[index]['image']!,
+                final service = transportationserviceIMG[index];
+                final title = service['title'];
+                final image = service['image'];
+
+                if (title == null || image == null) return const SizedBox();
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ServiceDetailsPage(
+                          title: title,
+                          image: image,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Repairandinstallationlist(title, image),
                 );
               },
             ),
