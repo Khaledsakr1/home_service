@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/pages/see_all_services_page.dart';
-import 'package:home_service/features/worker_home/presentation/pages/ServiceDetailsPage.dart';
+import 'package:home_service/features/worker_details/presentation/pages/ServiceDetailsPage.dart';
 import 'package:home_service/widgets/PopularServicelist.dart';
 import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/RepairandInstallationlist.dart';
 import 'package:home_service/widgets/TitleWithSeeAll.dart';
 
-
-class HomepageForWorker extends StatefulWidget {
-  const HomepageForWorker({super.key});
+class MainServicePage extends StatefulWidget {
+  const MainServicePage({super.key});
   static String id = 'home page for worker';
 
   @override
-  State<HomepageForWorker> createState() => _HomepageForWorkerState();
+  State<MainServicePage> createState() => _MainServicePageState();
 }
 
-class _HomepageForWorkerState extends State<HomepageForWorker> {
+class _MainServicePageState extends State<MainServicePage> {
   final Map<String, String> serviceCategoryMap = {
     'House Cleaning': 'Jobs',
     'Electrical': 'Jobs',
@@ -79,13 +79,23 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
       body: BlocBuilder<ServicesCubit, ServicesState>(
         builder: (context, state) {
           if (state is ServicesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+              color: kPrimaryColor,
+            ));
           }
           if (state is ServicesLoaded) {
             final allServices = state.services;
-            List<Service> jobs = allServices.where((s) => serviceCategoryMap[s.name] == 'Jobs').toList();
-            List<Service> homeJobs = allServices.where((s) => serviceCategoryMap[s.name] == 'Home Jobs').toList();
-            List<Service> repair = allServices.where((s) => serviceCategoryMap[s.name] == 'Repair and Installation').toList();
+            List<Service> jobs = allServices
+                .where((s) => serviceCategoryMap[s.name] == 'Jobs')
+                .toList();
+            List<Service> homeJobs = allServices
+                .where((s) => serviceCategoryMap[s.name] == 'Home Jobs')
+                .toList();
+            List<Service> repair = allServices
+                .where((s) =>
+                    serviceCategoryMap[s.name] == 'Repair and Installation')
+                .toList();
 
             return ListView(
               padding: const EdgeInsets.all(16),
@@ -123,7 +133,8 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                             ),
                           );
                         },
-                        child: PopularServiceList(service.name, service.imageUrl),
+                        child:
+                            PopularServiceList(service.name, service.imageUrl),
                       );
                     },
                   ),
@@ -156,9 +167,8 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => ServiceDetailsPage(
-                                service: service
-                              ),
+                              builder: (_) =>
+                                  ServiceDetailsPage(service: service),
                             ),
                           );
                         },
@@ -201,7 +211,8 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                             ),
                           );
                         },
-                        child: Repairandinstallationlist(service.name, service.imageUrl),
+                        child: Repairandinstallationlist(
+                            service.name, service.imageUrl),
                       );
                     },
                   ),

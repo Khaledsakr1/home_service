@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
-import 'package:home_service/features/worker_home/presentation/pages/ServiceViewDetails.dart';
+import 'package:home_service/features/worker_details/presentation/pages/ServiceViewDetails.dart';
 import 'package:home_service/widgets/JobDetailsCard.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
@@ -19,7 +19,7 @@ class ServiceDetailsPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title:Text(
+        title: Text(
           service.name,
           style: const TextStyle(
             fontSize: 18,
@@ -37,17 +37,16 @@ class ServiceDetailsPage extends StatelessWidget {
               // For each worker, show their data as a card
               ...service.workers.map(
                 (worker) => JobsDetailsCard(
-  title: worker.name,
-  image: worker.profilePicture ?? service.imageUrl,
-  city: worker.city,
-  rating: worker.rating,
-  description: worker.description,
-  experienceYears: worker.experienceYears,
-  address: worker.address,
-  showAcceptButton: false,
-  ViewdetailsPage: Serviceviewdetails(),
-),
-
+                  title: worker.name,
+                  image: worker.profilePicture ?? service.imageUrl,
+                  city: worker.city,
+                  rating: worker.rating,
+                  description: worker.description,
+                  experienceYears: worker.experienceYears,
+                  address: worker.address,
+                  showAcceptButton: false,
+                  ViewdetailsPage: Serviceviewdetails(workerId: worker.id),
+                ),
               ),
             ],
           ),

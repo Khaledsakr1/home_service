@@ -22,6 +22,11 @@ import 'package:home_service/features/services/data/repositories/service_reposit
 import 'package:home_service/features/services/domain/repositories/service_repository.dart';
 import 'package:home_service/features/services/domain/usecases/get_services.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
+import 'package:home_service/features/worker_details/data/datasources/worker_remote_data_source.dart';
+import 'package:home_service/features/worker_details/data/repositories/worker_repository_impl.dart';
+import 'package:home_service/features/worker_details/domain/repositories/worker_repository.dart';
+import 'package:home_service/features/worker_details/domain/usecases/get_worker_by_id.dart';
+import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
 import 'package:home_service/features/worker_settings/domain/repositories/worker_settings_repository.dart';
@@ -143,6 +148,13 @@ sl.registerFactory(
   sl.registerLazySingleton<WorkerSettingsRemoteDataSource>(
     () => WorkerSettingsRemoteDataSourceImpl(),
   );
+
+
+// Worker
+sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
+sl.registerLazySingleton(() => GetWorkerById(sl()));
+sl.registerLazySingleton<WorkerRepository>(() => WorkerRepositoryImpl(remoteDataSource: sl()));
+sl.registerLazySingleton<WorkerRemoteDataSource>(() => WorkerRemoteDataSourceImpl(client: sl()));
 
 
 

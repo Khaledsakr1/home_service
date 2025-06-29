@@ -4,6 +4,7 @@ import 'package:home_service/features/client_home/presentation/pages/RequestsScr
 import 'package:home_service/features/client_home/presentation/pages/StartNewProject.dart';
 import 'package:home_service/features/client_home/presentation/pages/homepage.dart';
 import 'package:home_service/features/client_settings/presentation/pages/client_settings_screen.dart';
+import 'package:home_service/features/services/presentation/pages/main_service_page.dart';
 
 class Navigationbar extends StatefulWidget {
   const Navigationbar({super.key});
@@ -17,7 +18,7 @@ class _NavigationbarState extends State<Navigationbar> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    // Homepage(),
+    MainServicePage(),
     Requestsscreen(),
     Startchatbot(),
     Settingsscreen(),
