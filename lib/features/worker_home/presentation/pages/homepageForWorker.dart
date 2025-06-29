@@ -118,8 +118,7 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => ServiceDetailsPage(
-                                title: service.name,
-                                image: service.imageUrl,
+                                service: service,
                               ),
                             ),
                           );
@@ -158,8 +157,7 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => ServiceDetailsPage(
-                                title: service.name,
-                                image: service.imageUrl,
+                                service: service
                               ),
                             ),
                           );
@@ -198,8 +196,7 @@ class _HomepageForWorkerState extends State<HomepageForWorker> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => ServiceDetailsPage(
-                                title: service.name,
-                                image: service.imageUrl,
+                                service: service,
                               ),
                             ),
                           );

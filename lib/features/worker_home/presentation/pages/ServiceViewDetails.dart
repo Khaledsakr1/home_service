@@ -116,7 +116,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             ),
             const SizedBox(height: 20),
 
-            SectionDivider(),
+            const SectionDivider(),
             SectionTitle("About", key: aboutKey),
             const Text(
               "Dr.Flow Heating & Cooling Inc is founded on pride, quality and customer satisfaction! Competitive pricing for all your HVAC needs! We offer sales, service and installation! We also offer contracts for all heating and cooling equipment! Call the doc !",
@@ -124,24 +124,24 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             ),
             const SizedBox(height: 20),
 
-            SectionDivider(),
-            SectionTitle("Highlights"),
+            const SectionDivider(),
+            const SectionTitle("Highlights"),
             const Text("• Hired 6 times"),
             const Text("• 10 employees"),
             const Text("• 11 years in business"),
             const Text("• Banjh, asaleja"),
             const SizedBox(height: 20),
 
-            SectionDivider(),
-            SectionTitle("Payment methods"),
+            const SectionDivider(),
+            const SectionTitle("Payment methods"),
             const Text("Credit Card, Cash, Vodafone cash, ..."),
             const SizedBox(height: 20),
 
-            SectionDivider(),
-            SectionTitle("Social media"),
+            const SectionDivider(),
+            const SectionTitle("Social media"),
             const SizedBox(height: 8),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 FaIcon(FontAwesomeIcons.facebook, size: 20, color: Colors.blue),
                 SizedBox(width: 12),
                 FaIcon(FontAwesomeIcons.whatsapp, size: 20, color: Colors.green),
@@ -149,7 +149,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             ),
             const SizedBox(height: 20),
 
-            SectionDivider(),
+            const SectionDivider(),
             SectionTitle("Photos", key: photosKey),
             const SizedBox(height: 8),
             Row(
@@ -182,7 +182,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
             ),
             const SizedBox(height: 20),
 
-            SectionDivider(),
+            const SectionDivider(),
             SectionTitle("Reviews", key: reviewsKey),
             const SizedBox(height: 12),
             Container(
@@ -191,9 +191,9 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                 color: const Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Row(
                     children: [
                       Icon(Icons.star, color: Colors.orange, size: 16),

@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/core/utils/image_helper.dart';
-import 'package:home_service/features/worker_home/presentation/pages/ViewDetails.dart';
 import 'package:home_service/widgets/Button.dart';
 
 class JobsDetailsCard extends StatelessWidget {
   final String title;
   final String image;
-  final String status; // new
+  final String status;
   final VoidCallback? onDelete;
   final Widget? ViewdetailsPage;
   final bool showAcceptButton;
+
+  // New fields for worker info:
+  final String? city;
+  final double? rating;
+  final String? description;
+  final int? experienceYears;
+  final String? address;
 
   const JobsDetailsCard({
     super.key,
     required this.title,
     required this.image,
-    this.status = "normal", // default
+    this.status = "normal",
     this.onDelete,
     this.ViewdetailsPage,
     this.showAcceptButton = true,
+    this.city,
+    this.rating,
+    this.description,
+    this.experienceYears,
+    this.address,
   });
 
   @override
@@ -54,50 +65,78 @@ class JobsDetailsCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (title != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                    // Name/Title
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                    const SizedBox(height: 8),
-                    const Row(
-                      children: [
-                        Icon(Icons.phone, size: 16, color: Colors.grey),
-                        SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'You can contact this customer.',
-                            style: TextStyle(fontSize: 13),
-                          ),
+                    ),
+                    if (description != null && description!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          description!,
+                          style: const TextStyle(fontSize: 13, color: Colors.black54),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    const Row(
-                      children: [
-                        Icon(Icons.location_on, size: 16, color: Colors.grey),
-                        SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'Ismailia ,el salaam',
-                            style: TextStyle(fontSize: 13),
-                          ),
+                      ),
+                    if (city != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Text(city!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Customer details..........................',
-                      style: TextStyle(fontSize: 13),
-                    ),
+                      ),
+                    if (experienceYears != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.engineering, size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Text(
+                              '$experienceYears years experience',
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (rating != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star, size: 14, color: Colors.amber),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating!.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (address != null && address!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.home, size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                address!,
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

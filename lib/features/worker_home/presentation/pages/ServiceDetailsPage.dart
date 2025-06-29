@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/worker_home/presentation/pages/ServiceViewDetails.dart';
 import 'package:home_service/widgets/JobDetailsCard.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
-  final String title;
-  final String image;
+  final Service service;
 
-  const ServiceDetailsPage({
-    super.key,
-    required this.title,
-    required this.image,
-  });
+  const ServiceDetailsPage({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +17,11 @@ class ServiceDetailsPage extends StatelessWidget {
         leading: IconButton(
           color: Colors.green,
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Jobs',
-          style: TextStyle(
+        title:Text(
+          service.name,
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -40,23 +34,20 @@ class ServiceDetailsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              JobsDetailsCard(
-                title: title,
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
-              ),
-              JobsDetailsCard(
-                title: "Fix AC Unit",
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
-              ),
-              JobsDetailsCard(
-                title: "Install Washing Machine",
-                image: image,
-                showAcceptButton: false,
-                ViewdetailsPage: Serviceviewdetails(),
+              // For each worker, show their data as a card
+              ...service.workers.map(
+                (worker) => JobsDetailsCard(
+  title: worker.name,
+  image: worker.profilePicture ?? service.imageUrl,
+  city: worker.city,
+  rating: worker.rating,
+  description: worker.description,
+  experienceYears: worker.experienceYears,
+  address: worker.address,
+  showAcceptButton: false,
+  ViewdetailsPage: Serviceviewdetails(),
+),
+
               ),
             ],
           ),
