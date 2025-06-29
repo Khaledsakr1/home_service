@@ -5,6 +5,7 @@ import 'package:home_service/features/worker_details/domain/entities/worker.dart
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_state.dart';
 import 'package:home_service/features/worker_details/presentation/pages/PortfolioDetailsPage.dart';
+import 'package:home_service/features/worker_details/presentation/pages/SeeAllPortfolioPage.dart';
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
@@ -199,24 +200,28 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                   const SizedBox(height: 20),
 
                   const SectionDivider(),
-                  SectionTitle("Photos", key: photosKey),
+                  SectionTitle("Portfolios", key: photosKey),
                   const SizedBox(height: 8),
 
                   if (worker.portfolioItems.isNotEmpty)
-                    Row(
-                      children: [
-                        ...worker.portfolioItems.take(3).map(
-                          (portfolio) {
-                            // Pick the first image from the portfolio
-                            final firstImage = (portfolio.imageUrls != null &&
-                                    portfolio.imageUrls.isNotEmpty)
+                    SizedBox(
+                      height: 80, // Enough for image + padding
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: worker.portfolioItems.length +
+                            1, // +1 for "See all" button
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          if (index < worker.portfolioItems.length) {
+                            final portfolio = worker.portfolioItems[index];
+                            final firstImage = (portfolio.imageUrls.isNotEmpty)
                                 ? portfolio.imageUrls.first
                                 : null;
 
                             if (firstImage != null) {
                               return GestureDetector(
                                 onTap: () {
-                                  // Navigate to PortfolioDetailsPage (you create this page)
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -225,52 +230,60 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                                     ),
                                   );
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      firstImage,
-                                      height: 70,
-                                      width: 70,
-                                      fit: BoxFit.cover,
-                                    ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    firstImage,
+                                    height: 70,
+                                    width: 70,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
                               );
                             } else {
                               // If portfolio has no images
-                              return const Padding(
-                                padding: EdgeInsets.only(right: 8),
-                                child: SizedBox(
-                                  height: 70,
-                                  width: 70,
-                                  child: Center(
-                                    child: Text(
-                                      "No image",
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12),
-                                    ),
+                              return const SizedBox(
+                                height: 70,
+                                width: 70,
+                                child: Center(
+                                  child: Text(
+                                    "No image",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 12),
                                   ),
                                 ),
                               );
                             }
-                          },
-                        ),
-                        // "See all" button
-                        Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.green),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Center(
-                            child: Text("See all",
-                                style: TextStyle(color: Colors.green)),
-                          ),
-                        )
-                      ],
+                          } else {
+                            // "See all" button
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SeeAllPortfolioPage(
+                                      pageTitle: 'All Portfolios',
+                                      portfolios: worker.portfolioItems,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.green),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: Text("See all",
+                                      style: TextStyle(color: Colors.green)),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     )
                   else
                     const Padding(
@@ -343,6 +356,22 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
         }
         if (state is WorkerError) {
           return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                color: Colors.green,
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              ),
+              title: const Text(
+                'Error',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+              centerTitle: true,
+            ),
             backgroundColor: Colors.white,
             body: Center(child: Text(state.message)),
           );
