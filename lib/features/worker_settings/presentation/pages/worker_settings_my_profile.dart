@@ -27,7 +27,7 @@ class WorkerSettingsmyprofile extends StatelessWidget {
           color: Colors.green,
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
         ),
         title: const Text(

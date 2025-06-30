@@ -134,7 +134,7 @@ void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
           if (state is WorkerSettingsUpdateSuccess) {
             showCustomOverlayMessage(context, message: 'Success', subMessage: 'Your address has been updated successfully.');
             // Optionally pop after update:
-            // Navigator.pop(context);
+            // Navigator.pop(context,true);
           }
           if (state is WorkerSettingsError) {
             setState(() {

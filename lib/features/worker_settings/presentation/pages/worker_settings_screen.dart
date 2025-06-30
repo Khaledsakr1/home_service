@@ -151,12 +151,21 @@ class _WorkerSettingsscreenState extends State<WorkerSettingsscreen> {
             subtitle:
                 'Edit your profile picture, name, email, phone number and Location',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const WorkerSettingsmyprofile()),
-              );
-            },
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => BlocProvider.value(
+        value: context.read<WorkerSettingsCubit>(),
+        child: const WorkerSettingsmyprofile()
+      ),
+    ),
+  ).then((shouldRefresh) {
+    if (shouldRefresh == true) {
+      context.read<WorkerSettingsCubit>().fetchProfile();
+      setState(() {});
+    }
+  });
+},
           ),
           const SizedBox(height: 12),
           OptionTile(

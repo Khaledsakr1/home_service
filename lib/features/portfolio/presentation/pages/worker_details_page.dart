@@ -8,6 +8,7 @@ import 'package:home_service/features/portfolio/presentation/pages/worker_portfo
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
+import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
 import 'package:home_service/widgets/Dropdown.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
@@ -87,7 +88,7 @@ class _WorkerDetailsPageState extends State<WorkerDetailsPage> {
               // In a real app, you'd parse the token and store it securely
                 PortfolioRemoteDataSourceImpl.authToken = token;
  // This line needs to be handled by a proper auth manager
-              Navigator.pushNamed(context, PortfolioListPage.id);
+              Navigator.pushNamed(context, SuceesscreenasWorker.id);
             } else if (state is AuthenticationError) {
               setState(() {
                 isLoading = false;

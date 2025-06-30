@@ -8,6 +8,7 @@ import 'package:home_service/features/worker_home/presentation/pages/SuceesScree
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/widgets/button.dart';
+import 'package:home_service/widgets/navigationbarWorker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class PortfolioListPage extends StatefulWidget {
@@ -29,7 +30,8 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
 
   void _showEditDialog(Project project) {
     final nameController = TextEditingController(text: project.name);
-    final descriptionController = TextEditingController(text: project.description);
+    final descriptionController =
+        TextEditingController(text: project.description);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -53,10 +55,10 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
             onPressed: () async {
               Navigator.pop(context);
               context.read<PortfolioCubit>().updatePortfolio(
-                project.id,
-                nameController.text,
-                descriptionController.text,
-              );
+                    project.id,
+                    nameController.text,
+                    descriptionController.text,
+                  );
             },
             child: const Text('Save'),
           ),
@@ -82,14 +84,26 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
             isLoading = false;
           });
           showErrorOverlayMessage(context, errorMessage: state.message);
-        } else if (state is PortfolioActionSuccess) {
+        } else if (state is PortfolioUpdated) {
           setState(() {
             isLoading = false;
           });
           showCustomOverlayMessage(context,
-              message: state.message,
+              message: 'Success',
               subMessage: 'Your project has been updated successfully.');
-          context.read<PortfolioCubit>().getPortfolios(); // Reload projects after successful action
+          context
+              .read<PortfolioCubit>()
+              .getPortfolios(); // Reload projects after successful action
+        } else if (state is PortfolioDeleted) {
+          setState(() {
+            isLoading = false;
+          });
+          showCustomOverlayMessage(context,
+              message: 'Success',
+              subMessage: 'Your project has been deleted successfully.');
+          context
+              .read<PortfolioCubit>()
+              .getPortfolios(); // Reload projects after successful action
         }
       },
       builder: (context, state) {
@@ -101,7 +115,7 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
           inAsyncCall: isLoading,
           child: Scaffold(
             appBar: AppBar(
-              automaticallyImplyLeading : false,
+              automaticallyImplyLeading: false,
               title: const Text('Your Projects',
                   style: TextStyle(color: Colors.white)),
               backgroundColor: kPrimaryColor,
@@ -122,7 +136,8 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
                             borderRadius: BorderRadius.circular(12)),
                         child: ListTile(
                           title: Text(project.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
                           subtitle: Text(project.description),
                           leading: project.imageUrls.isNotEmpty
                               ? Image.network(project.imageUrls.first,
@@ -133,12 +148,16 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
                                 onPressed: () => _showEditDialog(project),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => context.read<PortfolioCubit>().deletePortfolio(project.id),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => context
+                                    .read<PortfolioCubit>()
+                                    .deletePortfolio(project.id),
                               ),
                             ],
                           ),
@@ -164,7 +183,7 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
                       Button(
                         title: 'Continue',
                         ontap: () {
-                          Navigator.pushNamed(context, SuceesscreenasWorker.id);
+                          Navigator.pop(context);
                         },
                       ),
                     ],
@@ -178,5 +197,3 @@ class _PortfolioListPageState extends State<PortfolioListPage> {
     );
   }
 }
-
-

@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/constants/constants.dart';
-import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
-import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/change_worker_password.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/deactivate_account.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/delete_account.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/fetch_worker_profile.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
-import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_state.dart';
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_my_profile_address_edit.dart';
@@ -56,7 +48,10 @@ class _WorkerSettingsmyprofileAddressesState
       body: BlocBuilder<WorkerSettingsCubit, WorkerSettingsState>(
         builder: (context, state) {
           if (state is WorkerSettingsLoading) {
-            return const Center(child: CircularProgressIndicator(color: kPrimaryColor,));
+            return const Center(
+                child: CircularProgressIndicator(
+              color: kPrimaryColor,
+            ));
           }
           if (state is WorkerSettingsError) {
             return Center(child: Text('Error: ${state.message}'));
@@ -65,7 +60,7 @@ class _WorkerSettingsmyprofileAddressesState
             final WorkerProfileUpdateModel profile = state.workerProfile;
             // Example parsing. Adjust to your backend data:
             // Assume address: "Nasr City, 15 El Teseen St, 90 St"
-            String area= '' ;
+            String area = '';
             String street = '';
             String subStreet = '';
             if (profile.address != null) {
@@ -75,7 +70,8 @@ class _WorkerSettingsmyprofileAddressesState
               street = parts.length > 1 ? parts[1].trim() : '';
               subStreet = profile.buildingNumber ?? '';
             }
-            final city = profile.cityName ?? ''; // Replace with actual city if needed
+            final city =
+                profile.cityName ?? ''; // Replace with actual city if needed
 
             return ListView(
               padding: const EdgeInsets.all(16),
@@ -140,34 +136,35 @@ class _WorkerSettingsmyprofileAddressesState
                       Align(
                         alignment: Alignment.bottomRight,
                         child: ElevatedButton.icon(
+                          // Inside WorkerSettingsmyprofileAddresses, on edit button:
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) {
-                                final repo = WorkerSettingsRepositoryImpl(
-                                  remoteDataSource: WorkerSettingsRemoteDataSourceImpl(),
-                                );
-                                return BlocProvider(
-                                  create: (_) => WorkerSettingsCubit(
-                                    fetchWorkerProfileUseCase: FetchWorkerProfile(repo),
-                                    updateWorkerProfileUseCase: UpdateWorkerProfile(repo),
-                                    updateProfilePictureUseCase: UpdateWorkerProfileWithImage(repo),
-                                    changePasswordUseCase: ChangePassword(repo),
-                                    deleteAccountUseCase: DeleteAccount(repo),
-                                    deactivateAccountUseCase: DeactivateAccount(repo),
-                                  ),
-                                  child: const WorkerSettingsmyprofileAddressedit(),
-                                );
-                              }),
-                            );
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider.value(
+                                  value: context.read<WorkerSettingsCubit>(),
+                                  child:
+                                      const WorkerSettingsmyprofileAddressedit(),
+                                ),
+                              ),
+                            ).then((shouldRefresh) {
+                              if (shouldRefresh == true) {
+                                context
+                                    .read<WorkerSettingsCubit>()
+                                    .fetchProfile();
+                                setState(() {});
+                              }
+                            });
                           },
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: kPrimaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          icon: const Icon(Icons.edit, size: 16, color: Colors.white),
+                          icon: const Icon(Icons.edit,
+                              size: 16, color: Colors.white),
                           label: const Text(
                             'Edit',
                             style: TextStyle(color: Colors.white),

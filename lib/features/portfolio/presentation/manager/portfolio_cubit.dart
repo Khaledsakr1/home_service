@@ -79,18 +79,29 @@ Future<void> addPortfolio({
     );
   }
 
-  String _mapFailureToMessage(Failure failure) {
+String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
+        // Check if the ServerFailure has a specific message
+        if (failure is ServerFailure && failure.message != null) {
+          return failure.message!;
+        }
         return 'Server Failure';
       case CacheFailure:
+        if (failure is CacheFailure && failure.message != null) {
+          return failure.message!;
+        }
         return 'Cache Failure';
       case NetworkFailure:
+        if (failure is NetworkFailure && failure.message != null) {
+          return failure.message!;
+        }
         return 'Network Failure';
       default:
         return 'Unexpected Error';
     }
   }
 }
+
 
 

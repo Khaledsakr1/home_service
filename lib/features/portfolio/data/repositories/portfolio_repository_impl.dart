@@ -53,7 +53,7 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       final result = await remoteDataSource.getPortfolios();
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure());
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 

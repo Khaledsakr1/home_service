@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/chatpot/worker%20chatpot/StartChatBotWorker.dart';
+import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
 import 'package:home_service/features/worker_home/presentation/pages/RequsestScreenWorker.dart';
 import 'package:home_service/features/worker_home/presentation/pages/StartNewProjectWorker.dart';
 import 'package:home_service/features/services/presentation/pages/main_service_page.dart';
@@ -16,8 +17,9 @@ import 'package:home_service/features/worker_settings/presentation/manager/worke
 import 'package:home_service/features/worker_settings/presentation/pages/worker_settings_screen.dart';
 
 class NavigationbarWorker extends StatefulWidget {
-  const NavigationbarWorker({super.key});
+  const NavigationbarWorker({super.key, this.initialIndex});
   static String id = 'navigation bar worker';
+  final int? initialIndex;
 
   @override
   State<NavigationbarWorker> createState() => _NavigationbarWorkerState();
@@ -25,6 +27,12 @@ class NavigationbarWorker extends StatefulWidget {
 
 class _NavigationbarWorkerState extends State<NavigationbarWorker> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex ?? 0;
+  }
 
   final List<Widget> _pages = [
     MainServicePage(),
@@ -74,7 +82,7 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => StartNewProjectWorker()),
+            MaterialPageRoute(builder: (context) => PortfolioListPage()),
           );
         },
         backgroundColor: Colors.green,

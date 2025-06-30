@@ -18,7 +18,9 @@ class ProjectModel extends Project {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      imageUrls: List<String>.from(json['imageUrls']),
+      imageUrls: (json['imageUrls'] as List)
+        .map((img) => img['imageUrl'] as String)
+        .toList(),
     );
   }
 
