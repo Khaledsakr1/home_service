@@ -6,6 +6,7 @@ import 'package:home_service/features/worker_details/presentation/manager/worker
 import 'package:home_service/features/worker_details/presentation/manager/worker_state.dart';
 import 'package:home_service/features/worker_details/presentation/pages/PortfolioDetailsPage.dart';
 import 'package:home_service/features/worker_details/presentation/pages/SeeAllPortfolioPage.dart';
+import 'package:home_service/widgets/button.dart';
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
@@ -71,7 +72,6 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
   @override
   Widget build(BuildContext context) {
-    // Provide the cubit from your DI
     return BlocBuilder<WorkerCubit, WorkerState>(
       builder: (context, state) {
         if (state is WorkerLoading) {
@@ -82,7 +82,6 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
         }
         if (state is WorkerLoaded) {
           final Worker worker = state.worker;
-          // Use worker data in your UI instead of static values
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -107,11 +106,9 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo & Info
                   Center(
                     child: Column(
                       children: [
-                        // Use worker.profilePictureUrl if exists, else asset
                         worker.profilePictureUrl != null &&
                                 worker.profilePictureUrl.isNotEmpty
                             ? ClipRRect(
@@ -147,8 +144,6 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Tabs
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -160,7 +155,6 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
                   const SectionDivider(),
                   SectionTitle("About", key: aboutKey),
                   Text(
@@ -170,21 +164,22 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     style: const TextStyle(height: 1.4),
                   ),
                   const SizedBox(height: 20),
-
                   const SectionDivider(),
                   const SectionTitle("Highlights"),
                   Text("• ${worker.completedRequests} requests completed"),
-                  Text(
-                      "• ${worker.companyName.isNotEmpty ? worker.companyName : "No company"}"),
                   Text("• ${worker.experienceYears} years in business"),
                   Text("• ${worker.city}"),
                   const SizedBox(height: 20),
-
+                  const SectionDivider(),
+                  const SectionTitle("Company name"),
+                  Text(worker.companyName.isNotEmpty
+                      ? worker.companyName
+                      : "No company"),
+                  const SizedBox(height: 20),
                   const SectionDivider(),
                   const SectionTitle("Payment methods"),
                   const Text("Credit Card, Cash, Vodafone cash, ..."),
                   const SizedBox(height: 20),
-
                   const SectionDivider(),
                   const SectionTitle("Social media"),
                   const SizedBox(height: 8),
@@ -198,157 +193,104 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     ],
                   ),
                   const SizedBox(height: 20),
-
                   const SectionDivider(),
                   SectionTitle("Portfolios", key: photosKey),
                   const SizedBox(height: 8),
-
-                  if (worker.portfolioItems.isNotEmpty)
-                    SizedBox(
-                      height: 80, // Enough for image + padding
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: worker.portfolioItems.length +
-                            1, // +1 for "See all" button
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 8),
-                        itemBuilder: (context, index) {
-                          if (index < worker.portfolioItems.length) {
-                            final portfolio = worker.portfolioItems[index];
-                            final firstImage = (portfolio.imageUrls.isNotEmpty)
-                                ? portfolio.imageUrls.first
-                                : null;
-
-                            if (firstImage != null) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => PortfolioDetailsPage(
-                                          portfolio: portfolio),
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    firstImage,
+                  worker.portfolioItems.isNotEmpty
+                      ? SizedBox(
+                          height: 80,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: worker.portfolioItems.length + 1,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              if (index < worker.portfolioItems.length) {
+                                final portfolio = worker.portfolioItems[index];
+                                final firstImage =
+                                    portfolio.imageUrls.isNotEmpty
+                                        ? portfolio.imageUrls.first
+                                        : null;
+                                return firstImage != null
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  PortfolioDetailsPage(
+                                                      portfolio: portfolio),
+                                            ),
+                                          );
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.network(
+                                            firstImage,
+                                            height: 70,
+                                            width: 70,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: Center(
+                                          child: Text("No image",
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12)),
+                                        ),
+                                      );
+                              } else {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => SeeAllPortfolioPage(
+                                          pageTitle: 'All Portfolios',
+                                          portfolios: worker.portfolioItems,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
                                     height: 70,
                                     width: 70,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              // If portfolio has no images
-                              return const SizedBox(
-                                height: 70,
-                                width: 70,
-                                child: Center(
-                                  child: Text(
-                                    "No image",
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 12),
-                                  ),
-                                ),
-                              );
-                            }
-                          } else {
-                            // "See all" button
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => SeeAllPortfolioPage(
-                                      pageTitle: 'All Portfolios',
-                                      portfolios: worker.portfolioItems,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.green),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Center(
+                                      child: Text("See all",
+                                          style:
+                                              TextStyle(color: Colors.green)),
                                     ),
                                   ),
                                 );
-                              },
-                              child: Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.green),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Center(
-                                  child: Text("See all",
-                                      style: TextStyle(color: Colors.green)),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    )
-                  else
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        'No portfolio images found for this worker.',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 15,
+                              }
+                            },
+                          ),
+                        )
+                      : const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            'No portfolio images found for this worker.',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 15,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-
                   const SizedBox(height: 20),
-
                   const SectionDivider(),
                   SectionTitle("Reviews", key: reviewsKey),
                   const SizedBox(height: 12),
-                  if (worker.reviews.isNotEmpty)
-                    ...worker.reviews.map((review) => Container(
-                          padding: const EdgeInsets.all(12),
-                          margin: const EdgeInsets.only(bottom: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF5F5F5),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  ...List.generate(
-                                      review.rating.floor(),
-                                      (index) => const Icon(Icons.star,
-                                          color: Colors.orange, size: 16)),
-                                  if (review.rating - review.rating.floor() >=
-                                      0.5)
-                                    const Icon(Icons.star_half,
-                                        color: Colors.orange, size: 16),
-                                  const SizedBox(width: 6),
-                                  Text(review.rating.toStringAsFixed(1),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  const Spacer(),
-                                  // You may have review.date if available
-                                  // Text("March 2025", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Text(review.customerName,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 4),
-                              Text(
-                                review.comment,
-                                style: const TextStyle(height: 1.4),
-                              ),
-                            ],
-                          ),
-                        )),
-                  if (worker.reviews.isEmpty)
-                    const Text('No reviews yet.',
-                        style: TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 40),
+                  ..._buildReviewsSection(worker),
                 ],
               ),
             ),
@@ -363,39 +305,192 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop(context),
               ),
-              title: const Text(
-                'Error',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
+              title: const Text('Error',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
               centerTitle: true,
             ),
             backgroundColor: Colors.white,
             body: Center(child: Text(state.message)),
           );
         }
-        // Initial or unknown state
         return const Scaffold(
           backgroundColor: Colors.white,
-          body: Center(
-            child: Text('No worker data available.'),
-          ),
+          body: Center(child: Text('No worker data available.')),
         );
       },
     );
   }
+
+  List<Widget> _buildReviewsSection(Worker worker) {
+    return [
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFDFF6E0),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text(
+          "Your trust is our top concern, so businesses can’t pay to alter or remove their reviews. Learn more.",
+          style: TextStyle(color: Colors.black87, fontSize: 14),
+        ),
+      ),
+      const SizedBox(height: 16),
+      Row(
+        children: [
+          Text(worker.rating.toStringAsFixed(1),
+              style:
+                  const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                  children: List.generate(
+                      5,
+                      (index) => const Icon(Icons.star,
+                          size: 20, color: Colors.orange))),
+              Text("${worker.reviews.length} reviews",
+                  style: const TextStyle(fontSize: 12)),
+            ],
+          ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      Column(
+        children: List.generate(5, (index) {
+          int star = 5 - index;
+          int count =
+              worker.reviews.where((r) => r.rating.floor() == star).length;
+          double percent =
+              worker.reviews.isEmpty ? 0 : (count / worker.reviews.length);
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              children: [
+                Text("$star", style: const TextStyle(fontSize: 12)),
+                const SizedBox(width: 4),
+                const Icon(Icons.star, size: 14, color: Colors.orange),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: percent,
+                      backgroundColor: Colors.grey[200],
+                      color: Colors.green[400],
+                      minHeight: 6,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text("${(percent * 100).toStringAsFixed(0)}%",
+                    style: const TextStyle(fontSize: 12)),
+              ],
+            ),
+          );
+        }),
+      ),
+      const SizedBox(height: 20),
+      if (worker.reviews.isNotEmpty)
+        ...worker.reviews.map((review) {
+          return Container(
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade200),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade100,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.green[200],
+                  child: Text(
+                    review.customerName.isNotEmpty
+                        ? review.customerName[0].toUpperCase()
+                        : '?',
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(review.customerName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                      const SizedBox(height: 4),
+                      Row(
+                          children: List.generate(
+                              review.rating.floor(),
+                              (i) => const Icon(Icons.star,
+                                  size: 16, color: Colors.orange))),
+                      const SizedBox(height: 8),
+                      Text(review.comment,
+                          style: const TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList()
+      else
+        const Text('No reviews yet.', style: TextStyle(color: Colors.grey)),
+      const SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: Button(
+              title: "Cancel",
+              ontap: () {},
+              backgroundColor: Colors.white,
+              textColor: Colors.red,
+              borderColor: Colors.red,
+              icon: Icons.cancel,
+            ),
+          ),
+          SizedBox(width: 15),
+          Expanded(
+            child: Button(
+              title: "Finish",
+              ontap: () {},
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              icon: Icons.check,
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 40),
+    ];
+  }
 }
 
-// Divider reusable
 class SectionDivider extends StatelessWidget {
   const SectionDivider({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return const Divider(
+    return Divider(
       thickness: 2,
-      color: Color(0xFF6C8090),
+      color: const Color(0xFF6C8090).withOpacity(0.3),
       indent: 40,
       endIndent: 40,
       height: 15,
@@ -403,7 +498,6 @@ class SectionDivider extends StatelessWidget {
   }
 }
 
-// Section title with unified style
 class SectionTitle extends StatelessWidget {
   final String title;
   const SectionTitle(this.title, {super.key});
