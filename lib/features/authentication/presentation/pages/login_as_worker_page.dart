@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/constants/constants.dart';
+import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/authentication/presentation/pages/register_as_worker_page.dart';
+import 'package:home_service/injection_container.dart' as di;
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/navigationbarWorker.dart';
@@ -24,6 +26,18 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
   bool isLoading = false;
   String? errorText;
 
+  void _handleLoginSuccess(Map<String, dynamic> userData) async {
+    final userType = await di.sl<TokenService>().getUserType();
+    if (userType == 'Worker') {
+      Navigator.pushNamed(context, NavigationbarWorker.id, arguments: userData);
+    } else {
+      await di.sl<TokenService>().clearToken();
+      setState(() {
+        errorText = "You cannot login here with this account type.";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthenticationCubit, AuthenticationState>(
@@ -37,7 +51,7 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
           setState(() {
             isLoading = false;
           });
-          Navigator.pushNamed(context, NavigationbarWorker.id, arguments: state.userData);
+          _handleLoginSuccess(state.userData);
         } else if (state is AuthenticationError) {
           setState(() {
             isLoading = false;
@@ -104,7 +118,8 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
                               ),
                               if (errorText != null) ...[
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 8, left: 8),
+                                  padding:
+                                      const EdgeInsets.only(top: 8, left: 8),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
@@ -124,7 +139,9 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
                                   if (formKey.currentState!.validate()) {
                                     FocusScope.of(context).unfocus();
                                     if (email != null && password != null) {
-                                      context.read<AuthenticationCubit>().login(email!, password!); 
+                                      context
+                                          .read<AuthenticationCubit>()
+                                          .login(email!, password!);
                                     }
                                   }
                                 },
@@ -146,7 +163,8 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(context, RegisterAsWorker.id);
+                                      Navigator.pushNamed(
+                                          context, RegisterAsWorker.id);
                                     },
                                     child: const Text(
                                       '  Sign up',
@@ -165,7 +183,8 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
                                     child: Divider(thickness: 1),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
                                     child: Text(
                                       'Or Sign Up with',
                                       style: TextStyle(
@@ -221,5 +240,3 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
     );
   }
 }
-
-

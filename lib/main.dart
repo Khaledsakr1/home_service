@@ -33,18 +33,14 @@ void main() async {
   await di.init();
 
   // 2. Restore the token into TokenService singleton
-  await restoreTokenOnAppStart();
+  await TokenService().init();
+
 
 
   runApp(Homeservice());
 }
 
-Future<void> restoreTokenOnAppStart() async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-  // Save to singleton for runtime access
-  di.sl<TokenService>().token = token;
-}
+
 
 class Homeservice extends StatelessWidget {
   const Homeservice({super.key,});

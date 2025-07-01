@@ -9,6 +9,7 @@ import 'package:home_service/features/authentication/domain/usecases/login_user.
 import 'package:home_service/features/authentication/domain/usecases/register_customer.dart';
 import 'package:home_service/features/authentication/domain/usecases/register_worker.dart';
 import 'package:home_service/injection_container.dart';
+import 'package:home_service/injection_container.dart' as di;
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'authentication_state.dart';
@@ -33,9 +34,8 @@ Future<void> registerCustomer(Customer customer) async {
     (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
     (token) async {
       // SAVE TOKEN just like login
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-      sl<TokenService>().token = token;
+     await di.sl<TokenService>().saveToken(token);
+
       emit(AuthenticationSuccess(token));
     },
   );
@@ -60,11 +60,8 @@ Future<void> registerCustomer(Customer customer) async {
         (userData) async{
        final token = userData['token'];
       // 2. Save it to shared preferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-      
-      // Also set to TokenService singleton for runtime use
-      sl<TokenService>().token = token;
+      await di.sl<TokenService>().saveToken(token);
+
 
       emit(LoginSuccess(userData));
     });
@@ -86,9 +83,8 @@ Future<void> registerCustomer(Customer customer) async {
     emit(AuthenticationError('Invalid token received'));
   } else {
     // SAVE TOKEN exactly like login
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-    sl<TokenService>().token = token;
+  await di.sl<TokenService>().saveToken(token);
+
     emit(AuthenticationSuccess(token));
   }
 },
