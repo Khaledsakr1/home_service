@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/worker_details/domain/entities/worker.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_state.dart';
 import 'package:home_service/features/worker_details/presentation/pages/PortfolioDetailsPage.dart';
 import 'package:home_service/features/worker_details/presentation/pages/SeeAllPortfolioPage.dart';
+import 'package:home_service/injection_container.dart' as di;
 import 'package:home_service/widgets/button.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
@@ -25,6 +28,19 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
   int selectedTab = 0;
   bool _fetched = false;
+
+   String? _userType;
+
+  @override
+  void initState() {
+    super.initState();
+    // Decode user type from JWT token
+    final token = di.sl<TokenService>().token;
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      _userType = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -164,33 +180,36 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     style: const TextStyle(height: 1.4),
                   ),
                   const SizedBox(height: 20),
-                  Center(
-                    child: SizedBox(
-                      width: 300,
-                      child: Button(
-                        title: "Accept Request",
-                        ontap: () {},
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        icon: Icons.check,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: SizedBox(
-                      width: 300,
-                      child: Button(
-                        title: "Message",
-                        ontap: () {},
-                        backgroundColor: Colors.white,
-                        textColor: Colors.green,
-                        borderColor: Colors.green,
-                        icon: Icons.message_outlined,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
+                 if (_userType != 'Worker') ...[
+  Center(
+    child: SizedBox(
+      width: 300,
+      child: Button(
+        title: "Accept Request",
+        ontap: () {},
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        icon: Icons.check,
+      ),
+    ),
+  ),
+  const SizedBox(height: 16),
+  Center(
+    child: SizedBox(
+      width: 300,
+      child: Button(
+        title: "Message",
+        ontap: () {},
+        backgroundColor: Colors.white,
+        textColor: Colors.green,
+        borderColor: Colors.green,
+        icon: Icons.message_outlined,
+      ),
+    ),
+  ),
+  const SizedBox(height: 30),
+],
+
                   const SectionDivider(),
                   const SectionTitle("Highlights"),
                   Row(
@@ -235,8 +254,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                   const SizedBox(height: 20),
                   const SectionDivider(),
                   const SectionTitle("Payment methods"),
-                  Row(
-                    children: const [
+                  const Row(
+                    children: [
                       Icon(Icons.payment, color: Colors.green, size: 20),
                       SizedBox(width: 8),
                       Text("Credit Card, Cash, Vodafone cash, ..."),
@@ -516,32 +535,35 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
       else
         const Text('No reviews yet.', style: TextStyle(color: Colors.grey)),
       const SizedBox(height: 16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            child: Button(
-              title: "Cancel",
-              ontap: () {},
-              backgroundColor: Colors.white,
-              textColor: Colors.red,
-              borderColor: Colors.red,
-              icon: Icons.cancel,
-            ),
-          ),
-          SizedBox(width: 15),
-          Expanded(
-            child: Button(
-              title: "Finish",
-              ontap: () {},
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              icon: Icons.check,
-            ),
-          ),
-        ],
+     if (_userType != 'Worker')
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      Expanded(
+        child: Button(
+          title: "Cancel",
+          ontap: () {},
+          backgroundColor: Colors.white,
+          textColor: Colors.red,
+          borderColor: Colors.red,
+          icon: Icons.cancel,
+        ),
       ),
-      const SizedBox(height: 40),
+      const SizedBox(width: 15),
+      Expanded(
+        child: Button(
+          title: "Finish",
+          ontap: () {},
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          icon: Icons.check,
+        ),
+      ),
+    ],
+  ),
+if (_userType != 'Worker')
+  const SizedBox(height: 40),
+
     ];
   }
 }

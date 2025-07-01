@@ -33,10 +33,10 @@ class PortfolioDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title with Icon
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+            const Padding(
+              padding:  EdgeInsets.only(bottom: 8.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(Icons.info_outline, color: Colors.green),
                   SizedBox(width: 8),
                   Text(
@@ -78,10 +78,10 @@ class PortfolioDetailsPage extends StatelessWidget {
             ),
 
             // Work Gallery title
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+            const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(Icons.photo_library_outlined, color: Colors.green),
                   SizedBox(width: 8),
                   Text(
