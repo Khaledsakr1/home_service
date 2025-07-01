@@ -164,21 +164,84 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     style: const TextStyle(height: 1.4),
                   ),
                   const SizedBox(height: 20),
+                  Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Button(
+                        title: "Accept Request",
+                        ontap: () {},
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        icon: Icons.check,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Button(
+                        title: "Message",
+                        ontap: () {},
+                        backgroundColor: Colors.white,
+                        textColor: Colors.green,
+                        borderColor: Colors.green,
+                        icon: Icons.message_outlined,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
                   const SectionDivider(),
                   const SectionTitle("Highlights"),
-                  Text("• ${worker.completedRequests} requests completed"),
-                  Text("• ${worker.experienceYears} years in business"),
-                  Text("• ${worker.city}"),
+                  Row(
+                    children: [
+                      const Icon(Icons.task_alt, color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Text("${worker.completedRequests} requests completed"),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.work_history,
+                          color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Text("${worker.experienceYears} years in business"),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on,
+                          color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Text(worker.city),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   const SectionDivider(),
                   const SectionTitle("Company name"),
-                  Text(worker.companyName.isNotEmpty
-                      ? worker.companyName
-                      : "No company"),
+                  Row(
+                    children: [
+                      const Icon(Icons.business, color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        worker.companyName.isNotEmpty
+                            ? worker.companyName
+                            : "No company",
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   const SectionDivider(),
                   const SectionTitle("Payment methods"),
-                  const Text("Credit Card, Cash, Vodafone cash, ..."),
+                  Row(
+                    children: const [
+                      Icon(Icons.payment, color: Colors.green, size: 20),
+                      SizedBox(width: 8),
+                      Text("Credit Card, Cash, Vodafone cash, ..."),
+                    ],
+                  ),
                   const SizedBox(height: 20),
                   const SectionDivider(),
                   const SectionTitle("Social media"),
