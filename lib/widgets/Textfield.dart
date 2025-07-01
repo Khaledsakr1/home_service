@@ -11,10 +11,11 @@ class Textfield extends StatelessWidget {
   final TextInputType? inputType;
   final Function(String)? onchanged;
   final String? Function(String?)? validator;
+  final IconData? icon;
 
   const Textfield({
     Key? key,
-    this.readOnly=false,
+    this.readOnly = false,
     this.controller,
     this.title,
     this.headtextfield,
@@ -22,6 +23,7 @@ class Textfield extends StatelessWidget {
     this.onchanged,
     this.inputType,
     this.validator,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -61,6 +63,7 @@ class Textfield extends StatelessWidget {
               },
           onChanged: onchanged,
           decoration: InputDecoration(
+            prefixIcon: icon != null ? Icon(icon, color: kPrimaryColor) : null,
             labelText: headtextfield,
             labelStyle: const TextStyle(
               color: Colors.black54,
