@@ -4,11 +4,9 @@ import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/portfolio/domain/entities/project.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_page.dart';
-import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/widgets/button.dart';
-import 'package:home_service/widgets/navigationbarWorker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class PortfolioListPage extends StatefulWidget {
