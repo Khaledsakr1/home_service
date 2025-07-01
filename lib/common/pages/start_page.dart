@@ -133,6 +133,16 @@ import 'package:flutter/material.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
 import 'package:home_service/widgets/button.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+// Call this function when the onboarding is done
+Future<void> setOnboardingSeen() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('onboarding_seen', true);
+}
+
+
+
 class Startpage extends StatelessWidget {
   Startpage({super.key});
 
@@ -239,16 +249,18 @@ class ItemWidget extends StatelessWidget {
               const Spacer(flex: 10),
               if (isLastPage)
                 Button(
-                  title: 'Let\'s Start....',
-                  ontap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ClientandWorkerstart(),
-                      ),
-                    );
-                  },
-                ),
+  title: 'Let\'s Start....',
+  ontap: () async {
+    await setOnboardingSeen();  // <-- Add this
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ClientandWorkerstart(),
+      ),
+    );
+  },
+),
+
             ],
           ),
         ),

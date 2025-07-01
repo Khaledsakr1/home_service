@@ -3,14 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/constants/constants.dart';
+import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/features/worker_settings/data/model/worker_update.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_state.dart';
+import 'package:home_service/injection_container.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/Button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class WorkerSettingsmyprofileInformation extends StatefulWidget {
   const WorkerSettingsmyprofileInformation({super.key});
@@ -27,11 +30,25 @@ class _WorkerSettingsmyprofileInformationState
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   File? _pickedImage;
+  String? _userType;
 
   @override
   void initState() {
     super.initState();
+
+    // 1. Fetch profile as before
     context.read<WorkerSettingsCubit>().fetchProfile();
+
+    // 2. Decode the user type from the JWT token
+    final token = sl<TokenService>().token;
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      // CHANGE THIS according to your JWT structure
+      // Usually it's 'role', 'userType', 'type', or something similar.
+      _userType = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      print('Decoded user type: $_userType');
+      print(decodedToken);
+    }
   }
 
   void _populateFieldsFromProfile(WorkerProfileUpdateModel profile) {
@@ -205,16 +222,18 @@ class _WorkerSettingsmyprofileInformationState
                 controller: _lastNameController,
               ),
               const SizedBox(height: 7),
-              Textfield(
-                title: 'Company name',
-                headtextfield: 'Enter your company name',
-                controller: _companyNameController,
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'This is your public profile name.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
+              if (_userType == 'Worker') ...[
+      Textfield(
+        title: 'Company name',
+        headtextfield: 'Enter your company name',
+        controller: _companyNameController,
+      ),
+      const SizedBox(height: 4),
+      const Text(
+        'This is your public profile name.',
+        style: TextStyle(fontSize: 12, color: Colors.grey),
+      ),
+    ],
               const SizedBox(height: 7),
               Textfield(
                 title: 'Email address',
