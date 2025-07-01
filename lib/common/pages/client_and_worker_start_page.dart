@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/authentication/presentation/pages/check_worker_already_login.dart';
+import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_page.dart';
 import 'package:home_service/widgets/button.dart';
 
@@ -75,7 +75,7 @@ class ClientandWorkerstart extends StatelessWidget {
                   icon: Icons.engineering,
                   title: 'technical',
                   ontap: () {
-                    Navigator.pushNamed(context, WorkerAlreadLogin.id);
+                    Navigator.pushNamed(context, LoginAsWorker.id);
                   },
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/common/pages/client_and_worker_start_page.dart';
 import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/core/utils/clear_token.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
@@ -230,7 +231,7 @@ class _WorkerSettingsscreenState extends State<WorkerSettingsscreen> {
             onTap: () async {
               await clearTokenOnLogout();
               Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginAsWorker.id,
+                ClientandWorkerstart.id,
                 (route) => false,
               );
             },

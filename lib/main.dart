@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/common/pages/landing_page.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/authentication/presentation/pages/address_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/address_worker_page.dart';
-import 'package:home_service/features/authentication/presentation/pages/check_worker_already_login.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/phone_number_page.dart';
@@ -15,7 +15,6 @@ import 'package:home_service/features/authentication/presentation/pages/sign_up_
 import 'package:home_service/features/authentication/presentation/pages/sign_up_worker_name_page.dart';
 import 'package:home_service/features/client_home/presentation/pages/SuceesScreen.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
-import 'package:home_service/common/pages/start_page.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_details_page.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
@@ -33,10 +32,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
 
-    // 2. Restore the token into TokenService singleton
+  // 2. Restore the token into TokenService singleton
   await restoreTokenOnAppStart();
 
-  runApp(const Homeservice());
+
+  runApp(Homeservice());
 }
 
 Future<void> restoreTokenOnAppStart() async {
@@ -47,7 +47,7 @@ Future<void> restoreTokenOnAppStart() async {
 }
 
 class Homeservice extends StatelessWidget {
-  const Homeservice({super.key});
+  const Homeservice({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -89,13 +89,10 @@ class Homeservice extends StatelessWidget {
           PortfolioListPage.id: (context) => const PortfolioListPage(),
           Navigationbar.id: (context) => const Navigationbar(),
           NavigationbarWorker.id: (context) => const NavigationbarWorker(),
-          WorkerAlreadLogin.id: (context) => const WorkerAlreadLogin(),
         },
         debugShowCheckedModeBanner: false,
-        home: Startpage(),
+        home: const LandingPage(),
       ),
     );
   }
 }
-
-
