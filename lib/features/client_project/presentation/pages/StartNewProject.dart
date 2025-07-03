@@ -36,9 +36,9 @@ class _NewProjectScreenState extends State<Startnewproject> {
   String? _materialQuality;
   String? _location;
 
-  List<String> previewImages = [];
   List<File> _selectedImages = [];
-  List<String> _existingImageUrls = []; // For existing project images
+  List<ProjectImage> _existingProjectImages = [];
+      List<int> _imagesToDelete = [];
 
   // UI controls
   bool _isServiceVisible = false;
@@ -95,8 +95,9 @@ class _NewProjectScreenState extends State<Startnewproject> {
     _materialQuality = project.materialQuality.isNotEmpty ? project.materialQuality : null;
     
     // Populate existing images
-    _existingImageUrls = project.projectImages.map((img) => img.imageUrl).toList();
-    previewImages = List.from(_existingImageUrls);
+    _existingProjectImages = List.from(project.projectImages);
+    _selectedImages = [];
+
   }
 
   int? _findServiceIdByName(String name) {
@@ -174,6 +175,15 @@ class _NewProjectScreenState extends State<Startnewproject> {
     if (_isEditMode) {
       // Update existing project
       context.read<ClientProjectCubit>().updateProject(widget.project!.id, data);
+
+        // Delete images
+  if (_imagesToDelete.isNotEmpty) {
+    for (var imageId in _imagesToDelete) {
+      context.read<ClientProjectCubit>().deleteProjectImage(widget.project!.id, imageId);
+    }
+    _imagesToDelete.clear();
+  }
+
       
       // Handle new images if any
       if (_selectedImages.isNotEmpty) {
@@ -474,40 +484,29 @@ class _NewProjectScreenState extends State<Startnewproject> {
 
                 // Images with enhanced handling for edit mode
                 ImagePickerWidget(
-                  images: previewImages,
-                  onAddImage: () async {
-                    final file = await pickImage();
-                    if (file != null) {
-                      setState(() {
-                        previewImages.add(file.path);
-                        _selectedImages.add(file);
-                      });
-                    }
-                  },
-                  onRemoveImage: (index) {
-                    setState(() {
-                      String removedPath = previewImages.removeAt(index);
-                      
-                      // Check if it's an existing image or new image
-                      if (_existingImageUrls.contains(removedPath)) {
-                        // Handle deletion of existing image
-                        if (_isEditMode) {
-                          final projectImage = widget.project!.projectImages
-                              .firstWhere((img) => img.imageUrl == removedPath);
-                          context.read<ClientProjectCubit>()
-                              .deleteProjectImage(widget.project!.id, projectImage.id);
-                        }
-                        _existingImageUrls.remove(removedPath);
-                      } else {
-                        // Remove from new images list
-                        int newImageIndex = index - _existingImageUrls.length;
-                        if (newImageIndex >= 0 && newImageIndex < _selectedImages.length) {
-                          _selectedImages.removeAt(newImageIndex);
-                        }
-                      }
-                    });
-                  },
-                ),
+  images: _selectedImages.map((file) => file.path).toList(),
+  networkImages: _existingProjectImages.map((e) => e.imageUrl).toList(),
+  onAddImage: () async {
+    final file = await pickImage();
+    if (file != null) {
+      setState(() {
+        _selectedImages.add(file);
+      });
+    }
+  },
+  onRemoveImage: (index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+    });
+  },
+  onRemoveNetworkImage: (index) {
+     setState(() {
+    _imagesToDelete.add(_existingProjectImages[index].id);
+    _existingProjectImages.removeAt(index);
+  });
+  },
+),
+
 
                 const SizedBox(height: 10),
 

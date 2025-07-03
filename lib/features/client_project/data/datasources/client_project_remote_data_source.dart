@@ -124,11 +124,10 @@ class ClientProjectRemoteDataSourceImpl
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     });
-   if (response.statusCode != 200 && response.statusCode != 204) {
-  print('${response.statusCode}');
-  throw Exception('Failed to delete project');
-}
-
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      print('${response.statusCode}');
+      throw Exception('Failed to delete project');
+    }
   }
 
   @override
@@ -154,7 +153,8 @@ class ClientProjectRemoteDataSourceImpl
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     });
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      print(response.statusCode);
       throw Exception('Failed to delete image');
     }
   }
