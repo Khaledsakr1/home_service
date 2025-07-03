@@ -22,7 +22,8 @@ abstract class ClientProjectRemoteDataSource {
   Future<void> deleteProjectImage(int projectId, int imageId);
 }
 
-class ClientProjectRemoteDataSourceImpl implements ClientProjectRemoteDataSource {
+class ClientProjectRemoteDataSourceImpl
+    implements ClientProjectRemoteDataSource {
   final http.Client client;
   static const String baseUrl =
       'https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net';
@@ -78,7 +79,8 @@ class ClientProjectRemoteDataSourceImpl implements ClientProjectRemoteDataSource
 
     if (images.isNotEmpty) {
       for (final img in images) {
-        request.files.add(await http.MultipartFile.fromPath('ImageFiles', img.path));
+        request.files
+            .add(await http.MultipartFile.fromPath('ImageFiles', img.path));
       }
     }
     request.headers['Authorization'] = 'Bearer $token';
@@ -116,14 +118,17 @@ class ClientProjectRemoteDataSourceImpl implements ClientProjectRemoteDataSource
   @override
   Future<void> deleteProject(int id) async {
     final token = sl<TokenService>().token ?? '';
+    print('image is about to delete with $id');
     final uri = Uri.parse('$baseUrl/api/Projects/$id');
     final response = await client.delete(uri, headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     });
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete project');
-    }
+   if (response.statusCode != 200 && response.statusCode != 204) {
+  print('${response.statusCode}');
+  throw Exception('Failed to delete project');
+}
+
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/features/client_project/domain/entities/client_project.dart';
 import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
@@ -17,6 +18,10 @@ import 'package:home_service/widgets/button.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Startnewproject extends StatefulWidget {
+  final ClientProject? project; // Add this parameter for editing
+  
+  const Startnewproject({Key? key, this.project}) : super(key: key);
+  
   @override
   _NewProjectScreenState createState() => _NewProjectScreenState();
 }
@@ -30,12 +35,10 @@ class _NewProjectScreenState extends State<Startnewproject> {
   String? _preferredStyle;
   String? _materialQuality;
   String? _location;
-  // double _budgetValue = 100000;
-  // double? _minPrice;
-  // double? _maxPrice;
 
   List<String> previewImages = [];
   List<File> _selectedImages = [];
+  List<String> _existingImageUrls = []; // For existing project images
 
   // UI controls
   bool _isServiceVisible = false;
@@ -45,6 +48,7 @@ class _NewProjectScreenState extends State<Startnewproject> {
   bool _isLocationvisible = false;
 
   List<Service> _services = [];
+  bool _isEditMode = false;
 
   // Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -65,7 +69,34 @@ class _NewProjectScreenState extends State<Startnewproject> {
   @override
   void initState() {
     super.initState();
+    _isEditMode = widget.project != null;
     context.read<ServicesCubit>().fetchServices();
+    
+    if (_isEditMode) {
+      _populateFieldsFromProject();
+    }
+  }
+
+  void _populateFieldsFromProject() {
+    final project = widget.project!;
+    
+    // Populate text fields
+    _nameController.text = project.name;
+    _detailsController.text = project.details;
+    _minPriceController.text = project.minBudget.toString();
+    _maxPriceController.text = project.maxBudget.toString();
+    
+    // Populate dropdown selections
+    _serviceName = project.serviceName;
+    _serviceId = project.serviceId;
+    _apartmentType = project.apartmentType.isNotEmpty ? project.apartmentType : null;
+    _apartmentSize = project.apartmentSize.isNotEmpty ? project.apartmentSize : null;
+    _preferredStyle = project.preferredStyle.isNotEmpty ? project.preferredStyle : null;
+    _materialQuality = project.materialQuality.isNotEmpty ? project.materialQuality : null;
+    
+    // Populate existing images
+    _existingImageUrls = project.projectImages.map((img) => img.imageUrl).toList();
+    previewImages = List.from(_existingImageUrls);
   }
 
   int? _findServiceIdByName(String name) {
@@ -140,7 +171,58 @@ class _NewProjectScreenState extends State<Startnewproject> {
       "location": _location ?? '',
     };
 
-    context.read<ClientProjectCubit>().addProject(data, _selectedImages);
+    if (_isEditMode) {
+      // Update existing project
+      context.read<ClientProjectCubit>().updateProject(widget.project!.id, data);
+      
+      // Handle new images if any
+      if (_selectedImages.isNotEmpty) {
+        context.read<ClientProjectCubit>().addProjectImages(widget.project!.id, _selectedImages);
+      }
+    } else {
+      // Create new project
+      context.read<ClientProjectCubit>().addProject(data, _selectedImages);
+    }
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Delete Project',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Are you sure you want to delete "${widget.project!.name}"? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Go back to projects list
+              context.read<ClientProjectCubit>().deleteProject(widget.project!.id);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -150,7 +232,9 @@ class _NewProjectScreenState extends State<Startnewproject> {
         if (state is ClientProjectActionSuccess) {
           showCustomOverlayMessage(context,
               message: 'Success',
-              subMessage: 'Your project added successfully!');
+              subMessage: _isEditMode 
+                  ? 'Your project updated successfully!' 
+                  : 'Your project added successfully!');
           Navigator.pop(context);
         } else if (state is ClientProjectError) {
           showErrorOverlayMessage(context,
@@ -167,19 +251,27 @@ class _NewProjectScreenState extends State<Startnewproject> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              "Start a New Project",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            title: Text(
+              _isEditMode ? "Edit Project" : "Start a New Project",
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             leading: const BackButton(color: Colors.green),
             centerTitle: true,
+            actions: _isEditMode ? [
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: _showDeleteConfirmation,
+              ),
+            ] : null,
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                Image.asset("assets/images/Attached files.png", height: 200),
-                const SizedBox(height: 16),
+                if (!_isEditMode) 
+                  Image.asset("assets/images/Attached files.png", height: 200),
+                if (!_isEditMode)
+                  const SizedBox(height: 16),
 
                 // Project name input
                 Textfield2(
@@ -211,9 +303,11 @@ class _NewProjectScreenState extends State<Startnewproject> {
                               _serviceId = _findServiceIdByName(value);
                               _isServiceVisible = false;
                               // Clear dependent fields and errors
-                              _apartmentType = null;
-                              _preferredStyle = null;
-                              _materialQuality = null;
+                              if (!_isEditMode) {
+                                _apartmentType = null;
+                                _preferredStyle = null;
+                                _materialQuality = null;
+                              }
                               _errors.remove('apartmentType');
                               _errors.remove('style');
                               _errors.remove('material');
@@ -227,7 +321,7 @@ class _NewProjectScreenState extends State<Startnewproject> {
                 if (_shouldShowApartmentFields) ...[
                   OptionTile(
                     title: 'Apartment type & size',
-                    subtitle: _apartmentSize,
+                    subtitle: _apartmentSize ?? "No type selected",
                     errorText: _errors['apartmentType'],
                     onTap: () {
                       setState(
@@ -353,19 +447,10 @@ class _NewProjectScreenState extends State<Startnewproject> {
 
                 const SizedBox(height: 10),
 
-                // Budget slider (optional, can use min/max fields instead)
-                // BudgetSlider(
-                //   value: _budgetValue,
-                //   onChanged: (value) {
-                //     setState(() {
-                //       _budgetValue = value;
-                //     });
-                //   },
-                // ),
-
                 // Location picker
                 OptionTile(
                   title: 'Location',
+                  subtitle: _location ?? "No location selected",
                   onTap: () {
                     setState(() => _isLocationvisible = !_isLocationvisible);
                   },
@@ -387,7 +472,7 @@ class _NewProjectScreenState extends State<Startnewproject> {
 
                 const SizedBox(height: 10),
 
-                // Images
+                // Images with enhanced handling for edit mode
                 ImagePickerWidget(
                   images: previewImages,
                   onAddImage: () async {
@@ -401,8 +486,25 @@ class _NewProjectScreenState extends State<Startnewproject> {
                   },
                   onRemoveImage: (index) {
                     setState(() {
-                      previewImages.removeAt(index);
-                      _selectedImages.removeAt(index);
+                      String removedPath = previewImages.removeAt(index);
+                      
+                      // Check if it's an existing image or new image
+                      if (_existingImageUrls.contains(removedPath)) {
+                        // Handle deletion of existing image
+                        if (_isEditMode) {
+                          final projectImage = widget.project!.projectImages
+                              .firstWhere((img) => img.imageUrl == removedPath);
+                          context.read<ClientProjectCubit>()
+                              .deleteProjectImage(widget.project!.id, projectImage.id);
+                        }
+                        _existingImageUrls.remove(removedPath);
+                      } else {
+                        // Remove from new images list
+                        int newImageIndex = index - _existingImageUrls.length;
+                        if (newImageIndex >= 0 && newImageIndex < _selectedImages.length) {
+                          _selectedImages.removeAt(newImageIndex);
+                        }
+                      }
                     });
                   },
                 ),
@@ -425,7 +527,9 @@ class _NewProjectScreenState extends State<Startnewproject> {
                       width: double.infinity,
                       child: Button(
                         ontap: loading ? null : _submit,
-                        title: loading ? 'Saving...' : 'Next',
+                        title: loading 
+                            ? 'Saving...' 
+                            : _isEditMode ? 'Update Project' : 'Create Project',
                       ),
                     );
                   },
@@ -436,5 +540,14 @@ class _NewProjectScreenState extends State<Startnewproject> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _detailsController.dispose();
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    super.dispose();
   }
 }
