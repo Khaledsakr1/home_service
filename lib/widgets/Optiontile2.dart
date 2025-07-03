@@ -5,13 +5,15 @@ class Optiontile2 extends StatefulWidget {
   final String title;
   final List<String> options;
   final ValueChanged<String> onSelected;
+  final String? subtitle;
 
-  const Optiontile2({
-    Key? key,
-    required this.title,
-    required this.options,
-    required this.onSelected,
-  }) : super(key: key);
+  const Optiontile2(
+      {Key? key,
+      required this.title,
+      required this.options,
+      required this.onSelected,
+      this.subtitle})
+      : super(key: key);
 
   @override
   State<Optiontile2> createState() => _Optiontile2State();

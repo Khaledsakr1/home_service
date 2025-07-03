@@ -1,0 +1,440 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/utils/ErrorMessage.dart';
+import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
+import 'package:home_service/features/services/domain/entities/service.dart';
+import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
+import 'package:home_service/widgets/DetailsInput.dart';
+import 'package:home_service/widgets/ImagePicker.dart';
+import 'package:home_service/widgets/Optiontile.dart';
+import 'package:home_service/widgets/Optiontile1.dart';
+import 'package:home_service/widgets/Optiontile2.dart';
+import 'package:home_service/widgets/Optiontile3.dart';
+import 'package:home_service/widgets/TextField2.dart';
+import 'package:home_service/widgets/button.dart';
+import 'package:image_picker/image_picker.dart';
+
+class Startnewproject extends StatefulWidget {
+  @override
+  _NewProjectScreenState createState() => _NewProjectScreenState();
+}
+
+class _NewProjectScreenState extends State<Startnewproject> {
+  // State variables
+  String? _serviceName;
+  int? _serviceId;
+  String? _apartmentType;
+  String? _apartmentSize;
+  String? _preferredStyle;
+  String? _materialQuality;
+  String? _location;
+  // double _budgetValue = 100000;
+  // double? _minPrice;
+  // double? _maxPrice;
+
+  List<String> previewImages = [];
+  List<File> _selectedImages = [];
+
+  // UI controls
+  bool _isServiceVisible = false;
+  bool _isApartmentVisible = false;
+  bool _isPreferredvisible = false;
+  bool _isMaterialQualityvisible = false;
+  bool _isLocationvisible = false;
+
+  List<Service> _services = [];
+
+  // Controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _detailsController = TextEditingController();
+  final TextEditingController _minPriceController = TextEditingController();
+  final TextEditingController _maxPriceController = TextEditingController();
+
+  // Validation errors
+  final Map<String, String?> _errors = {};
+
+  // Services for which apartment, style, material fields are required
+  final Set<String> _detailedRequiredServices = {
+    'Apartment Finishing',
+    'Interior Design',
+    'House Cleaning',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ServicesCubit>().fetchServices();
+  }
+
+  int? _findServiceIdByName(String name) {
+    try {
+      return _services.firstWhere((s) => s.name == name).id;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<File?> pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) return File(pickedFile.path);
+    return null;
+  }
+
+  bool get _shouldShowApartmentFields =>
+      _serviceName != null && _detailedRequiredServices.contains(_serviceName);
+
+  void _submit() {
+    setState(() {
+      _errors.clear();
+
+      if (_nameController.text.trim().isEmpty) {
+        _errors['name'] = "Project name is required";
+      }
+      if (_serviceName == null) {
+        _errors['service'] = "Service is required";
+      }
+      if (_detailsController.text.trim().isEmpty) {
+        _errors['desc'] = "Description is required";
+      }
+      if (_minPriceController.text.trim().isEmpty) {
+        _errors['min'] = "Min price is required";
+      }
+      if (_maxPriceController.text.trim().isEmpty) {
+        _errors['max'] = "Max price is required";
+      }
+      double? min = double.tryParse(_minPriceController.text);
+      double? max = double.tryParse(_maxPriceController.text);
+      if (min != null && max != null && min > max) {
+        _errors['min'] = "Min must be ≤ Max";
+        _errors['max'] = "Max must be ≥ Min";
+      }
+      if (_shouldShowApartmentFields) {
+        if (_apartmentType == null || _apartmentType!.isEmpty) {
+          _errors['apartmentType'] = "Required";
+        }
+        if (_preferredStyle == null || _preferredStyle!.isEmpty) {
+          _errors['style'] = "Required";
+        }
+        if (_materialQuality == null || _materialQuality!.isEmpty) {
+          _errors['material'] = "Required";
+        }
+      }
+    });
+
+    if (_errors.isNotEmpty) return;
+
+    final data = {
+      "name": _nameController.text.trim(),
+      "serviceId": _serviceId,
+      "serviceName": _serviceName ?? '',
+      "apartmentType": _apartmentType ?? '',
+      "apartmentSize": _apartmentSize ?? '',
+      "preferredStyle": _preferredStyle ?? '',
+      "materialQuality": _materialQuality ?? '',
+      "minBudget": double.tryParse(_minPriceController.text),
+      "maxBudget": double.tryParse(_maxPriceController.text),
+      "details": _detailsController.text.trim(),
+      "location": _location ?? '',
+    };
+
+    context.read<ClientProjectCubit>().addProject(data, _selectedImages);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ClientProjectCubit, ClientProjectState>(
+      listener: (context, state) {
+        if (state is ClientProjectActionSuccess) {
+          showCustomOverlayMessage(context,
+              message: 'Success',
+              subMessage: 'Your project added successfully!');
+          Navigator.pop(context);
+        } else if (state is ClientProjectError) {
+          showErrorOverlayMessage(context,
+              errorMessage: 'Error', subMessage: state.message);
+        }
+      },
+      child: BlocListener<ServicesCubit, ServicesState>(
+        listener: (context, state) {
+          if (state is ServicesLoaded) {
+            setState(() {
+              _services = state.services;
+            });
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "Start a New Project",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            leading: const BackButton(color: Colors.green),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Image.asset("assets/images/Attached files.png", height: 200),
+                const SizedBox(height: 16),
+
+                // Project name input
+                Textfield2(
+                  hint: 'Project name',
+                  controller: _nameController,
+                  errorText: _errors['name'],
+                ),
+                const SizedBox(height: 10),
+
+                // Type of service
+                OptionTile(
+                  title: 'Type of service',
+                  subtitle: _serviceName ?? "No service selected",
+                  errorText: _errors['service'],
+                  onTap: () {
+                    setState(() => _isServiceVisible = !_isServiceVisible);
+                  },
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: _isServiceVisible
+                      ? Optiontile1(
+                          title: 'Type of service',
+                          options: _services.map((s) => s.name).toList(),
+                          onSelected: (value) {
+                            setState(() {
+                              _serviceName = value;
+                              _serviceId = _findServiceIdByName(value);
+                              _isServiceVisible = false;
+                              // Clear dependent fields and errors
+                              _apartmentType = null;
+                              _preferredStyle = null;
+                              _materialQuality = null;
+                              _errors.remove('apartmentType');
+                              _errors.remove('style');
+                              _errors.remove('material');
+                            });
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                ),
+
+                // Apartment type & size (only for certain services)
+                if (_shouldShowApartmentFields) ...[
+                  OptionTile(
+                    title: 'Apartment type & size',
+                    subtitle: _apartmentSize,
+                    errorText: _errors['apartmentType'],
+                    onTap: () {
+                      setState(
+                          () => _isApartmentVisible = !_isApartmentVisible);
+                    },
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: _isApartmentVisible
+                        ? Optiontile1(
+                            title: 'Apartment type & size',
+                            options: const [
+                              'Commercial stores',
+                              'Villa',
+                              'House',
+                              'Gym',
+                            ],
+                            onSelected: (value) {
+                              setState(() {
+                                _apartmentType = value;
+                                _apartmentSize = value;
+                                _isApartmentVisible = false;
+                              });
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+
+                // Preferred style (only for certain services)
+                if (_shouldShowApartmentFields) ...[
+                  OptionTile(
+                    title: 'Preferred style',
+                    subtitle: _preferredStyle ?? "No type selected",
+                    errorText: _errors['style'],
+                    onTap: () {
+                      setState(
+                          () => _isPreferredvisible = !_isPreferredvisible);
+                    },
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: _isPreferredvisible
+                        ? Optiontile2(
+                            title: 'Preferred style',
+                            options: const [
+                              'Modern',
+                              'Traditional',
+                              'Minimalist',
+                              'Industrial',
+                              'Eclectic',
+                            ],
+                            onSelected: (value) {
+                              setState(() {
+                                _preferredStyle = value;
+                                _isPreferredvisible = false;
+                              });
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+
+                // Material quality (only for certain services)
+                if (_shouldShowApartmentFields) ...[
+                  OptionTile(
+                    title: 'Material quality',
+                    subtitle: _materialQuality ?? "No type selected",
+                    errorText: _errors['material'],
+                    onTap: () {
+                      setState(() => _isMaterialQualityvisible =
+                          !_isMaterialQualityvisible);
+                    },
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: _isMaterialQualityvisible
+                        ? Optiontile2(
+                            title: 'Material quality',
+                            options: const [
+                              'High quality',
+                              'Average quality',
+                              'Low quality',
+                            ],
+                            onSelected: (value) {
+                              setState(() {
+                                _materialQuality = value;
+                                _isMaterialQualityvisible = false;
+                              });
+                            },
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+
+                const SizedBox(height: 20),
+
+                // Min and Max Budget (required)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Textfield2(
+                        hint: 'Min Price',
+                        controller: _minPriceController,
+                        errorText: _errors['min'],
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Textfield2(
+                        hint: 'Max Price',
+                        controller: _maxPriceController,
+                        errorText: _errors['max'],
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // Budget slider (optional, can use min/max fields instead)
+                // BudgetSlider(
+                //   value: _budgetValue,
+                //   onChanged: (value) {
+                //     setState(() {
+                //       _budgetValue = value;
+                //     });
+                //   },
+                // ),
+
+                // Location picker
+                OptionTile(
+                  title: 'Location',
+                  onTap: () {
+                    setState(() => _isLocationvisible = !_isLocationvisible);
+                  },
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: _isLocationvisible
+                      ? Optiontile3(
+                          onSelected: (val) {
+                            setState(() {
+                              _location = val;
+                              _isLocationvisible = false;
+                            });
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Images
+                ImagePickerWidget(
+                  images: previewImages,
+                  onAddImage: () async {
+                    final file = await pickImage();
+                    if (file != null) {
+                      setState(() {
+                        previewImages.add(file.path);
+                        _selectedImages.add(file);
+                      });
+                    }
+                  },
+                  onRemoveImage: (index) {
+                    setState(() {
+                      previewImages.removeAt(index);
+                      _selectedImages.removeAt(index);
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 10),
+
+                // Details input
+                DetailsInput(
+                  controller: _detailsController,
+                  errorText: _errors['desc'],
+                ),
+
+                const SizedBox(height: 20),
+
+                // Submit button
+                BlocBuilder<ClientProjectCubit, ClientProjectState>(
+                  builder: (context, state) {
+                    bool loading = state is ClientProjectLoading;
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Button(
+                        ontap: loading ? null : _submit,
+                        title: loading ? 'Saving...' : 'Next',
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

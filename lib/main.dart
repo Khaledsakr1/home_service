@@ -15,6 +15,7 @@ import 'package:home_service/features/authentication/presentation/pages/sign_up_
 import 'package:home_service/features/authentication/presentation/pages/sign_up_worker_name_page.dart';
 import 'package:home_service/features/client_home/presentation/pages/SuceesScreen.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
+import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_details_page.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
@@ -26,7 +27,6 @@ import 'package:home_service/features/worker_settings/presentation/manager/worke
 import 'package:home_service/injection_container.dart' as di;
 import 'package:home_service/widgets/navigationbar.dart';
 import 'package:home_service/widgets/navigationbarWorker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +63,9 @@ class Homeservice extends StatelessWidget {
         ),
         BlocProvider<WorkerSettingsCubit>(
           create: (context) => di.sl<WorkerSettingsCubit>(),
+        ),
+          BlocProvider<ClientProjectCubit>(
+          create: (context) => di.sl<ClientProjectCubit>(),
         ),
       ],
       child: MaterialApp(

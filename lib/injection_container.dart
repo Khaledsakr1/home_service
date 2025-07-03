@@ -8,6 +8,17 @@ import 'package:home_service/features/authentication/domain/usecases/login_user.
 import 'package:home_service/features/authentication/domain/usecases/register_customer.dart';
 import 'package:home_service/features/authentication/domain/usecases/register_worker.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
+import 'package:home_service/features/client_project/data/datasources/client_project_remote_data_source.dart';
+import 'package:home_service/features/client_project/data/repositories/client_project_repository_impl.dart';
+import 'package:home_service/features/client_project/domain/repositories/client_project_repository.dart';
+import 'package:home_service/features/client_project/domain/usecases/add_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/add_project_images.dart';
+import 'package:home_service/features/client_project/domain/usecases/delete_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/delete_project_image.dart';
+import 'package:home_service/features/client_project/domain/usecases/get_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/get_projects.dart';
+import 'package:home_service/features/client_project/domain/usecases/update_project.dart';
+import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
 import 'package:home_service/features/portfolio/data/datasources/portfolio_remote_data_source.dart';
 import 'package:home_service/features/portfolio/data/repositories/portfolio_repository_impl.dart';
 import 'package:home_service/features/portfolio/domain/repositories/portfolio_repository.dart';
@@ -45,7 +56,7 @@ Future<void> init() async {
   // Features - Authentication
   sl.registerFactory(
     () => AuthenticationCubit(
-      loginUserUseCase : sl(),
+      loginUserUseCase: sl(),
       registerCustomerUseCase: sl(),
       registerWorkerUseCase: sl(),
       checkEmailExistsUseCase: sl(),
@@ -89,16 +100,15 @@ Future<void> init() async {
   );
 
   // Features - Portfolio
-sl.registerFactory(
-  () => PortfolioCubit(
-    addPortfolioUseCase: sl(),
-    updatePortfolioUseCase: sl(),
-    addPortfolioImagesUseCase: sl(),
-    getPortfoliosUseCase: sl(),
-    deletePortfolioUseCase: sl(),
-  ),
-);
-
+  sl.registerFactory(
+    () => PortfolioCubit(
+      addPortfolioUseCase: sl(),
+      updatePortfolioUseCase: sl(),
+      addPortfolioImagesUseCase: sl(),
+      getPortfoliosUseCase: sl(),
+      deletePortfolioUseCase: sl(),
+    ),
+  );
 
   // Use cases
   sl.registerLazySingleton(() => AddPortfolio(sl()));
@@ -116,8 +126,6 @@ sl.registerFactory(
   sl.registerLazySingleton<PortfolioRemoteDataSource>(
     () => PortfolioRemoteDataSourceImpl(client: sl()),
   );
-
-
 
   // Features - Worker Settings
   sl.registerFactory(
@@ -149,20 +157,46 @@ sl.registerFactory(
     () => WorkerSettingsRemoteDataSourceImpl(),
   );
 
-
 // Worker
-sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
-sl.registerLazySingleton(() => GetWorkerById(sl()));
-sl.registerLazySingleton<WorkerRepository>(() => WorkerRepositoryImpl(remoteDataSource: sl()));
-sl.registerLazySingleton<WorkerRemoteDataSource>(() => WorkerRemoteDataSourceImpl(client: sl()));
+  sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
+  sl.registerLazySingleton(() => GetWorkerById(sl()));
+  sl.registerLazySingleton<WorkerRepository>(
+      () => WorkerRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<WorkerRemoteDataSource>(
+      () => WorkerRemoteDataSourceImpl(client: sl()));
 
+// Add this in your getIt (sl) registrations
+  sl.registerLazySingleton<ClientProjectRemoteDataSource>(
+    () => ClientProjectRemoteDataSourceImpl(client: sl()),
+  );
 
+  sl.registerLazySingleton<ClientProjectRepository>(
+    () => ClientProjectRepositoryImpl(sl()),
+  );
+
+// Register use cases...
+  sl.registerFactory(() => AddProject(sl()));
+  sl.registerFactory(() => UpdateProject(sl()));
+  sl.registerFactory(() => GetProject(sl()));
+  sl.registerFactory(() => GetProjects(sl()));
+  sl.registerFactory(() => DeleteProject(sl()));
+  sl.registerFactory(() => AddProjectImages(sl()));
+  sl.registerFactory(() => DeleteProjectImage(sl()));
+
+// Register cubit
+  sl.registerFactory(() => ClientProjectCubit(
+        addProjectUseCase: sl(),
+        updateProjectUseCase: sl(),
+        getProjectUseCase: sl(),
+        getProjectsUseCase: sl(),
+        deleteProjectUseCase: sl(),
+        addProjectImagesUseCase: sl(),
+        deleteProjectImageUseCase: sl(),
+      ));
 
 // Register singleton
-sl.registerLazySingleton<TokenService>(() => TokenService());
+  sl.registerLazySingleton<TokenService>(() => TokenService());
 
   // External
   sl.registerLazySingleton(() => http.Client());
 }
-
-

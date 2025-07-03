@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/features/chatpot/client%20chatpot/StartChatBot.dart';
 import 'package:home_service/features/client_home/presentation/pages/RequestsScreen.dart';
-import 'package:home_service/features/client_home/presentation/pages/StartNewProject.dart';
+import 'package:home_service/features/client_project/presentation/pages/StartNewProject.dart';
 import 'package:home_service/features/client_home/presentation/pages/homepage.dart';
 import 'package:home_service/features/client_settings/presentation/pages/client_settings_screen.dart';
 import 'package:home_service/features/services/presentation/pages/main_service_page.dart';

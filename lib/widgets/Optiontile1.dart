@@ -6,12 +6,14 @@ class Optiontile1 extends StatefulWidget {
   final String title;
   final List<String> options;
   final ValueChanged<String> onSelected;
+  final VoidCallback? onOk;
 
   const Optiontile1({
     Key? key,
     required this.title,
     required this.options,
     required this.onSelected,
+    this.onOk
   }) : super(key: key);
 
   @override
@@ -66,6 +68,7 @@ class _Optiontile1State extends State<Optiontile1> {
             }).toList(),
             onChanged: (value) {
               setState(() => selectedOption = value);
+              if (value != null) widget.onSelected(value);
             },
             style: const TextStyle(color: Colors.black),
             iconEnabledColor: Colors.green,
@@ -73,17 +76,31 @@ class _Optiontile1State extends State<Optiontile1> {
           ),
           const SizedBox(height: 16),
 
-          if (selectedOption == 'Villa' || 
-              selectedOption == 'House' || 
-              selectedOption == 'Commercial stores' ||  
+          if (selectedOption == 'Villa' ||
+              selectedOption == 'House' ||
+              selectedOption == 'Commercial stores' ||
               selectedOption == 'Gym') ...[
             const Optionsize(),
             const SizedBox(height: 16),
           ],
 
-          Button(title: 'ok')
+         Button(
+  title: 'ok',
+  ontap: () {
+    if (selectedOption != null) {
+      widget.onSelected(selectedOption!);
+      if (widget.onOk != null) widget.onOk!();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please select an option")),
+      );
+    }
+  },
+)
+
         ],
       ),
     );
   }
 }
+
