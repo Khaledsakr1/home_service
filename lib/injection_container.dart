@@ -32,6 +32,7 @@ import 'package:home_service/features/requests/data/datasources/request_remote_d
 import 'package:home_service/features/requests/data/repositories/request_repository_impl.dart';
 import 'package:home_service/features/requests/domain/repositories/request_repository.dart';
 import 'package:home_service/features/requests/domain/usecases/cancel_request.dart';
+import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
 import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
 import 'package:home_service/features/requests/domain/usecases/send_request.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
@@ -209,13 +210,15 @@ Future<void> init() async {
       sendRequestUseCase: sl(),
       cancelRequestUseCase: sl(), 
       getCustomerRequestsUseCase: (sl()),
+      completeRequestUseCase: sl(),
     ),
   );
 
   // Use cases
   sl.registerLazySingleton(() => SendRequest(sl()));
   sl.registerLazySingleton(() => CancelRequest(sl()));
-  sl.registerLazySingleton(() => GetCustomerRequests(sl())); // <--- ADD THIS
+  sl.registerLazySingleton(() => GetCustomerRequests(sl()));
+  sl.registerLazySingleton(() => CompleteRequest(sl()));
 
 
 

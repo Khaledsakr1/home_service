@@ -139,10 +139,26 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
     }
   }
 
-  void _onFinishPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Finish functionality coming soon!')),
+   void _onFinishPressed() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationDialog(
+        title: 'Complete Request',
+        content:
+            'Are you sure you want to mark this request as completed? This action cannot be undone.',
+        confirmText: 'Complete Request',
+        cancelText: 'Cancel',
+        isDestructive: false,
+      ),
     );
+
+    if (confirmed == true) {
+      setState(() => _requestLoading = true);
+      final requestId = _sentRequestId ?? widget.requestId;
+      if (requestId != null) {
+        context.read<RequestCubit>().completeRequest(requestId);
+      }
+    }
   }
 
   void _onMessagePressed() {
@@ -153,7 +169,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RequestCubit, RequestState>(
+     return BlocListener<RequestCubit, RequestState>(
       listener: (context, state) {
         setState(() => _requestLoading = false);
 
@@ -173,6 +189,12 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
           });
           showCustomOverlayMessage(context,
               message: "Request cancelled successfully.");
+        } else if (state is RequestCompleted) { // Add this
+          setState(() {
+            _currentRequestStatus = 'completed';
+          });
+          showCustomOverlayMessage(context,
+              message: "Request completed successfully!");
         } else if (state is RequestError) {
           showErrorOverlayMessage(context, errorMessage: state.message);
         }

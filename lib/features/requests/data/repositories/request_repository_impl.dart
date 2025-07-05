@@ -39,4 +39,14 @@ Future<Either<Failure, List<Request>>> getCustomerRequests({int? status}) async 
   }
 }
 
+ @override
+  Future<Either<Failure, Request>> completeRequest(int requestId) async {
+    try {
+      final result = await remote.completeRequest(requestId);
+      return Right(RequestModel.fromJson(result));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
 }

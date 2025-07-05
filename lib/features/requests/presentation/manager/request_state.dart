@@ -37,3 +37,10 @@ class RequestError extends RequestState {
   @override
   List<Object?> get props => [message];
 }
+
+class RequestCompleted extends RequestState {
+  final Request request;
+  const RequestCompleted(this.request);
+  @override
+  List<Object?> get props => [request];
+}

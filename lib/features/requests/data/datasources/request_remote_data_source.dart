@@ -9,6 +9,7 @@ abstract class RequestRemoteDataSource {
   Future<Map<String, dynamic>> sendRequest(int workerId, int projectId);
   Future<Map<String, dynamic>> cancelRequest(int requestId);
   Future<List<RequestModel>> getCustomerRequests({int? status});
+  Future<Map<String, dynamic>> completeRequest(int requestId); 
 }
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
@@ -83,4 +84,23 @@ Future<List<RequestModel>> getCustomerRequests({int? status}) async {
   }
 }
 
+ @override
+  Future<Map<String, dynamic>> completeRequest(int requestId) async {
+    final token = sl<TokenService>().token ?? '';
+    final uri = Uri.parse('$baseUrl/api/Requests/mark-completed/$requestId');
+    final response = await client.put(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('request marked as completed');
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to complete request: ${response.body}');
+    }
+  }
 }
+
