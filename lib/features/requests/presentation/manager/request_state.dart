@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 
+import '../../domain/entities/review_entity.dart';
+
 abstract class RequestState extends Equatable {
   const RequestState();
   @override
@@ -43,4 +45,11 @@ class RequestCompleted extends RequestState {
   const RequestCompleted(this.request);
   @override
   List<Object?> get props => [request];
+}
+
+class ReviewAdded extends RequestState {
+  final Review review;
+  const ReviewAdded(this.review);
+  @override
+  List<Object?> get props => [review];
 }

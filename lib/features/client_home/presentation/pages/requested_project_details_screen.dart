@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/worker_details/presentation/pages/service_view_details.dart.dart';
 
@@ -28,100 +27,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
     super.dispose();
   }
 
-  // void _showCancelDialog(int requestId) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Cancel Request'),
-  //         content: const Text('Are you sure you want to cancel this request?'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.of(context).pop(),
-  //             child: const Text('No'),
-  //           ),
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //               // TODO: Implement your cancel logic
-  //               ScaffoldMessenger.of(context).showSnackBar(
-  //                 const SnackBar(content: Text('Request cancelled!')),
-  //               );
-  //             },
-  //             style: TextButton.styleFrom(foregroundColor: Colors.red),
-  //             child: const Text('Yes, Cancel'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Widget _buildStatusActionButton(Request req) {
-  //   // Return the right button based on status
-  //   switch (req.status) {
-  //     case 'pending':
-  //       return ElevatedButton.icon(
-  //         onPressed: () {
-  //           // Handle cancel request
-  //           _showCancelDialog(req.id); // You'll need to implement this
-  //         },
-  //         icon: const Icon(Icons.cancel, color: Colors.white),
-  //         label: const Text('Cancel'),
-  //         style: ElevatedButton.styleFrom(
-  //           backgroundColor: Colors.red,
-  //           foregroundColor: Colors.white,
-  //           padding: const EdgeInsets.symmetric(vertical: 16),
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //           ),
-  //         ),
-  //       );
-  //     case 'accepted':
-  //       return ElevatedButton.icon(
-  //         onPressed: () {
-  //           // Handle finish request
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             const SnackBar(content: Text('Finish action here!')),
-  //           );
-  //         },
-  //         icon: const Icon(Icons.done_all, color: Colors.white),
-  //         label: const Text('Finish'),
-  //         style: ElevatedButton.styleFrom(
-  //           backgroundColor: Colors.blue,
-  //           foregroundColor: Colors.white,
-  //           padding: const EdgeInsets.symmetric(vertical: 16),
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //           ),
-  //         ),
-  //       );
-  //     case 'rejected':
-  //     case 'cancelled':
-  //     case 'completed':
-  //       return ElevatedButton.icon(
-  //         onPressed: () {
-  //           // Handle send request
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             const SnackBar(content: Text('Send request action here!')),
-  //           );
-  //         },
-  //         icon: const Icon(Icons.send, color: Colors.white),
-  //         label: const Text('Send Request'),
-  //         style: ElevatedButton.styleFrom(
-  //           backgroundColor: Colors.green,
-  //           foregroundColor: Colors.white,
-  //           padding: const EdgeInsets.symmetric(vertical: 16),
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(8),
-  //           ),
-  //         ),
-  //       );
-  //     default:
-  //       return const SizedBox.shrink();
-  //   }
-  // }
-
+ 
   @override
   Widget build(BuildContext context) {
     // Initialize here!
@@ -314,7 +220,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
                   const SizedBox(height: 16),
 
-// --- Only show message button for pending/accepted ---
+                  // --- Only show message button for pending/accepted ---
                   if (widget.request.status == 'pending' ||
                       widget.request.status == 'accepted') ...[
                     Row(

@@ -8,6 +8,7 @@ import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/features/client_project/presentation/pages/project_list_page.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
+import 'package:home_service/features/requests/presentation/widgets/review_dialog.dart';
 import 'package:home_service/features/worker_details/domain/entities/worker.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_state.dart';
@@ -56,6 +57,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   bool _requestPending = false;
   bool _requestLoading = false;
   String? _currentRequestStatus;
+  bool _hasReviewed = false; // This will track if review has been submitted
+  bool _showReviewDialogValiable = false; // This will control when to show the dialog
 
   @override
   void initState() {
@@ -66,6 +69,11 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
     // Set initial request pending state based on status
     if (widget.formRequsted && _currentRequestStatus == 'pending') {
       _requestPending = true;
+    }
+
+    // If coming from a completed request, don't show review dialog yet
+    if (_currentRequestStatus == 'completed') {
+      _hasReviewed = true; // Assume already reviewed if coming from completed status
     }
 
     // Decode user type from JWT token
@@ -139,7 +147,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
     }
   }
 
-   void _onFinishPressed() async {
+  void _onFinishPressed() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => const ConfirmationDialog(
@@ -161,6 +169,22 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
     }
   }
 
+  void _showReviewDialog() {
+    if (widget.workerId != null && !_hasReviewed) {
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevent dismissing by tapping outside
+        builder: (context) => BeautifulReviewDialog(
+          workerId: widget.workerId!,
+          workerName: 'Worker', // You can get this from the worker object
+          onReviewSubmitted: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
+  }
+
   void _onMessagePressed() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Messaging feature coming soon!')),
@@ -169,7 +193,7 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
   @override
   Widget build(BuildContext context) {
-     return BlocListener<RequestCubit, RequestState>(
+    return BlocListener<RequestCubit, RequestState>(
       listener: (context, state) {
         setState(() => _requestLoading = false);
 
@@ -189,12 +213,30 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
           });
           showCustomOverlayMessage(context,
               message: "Request cancelled successfully.");
-        } else if (state is RequestCompleted) { // Add this
+        } else if (state is RequestCompleted) {
           setState(() {
             _currentRequestStatus = 'completed';
+            _hasReviewed = false; // Reset this to allow review
+            _showReviewDialogValiable = true; // Enable review dialog
           });
+          
+          // Show review dialog after completion ONLY if user is customer
+          if (_userType != 'Worker') {
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              _showReviewDialog();
+            });
+          }
+        } else if (state is ReviewAdded) {
+          setState(() {
+            _hasReviewed = true; // Mark as reviewed
+            _showReviewDialogValiable = false;
+          });
+          if (widget.workerId != null) {
+            context.read<WorkerCubit>().fetchWorker(widget.workerId!);
+          }
+          Navigator.pop(context); // Close the review dialog
           showCustomOverlayMessage(context,
-              message: "Request completed successfully!");
+              message: "Thank you for your review!");
         } else if (state is RequestError) {
           showErrorOverlayMessage(context, errorMessage: state.message);
         }
@@ -274,16 +316,12 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                     // Action buttons section
                     if (_userType != 'Worker') ...[
                       WorkerActionButtons(
-                        status: _currentRequestStatus ??
-                            '', // this is 'pending', 'accepted', etc.
+                        status: _currentRequestStatus ?? '',
                         requestLoading: _requestLoading,
-                        onSendRequest:
-                            _onSendRequestPressed, // Used for "Send Request" status
-                        onCancelRequest:
-                            _onCancelRequestPressed, // Used for "Cancel Request" in 'pending'
-                        onFinish: _onFinishPressed, // Used for 'accepted'
-                        onMessage:
-                            _onMessagePressed, // Used everywhere for message button
+                        onSendRequest: _onSendRequestPressed,
+                        onCancelRequest: _onCancelRequestPressed,
+                        onFinish: _onFinishPressed,
+                        onMessage: _onMessagePressed,
                       ),
                     ],
 

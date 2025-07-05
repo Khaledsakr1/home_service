@@ -31,6 +31,7 @@ import 'package:home_service/features/portfolio/presentation/manager/portfolio_c
 import 'package:home_service/features/requests/data/datasources/request_remote_data_source.dart';
 import 'package:home_service/features/requests/data/repositories/request_repository_impl.dart';
 import 'package:home_service/features/requests/domain/repositories/request_repository.dart';
+import 'package:home_service/features/requests/domain/usecases/add_review.dart';
 import 'package:home_service/features/requests/domain/usecases/cancel_request.dart';
 import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
 import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
@@ -211,6 +212,7 @@ Future<void> init() async {
       cancelRequestUseCase: sl(), 
       getCustomerRequestsUseCase: (sl()),
       completeRequestUseCase: sl(),
+      addReviewUseCase: sl(),
     ),
   );
 
@@ -219,7 +221,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CancelRequest(sl()));
   sl.registerLazySingleton(() => GetCustomerRequests(sl()));
   sl.registerLazySingleton(() => CompleteRequest(sl()));
-
+  sl.registerLazySingleton(() => AddReview(sl()));
 
 
   // Repository

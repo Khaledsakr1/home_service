@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:home_service/features/requests/domain/usecases/add_review.dart';
 import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
 import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
@@ -12,12 +13,14 @@ class RequestCubit extends Cubit<RequestState> {
   final CancelRequest cancelRequestUseCase;
   final GetCustomerRequests getCustomerRequestsUseCase;
   final CompleteRequest completeRequestUseCase;
+  final AddReview addReviewUseCase;
 
   RequestCubit({
     required this.sendRequestUseCase,
     required this.cancelRequestUseCase,
     required this.getCustomerRequestsUseCase,
     required this.completeRequestUseCase,
+    required this.addReviewUseCase,
   }) : super(RequestInitial());
 
   Future<void> sendRequest(int workerId, int projectId) async {
@@ -53,6 +56,19 @@ Future<void> fetchCustomerRequests({int? status}) async {
     result.fold(
       (failure) => emit(RequestError(failure.message ?? "Failed to complete request")),
       (request) => emit(RequestCompleted(request)),
+    );
+  }
+
+   Future<void> addReview(int workerId, String comment, int rating) async {
+    emit(RequestLoading());
+    final result = await addReviewUseCase(AddReviewParams(
+      workerId: workerId,
+      comment: comment,
+      rating: rating,
+    ));
+    result.fold(
+      (failure) => emit(RequestError(failure.message ?? "Failed to add review")),
+      (review) => emit(ReviewAdded(review)),
     );
   }
 

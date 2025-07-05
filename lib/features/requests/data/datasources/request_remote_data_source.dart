@@ -10,6 +10,7 @@ abstract class RequestRemoteDataSource {
   Future<Map<String, dynamic>> cancelRequest(int requestId);
   Future<List<RequestModel>> getCustomerRequests({int? status});
   Future<Map<String, dynamic>> completeRequest(int requestId); 
+  Future<Map<String, dynamic>> addReview(int workerId, String comment, int rating);
 }
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
@@ -102,5 +103,33 @@ Future<List<RequestModel>> getCustomerRequests({int? status}) async {
       throw Exception('Failed to complete request: ${response.body}');
     }
   }
+
+   @override
+  Future<Map<String, dynamic>> addReview(int workerId, String comment, int rating) async {
+    final token = sl<TokenService>().token ?? '';
+    final uri = Uri.parse('$baseUrl/api/Reviews');
+    final body = jsonEncode({
+      "workerId": workerId,
+      "comment": comment,
+      "rating": rating,
+    });
+    
+    final response = await client.post(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+    
+    if (response.statusCode == 200) {
+      print('Review added successfully');
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to add review: ${response.body}');
+    }
+  }
 }
+
 
