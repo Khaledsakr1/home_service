@@ -78,7 +78,8 @@ class JobsDetailsCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
                           description!,
-                          style: const TextStyle(fontSize: 13, color: Colors.black54),
+                          style: const TextStyle(
+                              fontSize: 13, color: Colors.black54),
                         ),
                       ),
                     if (city != null)
@@ -86,9 +87,12 @@ class JobsDetailsCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Row(
                           children: [
-                            const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                            const Icon(Icons.location_on,
+                                size: 14, color: Colors.grey),
                             const SizedBox(width: 4),
-                            Text(city!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                            Text(city!,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -97,11 +101,13 @@ class JobsDetailsCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Row(
                           children: [
-                            const Icon(Icons.engineering, size: 14, color: Colors.grey),
+                            const Icon(Icons.engineering,
+                                size: 14, color: Colors.grey),
                             const SizedBox(width: 4),
                             Text(
                               '$experienceYears years experience',
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -111,11 +117,13 @@ class JobsDetailsCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Row(
                           children: [
-                            const Icon(Icons.star, size: 14, color: Colors.amber),
+                            const Icon(Icons.star,
+                                size: 14, color: Colors.amber),
                             const SizedBox(width: 4),
                             Text(
                               rating!.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -125,12 +133,14 @@ class JobsDetailsCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 2.0),
                         child: Row(
                           children: [
-                            const Icon(Icons.home, size: 14, color: Colors.grey),
+                            const Icon(Icons.home,
+                                size: 14, color: Colors.grey),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 address!,
-                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -142,91 +152,27 @@ class JobsDetailsCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          status == "pending"
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.orange.shade300),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.hourglass_empty,
-                                color: Colors.orange, size: 16),
-                            SizedBox(width: 6),
-                            Text(
-                              'Pending......',
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          SizedBox(height: 20,),
+          SizedBox(
+            height: 45,
+            child: Button(
+              title: "View details",
+              ontap: () {
+                if (ViewdetailsPage != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ViewdetailsPage!,
                     ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.delete_outline, color: Colors.grey),
-                      onPressed: onDelete,
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    if (showAcceptButton)
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: Button(
-                            title: "Accept",
-                            ontap: () {
-                              showCustomOverlayMessage(
-                                context,
-                                message: "Request Accepted",
-                                subMessage:
-                                    "You can now view the project details.",
-                              );
-                            },
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            icon: Icons.check,
-                          ),
-                        ),
-                      ),
-                    if (showAcceptButton) const SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: Button(
-                          title: "View details",
-                          ontap: () {
-                            if (ViewdetailsPage != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ViewdetailsPage!,
-                                ),
-                              );
-                            }
-                          },
-                          backgroundColor: Colors.white,
-                          textColor: Colors.green,
-                          borderColor: Colors.green,
-                          icon: Icons.visibility,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                }
+              },
+              backgroundColor: Colors.white,
+              textColor: Colors.green,
+              borderColor: Colors.green,
+              icon: Icons.visibility,
+            ),
+          ),
         ],
       ),
     );
