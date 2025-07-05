@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_service/common/pages/landing_page.dart';
+import 'package:home_service/common/pages/SplashAnimatedPage.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/authentication/presentation/pages/address_page.dart';
@@ -94,7 +94,7 @@ class Homeservice extends StatelessWidget {
           NavigationbarWorker.id: (context) => const NavigationbarWorker(),
         },
         debugShowCheckedModeBanner: false,
-        home: const LandingPage(),
+        home: const SplashAnimatedPage(),
       ),
     );
   }

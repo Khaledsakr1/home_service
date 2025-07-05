@@ -31,7 +31,6 @@ class _MainServicePageState extends State<MainServicePage> {
     'Air Conditioning Maintenance And Installation': 'Repair and Installation',
     'Installing Surveillance Cameras': 'Repair and Installation',
     'Plumbing Establishment': 'Repair and Installation',
-    // Add more as needed
   };
 
   @override
@@ -44,46 +43,14 @@ class _MainServicePageState extends State<MainServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 100,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Column(
-          children: [
-            const Text(
-              'LOGO',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const TextField(
-                decoration: InputDecoration(
-                  hintText: 'Find the perfect job you need',
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
       body: BlocBuilder<ServicesCubit, ServicesState>(
         builder: (context, state) {
           if (state is ServicesLoading) {
             return const Center(
-                child: CircularProgressIndicator(
-              color: kPrimaryColor,
-            ));
+              child: CircularProgressIndicator(color: kPrimaryColor),
+            );
           }
+
           if (state is ServicesLoaded) {
             final allServices = state.services;
             List<Service> jobs = allServices
@@ -97,133 +64,173 @@ class _MainServicePageState extends State<MainServicePage> {
                     serviceCategoryMap[s.name] == 'Repair and Installation')
                 .toList();
 
-            return ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                // Jobs section
-                TitleWithSeeAll(
-                  title: 'Jobs',
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SeeallServicepage(
-                          pageTitle: 'Jobs',
-                          services: jobs,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 120,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: jobs.length,
-                    itemBuilder: (context, index) {
-                      final service = jobs[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ServiceDetailsPage(
-                                service: service,
-                              ),
-                            ),
-                          );
-                        },
-                        child:
-                            PopularServiceList(service.name, service.imageUrl),
-                      );
-                    },
+            return CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.white,
+                  expandedHeight: 85,
+                  floating: true,
+                  snap: true,
+                  pinned: false,
+                  centerTitle: true,
+                  elevation: 0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    titlePadding: const EdgeInsets.only(bottom: 4),
+                    title: Image.asset(
+                      'assets/images/logo native.jpg',
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 1, 16, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Search Field
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: InputDecoration(
+                              hintText: 'Find the perfect job you need',
+                              prefixIcon: Icon(Icons.search, color: Colors.grey),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(vertical: 10),
+                            ),
+                          ),
+                        ),
 
-                // Home Jobs section
-                TitleWithSeeAll(
-                  title: 'Home Jobs',
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SeeallServicepage(
-                          pageTitle: 'Home Jobs',
-                          services: homeJobs,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: homeJobs.length,
-                    itemBuilder: (context, index) {
-                      final service = homeJobs[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  ServiceDetailsPage(service: service),
-                            ),
-                          );
-                        },
-                        child: HomeServicelist(service.name, service.imageUrl),
-                      );
-                    },
-                  ),
-                ),
-
-                // Repair & Installation section
-                TitleWithSeeAll(
-                  title: 'Repair and Installation',
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SeeallServicepage(
-                          pageTitle: 'Repair and Installation',
-                          services: repair,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 230,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: repair.length,
-                    itemBuilder: (context, index) {
-                      final service = repair[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ServiceDetailsPage(
-                                service: service,
+                        // Jobs Section
+                        TitleWithSeeAll(
+                          title: 'Jobs',
+                          ontap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SeeallServicepage(
+                                  pageTitle: 'Jobs',
+                                  services: jobs,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: Repairandinstallationlist(
-                            service.name, service.imageUrl),
-                      );
-                    },
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: 120,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: jobs.length,
+                            itemBuilder: (context, index) {
+                              final service = jobs[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ServiceDetailsPage(service: service),
+                                    ),
+                                  );
+                                },
+                                child: PopularServiceList(service.name, service.imageUrl),
+                              );
+                            },
+                          ),
+                        ),
+
+                        // Home Jobs Section
+                        TitleWithSeeAll(
+                          title: 'Home Jobs',
+                          ontap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SeeallServicepage(
+                                  pageTitle: 'Home Jobs',
+                                  services: homeJobs,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: homeJobs.length,
+                            itemBuilder: (context, index) {
+                              final service = homeJobs[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ServiceDetailsPage(service: service),
+                                    ),
+                                  );
+                                },
+                                child: HomeServicelist(service.name, service.imageUrl),
+                              );
+                            },
+                          ),
+                        ),
+
+                        // Repair Section
+                        TitleWithSeeAll(
+                          title: 'Repair and Installation',
+                          ontap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SeeallServicepage(
+                                  pageTitle: 'Repair and Installation',
+                                  services: repair,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: 230,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: repair.length,
+                            itemBuilder: (context, index) {
+                              final service = repair[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ServiceDetailsPage(service: service),
+                                    ),
+                                  );
+                                },
+                                child: Repairandinstallationlist(service.name, service.imageUrl),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                // Add more sections if needed...
               ],
             );
           }
+
           if (state is ServicesError) {
             return Center(child: Text(state.message));
           }
+
           return Container();
         },
       ),

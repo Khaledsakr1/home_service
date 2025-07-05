@@ -41,7 +41,8 @@ class _LandingPageState extends State<LandingPage> {
     if (token != null && token.isNotEmpty) {
       // Decode token to get userType
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      _userType = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      _userType = decodedToken[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
       print('Decoded user type: $_userType');
       print(decodedToken);
