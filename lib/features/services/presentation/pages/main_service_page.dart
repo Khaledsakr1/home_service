@@ -4,7 +4,7 @@ import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/pages/see_all_services_page.dart';
-import 'package:home_service/features/worker_details/presentation/pages/ServiceDetailsPage.dart';
+import 'package:home_service/features/worker_details/presentation/pages/service_details_page.dart';
 import 'package:home_service/widgets/PopularServicelist.dart';
 import 'package:home_service/widgets/HomeServicelist.dart';
 import 'package:home_service/widgets/RepairandInstallationlist.dart';

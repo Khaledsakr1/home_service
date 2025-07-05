@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
-import 'package:home_service/features/worker_details/presentation/pages/ServiceDetailsPage.dart';
+import 'package:home_service/features/worker_details/presentation/pages/service_details_page.dart';
 
 class SeeallServicepage extends StatelessWidget {
   final String pageTitle;

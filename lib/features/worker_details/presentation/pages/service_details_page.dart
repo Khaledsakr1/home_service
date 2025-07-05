@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
-import 'package:home_service/features/worker_details/presentation/pages/ServiceViewDetails.dart';
+import 'package:home_service/features/worker_details/presentation/pages/service_view_details.dart.dart';
 import 'package:home_service/widgets/JobDetailsCard.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       body: BlocBuilder<ServicesCubit, ServicesState>(
         builder: (context, state) {
           if (state is ServicesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: kPrimaryColor,));
           }
           if (state is ServicesError) {
             return Center(child: Text('Error: ${state.message}'));
@@ -70,7 +71,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         address: worker.address,
                         showAcceptButton: false,
                         ViewdetailsPage:
-                            Serviceviewdetails(workerId: worker.id),
+                            Serviceviewdetails(workerId: worker.id,requestStatus: 'request',),
                       ),
                     ),
                   ],

@@ -7,6 +7,9 @@ import 'package:home_service/features/client_project/presentation/manager/client
 import 'package:home_service/features/client_project/presentation/pages/StartNewProject.dart';
 
 class ProjectsListPage extends StatefulWidget {
+  final bool pickMode;
+
+  const ProjectsListPage({super.key,this.pickMode = false});
   @override
   _ProjectsListPageState createState() => _ProjectsListPageState();
 }
@@ -232,17 +235,30 @@ class _ProjectsListPageState extends State<ProjectsListPage> {
         ],
       ),
       child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Startnewproject(project: project),
-              ),
-            );
-          },
+  color: Colors.transparent,
+  child: InkWell(
+    borderRadius: BorderRadius.circular(16),
+    onTap: () {
+      if (widget.pickMode == true) {
+        Navigator.pop(context, project.id); // Picking mode: return id on tap
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Startnewproject(project: project),
+          ),
+        ); // Normal: edit on tap
+      }
+    },
+    onLongPress: () {
+      // Optionally, always allow edit on long press
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Startnewproject(project: project),
+        ),
+      );
+    },
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

@@ -28,6 +28,13 @@ import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio
 import 'package:home_service/features/portfolio/domain/usecases/get_portfolios.dart';
 import 'package:home_service/features/portfolio/domain/usecases/update_portfolio.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
+import 'package:home_service/features/requests/data/datasources/request_remote_data_source.dart';
+import 'package:home_service/features/requests/data/repositories/request_repository_impl.dart';
+import 'package:home_service/features/requests/domain/repositories/request_repository.dart';
+import 'package:home_service/features/requests/domain/usecases/cancel_request.dart';
+import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
+import 'package:home_service/features/requests/domain/usecases/send_request.dart';
+import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
 import 'package:home_service/features/services/data/datasources/service_remote_data_source.dart';
 import 'package:home_service/features/services/data/repositories/service_repository_impl.dart';
 import 'package:home_service/features/services/domain/repositories/service_repository.dart';
@@ -165,6 +172,7 @@ Future<void> init() async {
   sl.registerLazySingleton<WorkerRemoteDataSource>(
       () => WorkerRemoteDataSourceImpl(client: sl()));
 
+
 // Add this in your getIt (sl) registrations
   sl.registerLazySingleton<ClientProjectRemoteDataSource>(
     () => ClientProjectRemoteDataSourceImpl(client: sl()),
@@ -193,6 +201,35 @@ Future<void> init() async {
         addProjectImagesUseCase: sl(),
         deleteProjectImageUseCase: sl(),
       ));
+
+  
+
+  sl.registerFactory(
+    () => RequestCubit(
+      sendRequestUseCase: sl(),
+      cancelRequestUseCase: sl(), 
+      getCustomerRequestsUseCase: (sl()),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => SendRequest(sl()));
+  sl.registerLazySingleton(() => CancelRequest(sl()));
+  sl.registerLazySingleton(() => GetCustomerRequests(sl())); // <--- ADD THIS
+
+
+
+  // Repository
+  sl.registerLazySingleton<RequestRepository>(
+    () => RequestRepositoryImpl(sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<RequestRemoteDataSource>(
+    () => RequestRemoteDataSourceImpl(client: sl()),
+  );
+
+
 
 // Register singleton
   sl.registerLazySingleton<TokenService>(() => TokenService());
