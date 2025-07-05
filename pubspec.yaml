@@ -26,14 +26,23 @@ dependencies:
   concentric_transition: ^1.0.3
   jwt_decoder: ^2.0.1
   font_awesome_flutter: ^10.7.0
+  animated_splash_screen: ^1.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_native_splash: ^2.3.10
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/Splash Animatedd.gif
 
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/logo native.jpg
+  android: true
+  ios: true
+  fullscreen: true
