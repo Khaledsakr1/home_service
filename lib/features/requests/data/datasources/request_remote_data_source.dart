@@ -11,6 +11,8 @@ abstract class RequestRemoteDataSource {
   Future<List<RequestModel>> getCustomerRequests({int? status});
   Future<Map<String, dynamic>> completeRequest(int requestId); 
   Future<Map<String, dynamic>> addReview(int workerId, String comment, int rating);
+  Future<Map<String, dynamic>> approveFinalOffer(int requestId, bool isApprove);
+
 }
 
 class RequestRemoteDataSourceImpl implements RequestRemoteDataSource {
@@ -130,6 +132,27 @@ Future<List<RequestModel>> getCustomerRequests({int? status}) async {
       throw Exception('Failed to add review: ${response.body}');
     }
   }
+  
+ @override
+Future<Map<String, dynamic>> approveFinalOffer(int requestId, bool isApprove) async {
+  final token = sl<TokenService>().token ?? '';
+  final uri = Uri.parse('$baseUrl/api/Requests/customer-approve/$requestId');
+  final response = await client.put(
+    uri,
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    },
+    body: isApprove ? 'true' : 'false', // Body must be plain text: true/false
+  );
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to approve/reject request: ${response.body}');
+  }
+}
+
+
 }
 
 

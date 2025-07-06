@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/chatpot/worker%20chatpot/StartChatBotWorker.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
-import 'package:home_service/features/worker_home/presentation/pages/RequsestScreenWorker.dart';
+import 'package:home_service/features/worker_home/presentation/pages/worker_requests_screen.dart';
 import 'package:home_service/features/services/presentation/pages/main_service_page.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
@@ -35,7 +35,7 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
 
   final List<Widget> _pages = [
     MainServicePage(),
-    RequestsscreenWorker(),
+    WorkerRequestsScreen(),
     StartchatbotWorker(),
     BlocProvider(
       create: (_) => WorkerSettingsCubit(

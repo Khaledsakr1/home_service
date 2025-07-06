@@ -40,6 +40,13 @@ class RequestError extends RequestState {
   List<Object?> get props => [message];
 }
 
+class RequestApproved extends RequestState {
+  final Request request;
+  const RequestApproved(this.request);
+  @override
+  List<Object?> get props => [request];
+}
+
 class RequestCompleted extends RequestState {
   final Request request;
   const RequestCompleted(this.request);

@@ -29,14 +29,22 @@ import 'package:home_service/features/portfolio/domain/usecases/get_portfolios.d
 import 'package:home_service/features/portfolio/domain/usecases/update_portfolio.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
 import 'package:home_service/features/requests/data/datasources/request_remote_data_source.dart';
+import 'package:home_service/features/requests/data/datasources/worker_request_remote_data_source.dart';
 import 'package:home_service/features/requests/data/repositories/request_repository_impl.dart';
+import 'package:home_service/features/requests/data/repositories/worker_request_repository_impl.dart';
 import 'package:home_service/features/requests/domain/repositories/request_repository.dart';
+import 'package:home_service/features/requests/domain/repositories/worker_request_repository.dart';
+import 'package:home_service/features/requests/domain/usecases/accept_request.dart';
 import 'package:home_service/features/requests/domain/usecases/add_review.dart';
+import 'package:home_service/features/requests/domain/usecases/approve_final_offer.dart';
 import 'package:home_service/features/requests/domain/usecases/cancel_request.dart';
 import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
 import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
+import 'package:home_service/features/requests/domain/usecases/get_received_requests.dart';
+import 'package:home_service/features/requests/domain/usecases/reject_request.dart';
 import 'package:home_service/features/requests/domain/usecases/send_request.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
+import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/services/data/datasources/service_remote_data_source.dart';
 import 'package:home_service/features/services/data/repositories/service_repository_impl.dart';
 import 'package:home_service/features/services/domain/repositories/service_repository.dart';
@@ -213,6 +221,7 @@ Future<void> init() async {
       getCustomerRequestsUseCase: (sl()),
       completeRequestUseCase: sl(),
       addReviewUseCase: sl(),
+      approveFinalOfferUseCase: sl(),
     ),
   );
 
@@ -222,6 +231,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCustomerRequests(sl()));
   sl.registerLazySingleton(() => CompleteRequest(sl()));
   sl.registerLazySingleton(() => AddReview(sl()));
+  sl.registerLazySingleton(() => ApproveFinalOffer(sl()));
 
 
   // Repository
@@ -233,6 +243,30 @@ Future<void> init() async {
   sl.registerLazySingleton<RequestRemoteDataSource>(
     () => RequestRemoteDataSourceImpl(client: sl()),
   );
+
+
+    // --- Worker Requests Feature (Received requests for worker) ---
+  // Data source
+  sl.registerLazySingleton<WorkerRequestRemoteDataSource>(
+    () => WorkerRequestRemoteDataSourceImpl(client: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<WorkerRequestRepository>(
+    () => WorkerRequestRepositoryImpl(sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetReceivedRequests(sl()));
+  sl.registerLazySingleton(() => AcceptRequest(sl()));
+  sl.registerLazySingleton(() => RejectRequest(sl()));
+
+  // Cubit
+  sl.registerFactory(() => WorkerRequestCubit(
+    getReceivedRequestsUseCase: sl(),
+    acceptRequestUseCase: sl(),
+    rejectRequestUseCase: sl(),
+  ));
 
 
 

@@ -9,4 +9,5 @@ abstract class RequestRepository {
   Future<Either<Failure, List<Request>>> getCustomerRequests({int? status});
   Future<Either<Failure, Request>> completeRequest(int requestId);
   Future<Either<Failure, Review>> addReview(int workerId, String comment, int rating); 
+  Future<Either<Failure, Request>> approveFinalOffer(int requestId, bool isApprove);
 }

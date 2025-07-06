@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 class FilterTabs extends StatelessWidget {
   final String selectedTab;
   final ValueChanged<String> onTabChanged;
+  final int approveCount; // add this
+
   const FilterTabs({
     Key? key,
     required this.selectedTab,
     required this.onTabChanged,
+    this.approveCount = 0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ['All', 'Pending', 'Accepted', 'Rejected', 'Cancelled', 'Completed'];
+    final tabs = ['All', 'Pending', 'Accepted', 'Rejected', 'Cancelled', 'Completed', 'Approve'];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -27,12 +30,37 @@ class FilterTabs extends StatelessWidget {
                 color: isSelected ? Colors.green : Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(
-                tab,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black54,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Text(
+                    tab,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (tab == "Approve" && approveCount > 0)
+                    Positioned(
+                      right: -18, // adjust as needed
+                      top: -8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '$approveCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           );

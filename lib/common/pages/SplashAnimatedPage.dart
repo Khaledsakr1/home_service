@@ -9,7 +9,7 @@ class SplashAnimatedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       backgroundColor: Colors.white,
-      duration: 12000,
+      duration: 10,
       animationDuration: const Duration(milliseconds: 500),
       splashTransition: SplashTransition.fadeTransition,
       splashIconSize: 300, // حجم مخصص للـ splash (لا يملأ الشاشة)

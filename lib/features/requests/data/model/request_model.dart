@@ -20,6 +20,7 @@ class RequestModel extends Request {
     required double maxBudget,
     required String projectDetails,
     required List<String> projectImages,
+    final double? workerOfferedPrice,
   }) : super(
           id: id,
           workerId: workerId,
@@ -39,6 +40,7 @@ class RequestModel extends Request {
           maxBudget: maxBudget,
           projectDetails: projectDetails,
           projectImages: projectImages,
+          workerOfferedPrice: workerOfferedPrice,
         );
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
@@ -66,6 +68,8 @@ class RequestModel extends Request {
           case 'completed':
             statusCode = 4;
             break;
+          case 'approve':
+            statusCode = 5;
           default:
             statusCode = 0;
         }
@@ -106,6 +110,9 @@ class RequestModel extends Request {
       maxBudget: json['maxBudget'] ?? 0,
       projectDetails: json['projectDetails'] ?? '',
       projectImages: images,
+      workerOfferedPrice: json['workerOfferedPrice'] != null
+    ? double.tryParse(json['workerOfferedPrice'].toString())
+    : null,
     );
   }
 }

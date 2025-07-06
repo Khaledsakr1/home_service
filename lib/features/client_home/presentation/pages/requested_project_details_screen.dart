@@ -222,7 +222,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
                   // --- Only show message button for pending/accepted ---
                   if (widget.request.status == 'pending' ||
-                      widget.request.status == 'accepted') ...[
+                      widget.request.status == 'accepted' ||  widget.request.status == 'approve') ...[
                     Row(
                       children: [
                         Expanded(

@@ -61,4 +61,16 @@ Future<Either<Failure, List<Request>>> getCustomerRequests({int? status}) async 
     }
   }
 
+@override
+Future<Either<Failure, Request>> approveFinalOffer(int requestId, bool isApprove) async {
+  try {
+    final result = await remote.approveFinalOffer(requestId, isApprove);
+    return Right(RequestModel.fromJson(result));
+  } catch (e) {
+    return Left(ServerFailure(message: e.toString()));
+  }
+}
+
+
+
 }

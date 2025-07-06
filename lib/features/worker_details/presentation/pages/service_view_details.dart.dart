@@ -147,6 +147,48 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
     }
   }
 
+  void _onAcceptOfferPressed() async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => const ConfirmationDialog(
+      title: 'Accept Final Offer',
+      content: 'Are you sure you want to accept this final offer? This will proceed with the project.',
+      confirmText: 'Accept Offer',
+      cancelText: 'Cancel',
+      isDestructive: false,
+    ),
+  );
+
+  if (confirmed == true) {
+    setState(() => _requestLoading = true);
+    final requestId = _sentRequestId ?? widget.requestId;
+    if (requestId != null) {
+      context.read<RequestCubit>().approveFinalOffer(requestId, true);
+    }
+  }
+}
+
+void _onRejectOfferPressed() async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => const ConfirmationDialog(
+      title: 'Reject Final Offer',
+      content: 'Are you sure you want to reject this final offer? This will end the project negotiation.',
+      confirmText: 'Reject Offer',
+      cancelText: 'Keep Offer',
+      isDestructive: true,
+    ),
+  );
+
+  if (confirmed == true) {
+    setState(() => _requestLoading = true);
+    final requestId = _sentRequestId ?? widget.requestId;
+    if (requestId != null) {
+      context.read<RequestCubit>().approveFinalOffer(requestId, false);
+    }
+  }
+}
+
   void _onFinishPressed() async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -226,7 +268,15 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
               _showReviewDialog();
             });
           }
-        } else if (state is ReviewAdded) {
+        } else if (state is RequestApproved) {
+    // Don't show review dialog here!
+    setState(() {
+      _currentRequestStatus = 'accepted'; // or 'approve', as needed
+    });
+    showCustomOverlayMessage(context, message: "Offer accepted successfully!");
+  }
+        
+         else if (state is ReviewAdded) {
           setState(() {
             _hasReviewed = true; // Mark as reviewed
             _showReviewDialogValiable = false;
@@ -315,15 +365,17 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
                     // Action buttons section
                     if (_userType != 'Worker') ...[
-                      WorkerActionButtons(
-                        status: _currentRequestStatus ?? '',
-                        requestLoading: _requestLoading,
-                        onSendRequest: _onSendRequestPressed,
-                        onCancelRequest: _onCancelRequestPressed,
-                        onFinish: _onFinishPressed,
-                        onMessage: _onMessagePressed,
-                      ),
-                    ],
+  WorkerActionButtons(
+    status: _currentRequestStatus ?? '',
+    requestLoading: _requestLoading,
+    onSendRequest: _onSendRequestPressed,
+    onCancelRequest: _onCancelRequestPressed,
+    onFinish: _onFinishPressed,
+    onMessage: _onMessagePressed,
+    onAcceptOffer: _onAcceptOfferPressed,  // Add this
+    onRejectOffer: _onRejectOfferPressed,  // Add this
+  ),
+],
 
                     const SizedBox(height: 20),
                     const SectionDivider(),

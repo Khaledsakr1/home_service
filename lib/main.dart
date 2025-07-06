@@ -21,6 +21,7 @@ import 'package:home_service/features/portfolio/presentation/pages/worker_detail
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_page.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
+import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
@@ -70,6 +71,9 @@ class Homeservice extends StatelessWidget {
         ),
          BlocProvider<RequestCubit>(
           create: (context) => di.sl<RequestCubit>(),
+        ),
+         BlocProvider<WorkerRequestCubit>(
+          create: (context) => di.sl<WorkerRequestCubit>(),
         ),
       ],
       child: MaterialApp(

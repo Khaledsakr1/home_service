@@ -21,6 +21,7 @@ class Request extends Equatable {
   final double maxBudget;
   final String projectDetails;
   final List<String> projectImages;
+  final double? workerOfferedPrice;
 
   const Request({
     required this.id,
@@ -41,6 +42,7 @@ class Request extends Equatable {
     required this.maxBudget,
     required this.projectDetails,
     required this.projectImages,
+     this.workerOfferedPrice,
   });
 
   @override
@@ -48,6 +50,6 @@ class Request extends Equatable {
     id, workerId, customerId, projectId, status,
     projectName, service, date, location, statusCode,
     apartmentType, apartmentSize, preferredStyle, materialQuality,
-    minBudget, maxBudget, projectDetails, projectImages
+    minBudget, maxBudget, projectDetails, projectImages,workerOfferedPrice,
   ];
 }

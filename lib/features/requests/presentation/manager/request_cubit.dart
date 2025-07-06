@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:home_service/features/requests/domain/usecases/add_review.dart';
+import 'package:home_service/features/requests/domain/usecases/approve_final_offer.dart';
 import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
 import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
@@ -14,6 +15,8 @@ class RequestCubit extends Cubit<RequestState> {
   final GetCustomerRequests getCustomerRequestsUseCase;
   final CompleteRequest completeRequestUseCase;
   final AddReview addReviewUseCase;
+  final ApproveFinalOffer approveFinalOfferUseCase;
+
 
   RequestCubit({
     required this.sendRequestUseCase,
@@ -21,6 +24,7 @@ class RequestCubit extends Cubit<RequestState> {
     required this.getCustomerRequestsUseCase,
     required this.completeRequestUseCase,
     required this.addReviewUseCase,
+    required this.approveFinalOfferUseCase,
   }) : super(RequestInitial());
 
   Future<void> sendRequest(int workerId, int projectId) async {
@@ -71,5 +75,21 @@ Future<void> fetchCustomerRequests({int? status}) async {
       (review) => emit(ReviewAdded(review)),
     );
   }
+
+Future<void> approveFinalOffer(int requestId, bool isApprove) async {
+  emit(RequestLoading());
+  final result = await approveFinalOfferUseCase(ApproveFinalOfferParams(requestId: requestId, isApprove: isApprove));
+  result.fold(
+    (failure) => emit(RequestError(failure.message ?? "Failed to approve/reject offer")),
+    (request) {
+      if (isApprove) {
+        emit(RequestApproved(request));
+      } else {
+        emit(RequestCancelled(request));
+      }
+    },
+  );
+}
+
 
 }

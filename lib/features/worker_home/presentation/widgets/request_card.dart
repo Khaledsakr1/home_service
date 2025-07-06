@@ -1,38 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/features/requests/domain/entities/request.dart';
 
-class RequestCardWidget extends StatelessWidget {
-  final String name;
-  final String service;
-  final String date;
-  final bool isUrgent;
-  final List<String> tags;
-  final String location;
-  final VoidCallback? onTap;
+class WorkerRequestCard extends StatelessWidget {
+  final Request request;
+  final Map<int, String> statusCodeToName;
+  final VoidCallback onTap;
 
-  const RequestCardWidget({
-    super.key,
-    required this.name,
-    required this.service,
-    required this.date,
-    required this.isUrgent,
-    required this.tags,
-    required this.location,
-    this.onTap,
-  });
+  const WorkerRequestCard({
+    Key? key,
+    required this.request,
+    required this.statusCodeToName,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final statusName = statusCodeToName[request.statusCode] ?? 'unknown';
+
+    Color statusColor;
+    IconData statusIcon;
+    switch (statusName) {
+      case 'pending':
+        statusColor = Colors.orange;
+        statusIcon = Icons.access_time;
+        break;
+      case 'accepted':
+        statusColor = Colors.green;
+        statusIcon = Icons.check_circle_rounded;
+        break;
+      case 'rejected':
+        statusColor = Colors.red;
+        statusIcon = Icons.block;
+        break;
+      case 'cancelled':
+        statusColor = Colors.grey;
+        statusIcon = Icons.cancel_outlined;
+        break;
+      case 'completed':
+        statusColor = Colors.blue;
+        statusIcon = Icons.done_all;
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusIcon = Icons.help_outline;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
+              color: Colors.grey.shade100,
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -41,100 +65,40 @@ class RequestCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with name and date
+            Text(request.projectName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 2),
+            Text(request.service, style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  date,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
+                Icon(Icons.calendar_today, size: 14, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text("Request made ${request.date}", style: const TextStyle(fontSize: 13)),
               ],
             ),
             const SizedBox(height: 4),
-            // Service title
-            Text(
-              service,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[800],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Customer details line
-            Text(
-              'Customer details.................................................',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[400],
-              ),
-            ),
-            const SizedBox(height: 12),
-            // Tags row
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                if (isUrgent) 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.red[50],
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.red[200]!),
-                    ),
-                    child: const Text(
-                      'urgent',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                const Icon(
-                  Icons.phone,
-                  size: 16,
-                  color: Colors.grey,
-                ),
-                ...tags.map((tag) => Text(
-                  tag,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                )),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Location
             Row(
               children: [
-                Icon(
-                  Icons.location_on,
-                  size: 16,
-                  color: Colors.grey[600],
-                ),
+                Icon(Icons.location_on, size: 14, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text(
-                  location,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                Expanded(child: Text(request.location, style: const TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Request #${request.id}', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(statusIcon, color: statusColor, size: 18),
+                    const SizedBox(width: 5),
+                    Text(
+                      statusName[0].toUpperCase() + statusName.substring(1),
+                      style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                  ],
                 ),
               ],
             ),
