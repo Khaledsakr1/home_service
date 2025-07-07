@@ -29,7 +29,12 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
   void _handleLoginSuccess(Map<String, dynamic> userData) async {
     final userType = await di.sl<TokenService>().getUserType();
     if (userType == 'Worker') {
-      Navigator.pushNamed(context, NavigationbarWorker.id, arguments: userData);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        NavigationbarWorker.id,
+        (route) => false,
+        arguments: userData,
+      );
     } else {
       await di.sl<TokenService>().clearToken();
       setState(() {
@@ -64,169 +69,170 @@ class _LoginAsWorkerState extends State<LoginAsWorker> {
           inAsyncCall: isLoading,
           child: Scaffold(
             backgroundColor: Colors.white,
+            resizeToAvoidBottomInset: true,
             body: LayoutBuilder(
               builder: (context, constraints) {
                 return SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: ConstrainedBox(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Container(
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
-                    child: IntrinsicHeight(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13),
-                        child: Form(
-                          key: formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const SizedBox(height: 55),
-                              Image.asset(
-                                ksignin,
-                                width: 200,
-                                height: 200,
-                              ),
-                              const SizedBox(height: 30),
-                              const Row(
-                                children: [
-                                  Text(
-                                    'Sign in as a worker',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 13,
+                        right: 13,
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(height: 55),
+                            Image.asset(
+                              ksignin,
+                              width: 200,
+                              height: 200,
+                            ),
+                            const SizedBox(height: 30),
+                            const Row(
+                              children: [
+                                Text(
+                                  'Sign in as a worker',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Textfield(
+                              onchanged: (data) {
+                                email = data;
+                              },
+                              title: 'Email',
+                              headtextfield: 'Enter Your Email',
+                            ),
+                            const SizedBox(height: 20),
+                            Textfield(
+                              obscuretext: true,
+                              onchanged: (data) {
+                                password = data;
+                              },
+                              title: 'Password',
+                              headtextfield: 'Enter Your Password',
+                            ),
+                            if (errorText != null) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8, left: 8),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    errorText!,
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                              const SizedBox(height: 20),
-                              Textfield(
-                                onchanged: (data) {
-                                  email = data;
-                                },
-                                title: 'Email',
-                                headtextfield: 'Enter Your Email',
-                              ),
-                              const SizedBox(height: 20),
-                              Textfield(
-                                obscuretext: true,
-                                onchanged: (data) {
-                                  password = data;
-                                },
-                                title: 'Password',
-                                headtextfield: 'Enter Your Password',
-                              ),
-                              if (errorText != null) ...[
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 8, left: 8),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      errorText!,
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                            ],
+                            const SizedBox(height: 60),
+                            Button(
+                              ontap: () async {
+                                if (formKey.currentState!.validate()) {
+                                  FocusScope.of(context).unfocus();
+                                  if (email != null && password != null) {
+                                    context
+                                        .read<AuthenticationCubit>()
+                                        .login(email!, password!);
+                                  }
+                                }
+                              },
+                              title: 'Login',
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Don\'t have an account?',
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.5,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                        context, RegisterAsWorker.id);
+                                  },
+                                  child: const Text(
+                                    '  Sign up',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                               ],
-                              const SizedBox(height: 60),
-                              Button(
-                                ontap: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    FocusScope.of(context).unfocus();
-                                    if (email != null && password != null) {
-                                      context
-                                          .read<AuthenticationCubit>()
-                                          .login(email!, password!);
-                                    }
-                                  }
-                                },
-                                title: 'Login',
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Don\'t have an account?',
+                            ),
+                            const SizedBox(height: 20),
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Divider(thickness: 1),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text(
+                                    'Or Sign Up with',
                                     style: TextStyle(
                                       color: Colors.black54,
-                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.5,
-                                      height: 1.5,
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, RegisterAsWorker.id);
-                                    },
-                                    child: const Text(
-                                      '  Sign up',
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              const Row(
-                                children: [
-                                  Expanded(
-                                    child: Divider(thickness: 1),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text(
-                                      'Or Sign Up with',
-                                      style: TextStyle(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Divider(thickness: 1),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SocialIconButton(
-                                    imagePath: 'assets/images/apple.png',
-                                    onTap: () {
-                                      // TODO: Implement Apple sign-in
-                                    },
-                                  ),
-                                  const SizedBox(width: 20),
-                                  SocialIconButton(
-                                    imagePath: 'assets/images/google.png',
-                                    onTap: () {
-                                      // TODO: Implement Google sign-in
-                                    },
-                                  ),
-                                  const SizedBox(width: 20),
-                                  SocialIconButton(
-                                    imagePath: 'assets/images/facebook.png',
-                                    onTap: () {
-                                      // TODO: Implement Facebook sign-in
-                                    },
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          ),
+                                ),
+                                Expanded(
+                                  child: Divider(thickness: 1),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SocialIconButton(
+                                  imagePath: 'assets/images/apple.png',
+                                  onTap: () {
+                                    // TODO: Implement Apple sign-in
+                                  },
+                                ),
+                                const SizedBox(width: 20),
+                                SocialIconButton(
+                                  imagePath: 'assets/images/google.png',
+                                  onTap: () {
+                                    // TODO: Implement Google sign-in
+                                  },
+                                ),
+                                const SizedBox(width: 20),
+                                SocialIconButton(
+                                  imagePath: 'assets/images/facebook.png',
+                                  onTap: () {
+                                    // TODO: Implement Facebook sign-in
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                          ],
                         ),
                       ),
                     ),

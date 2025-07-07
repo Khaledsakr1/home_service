@@ -49,15 +49,21 @@ class _AddressPageState extends State<AddressPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Customer? customer = ModalRoute.of(context)!.settings.arguments as Customer?;
-    if (customer == null) return const Scaffold(body: Center(child: Text("Missing data")));
+    final Customer? customer =
+        ModalRoute.of(context)!.settings.arguments as Customer?;
+    if (customer == null)
+      return const Scaffold(body: Center(child: Text("Missing data")));
 
     return BlocConsumer<AuthenticationCubit, AuthenticationState>(
       listener: (context, state) {
         if (state is AuthenticationLoading) {
           // Handle loading state if needed
         } else if (state is AuthenticationSuccess) {
-          Navigator.pushNamed(context, SuccessScreen.id);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            SuccessScreen.id,
+            (route) => false,
+          );
         } else if (state is AuthenticationError) {
           showErrorOverlayMessage(
             context,
@@ -101,7 +107,8 @@ class _AddressPageState extends State<AddressPage> {
                     CustomDropdown<City>(
                       items: cities,
                       selectedItem: selectedCity,
-                      onChanged: (value) => setState(() => selectedCity = value),
+                      onChanged: (value) =>
+                          setState(() => selectedCity = value),
                       getName: (city) => city.name,
                       label: 'Select Governoment',
                       title: 'Governoment',
@@ -174,12 +181,16 @@ class _AddressPageState extends State<AddressPage> {
                                 password: customer.password,
                                 fullName: customer.fullName,
                                 phoneNumber: customer.phoneNumber,
-                                address: '${cityController.text}, ${streetController.text}, ${buildingController.text}',
+                                address:
+                                    '${cityController.text}, ${streetController.text}, ${buildingController.text}',
                               );
-                              context.read<AuthenticationCubit>().registerCustomer(updatedCustomer);
+                              context
+                                  .read<AuthenticationCubit>()
+                                  .registerCustomer(updatedCustomer);
                             } else if (!agreed) {
                               setState(() {
-                                errorText = 'You must agree to the terms & policy';
+                                errorText =
+                                    'You must agree to the terms & policy';
                               });
                             } else {
                               setState(() {
@@ -198,5 +209,3 @@ class _AddressPageState extends State<AddressPage> {
     );
   }
 }
-
-

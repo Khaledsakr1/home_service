@@ -18,7 +18,7 @@ void showErrorOverlayMessage(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           decoration: BoxDecoration(
-            color: Colors.red.shade700,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(28),
             boxShadow: const [
               BoxShadow(
@@ -36,10 +36,10 @@ void showErrorOverlayMessage(
               Text(
                 errorMessage,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: Colors.red.shade700,
                   height: 1.4,
                 ),
               ),
@@ -48,9 +48,9 @@ void showErrorOverlayMessage(
                 Text(
                   subMessage,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontSize: 14,
-                    color: Colors.white70,
+                    color: Colors.red.shade500,
                   ),
                 ),
               ]

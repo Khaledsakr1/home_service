@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_service/widgets/Button.dart';
+import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 
@@ -273,12 +273,14 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
     return BlocConsumer<WorkerRequestCubit, WorkerRequestState>(
       listener: (context, state) {
         if (state is WorkerRequestAccepted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Request accepted!")));
+          showCustomOverlayMessage(context,
+              message: 'Success',
+              subMessage: 'Your response sended successfully!');
           Navigator.pop(context);
         } else if (state is WorkerRequestRejected) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Request rejected.")));
+          showCustomOverlayMessage(context,
+              message: 'Request rejected',
+              subMessage: 'Your request has been cancelled successfully!');
           Navigator.pop(context);
         } else if (state is WorkerRequestError) {
           ScaffoldMessenger.of(context)

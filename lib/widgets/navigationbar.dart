@@ -46,6 +46,7 @@ class _NavigationbarState extends State<Navigationbar> {
           );
         },
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: const Icon(
           Icons.add,
           size: 30,
@@ -136,30 +137,25 @@ class _NavigationbarState extends State<Navigationbar> {
           ),
           // Badge for notification count
           if (badgeCount > 0)
-            Positioned(
-              right: -8,
-              top: -4,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-                constraints: const BoxConstraints(
-                  minWidth: 20,
-                  minHeight: 20,
-                ),
-                child: Text(
-                  '$badgeCount',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+          Positioned(
+            right: -6,
+            top: -6,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '$badgeCount',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

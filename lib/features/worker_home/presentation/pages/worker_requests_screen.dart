@@ -27,11 +27,11 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
   final Map<String, int?> tabToStatusCode = {
     'All': null,
     'Pending': 0,
+    'Approve': 5,
     'Accepted': 1,
+    'Completed': 4,
     'Rejected': 2,
     'Cancelled': 3,
-    'Completed': 4,
-    'Approve': 5,
   };
 
   @override
@@ -45,7 +45,9 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
       selectedTab = tab;
     });
     final statusCode = tabToStatusCode[tab];
-    context.read<WorkerRequestCubit>().fetchReceivedRequests(status: statusCode);
+    context
+        .read<WorkerRequestCubit>()
+        .fetchReceivedRequests(status: statusCode);
   }
 
   @override
@@ -54,16 +56,20 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Received Requests', style: TextStyle(color: Colors.black)),
+        title: const Text('Received Requests',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
       ),
       body: BlocListener<WorkerRequestCubit, WorkerRequestState>(
         listener: (context, state) {
-          if (state is WorkerRequestAccepted || state is WorkerRequestRejected) {
+          if (state is WorkerRequestAccepted ||
+              state is WorkerRequestRejected) {
             final tabStatus = tabToStatusCode[selectedTab];
-            context.read<WorkerRequestCubit>().fetchReceivedRequests(status: tabStatus);
+            context
+                .read<WorkerRequestCubit>()
+                .fetchReceivedRequests(status: tabStatus);
           }
         },
         child: Padding(
@@ -71,26 +77,41 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
           child: BlocBuilder<WorkerRequestCubit, WorkerRequestState>(
             builder: (context, state) {
               int pendingCount = 0;
+              int approveCount = 0;
+              int acceptedCount = 0;
               if (state is WorkerRequestsLoaded) {
-                pendingCount = state.requests.where((r) => r.statusCode == 0).length;
+                pendingCount =
+                    state.requests.where((r) => r.statusCode == 0).length;
+                approveCount =
+                    state.requests.where((r) => r.statusCode == 5).length;
+                acceptedCount =
+                    state.requests.where((r) => r.statusCode == 1).length;
               }
               return Column(
                 children: [
                   FilterTabs(
                     selectedTab: selectedTab,
                     onTabChanged: _onTabChanged,
-                    approveCount: pendingCount,
-                    isWorkerView: true, // Enable worker view to show notification on Pending
+                    tabCounts: {
+                      'Pending': pendingCount,
+                      // Add other counts as needed, e.g.:
+                      'Approve': approveCount,
+                      'Accepted': acceptedCount,
+                    },
+                    isWorkerView: true,
                   ),
                   const SizedBox(height: 8),
                   Expanded(
                     child: BlocBuilder<WorkerRequestCubit, WorkerRequestState>(
                       builder: (context, state) {
                         if (state is WorkerRequestLoading) {
-                          return const Center(child: CircularProgressIndicator(color: Colors.green));
+                          return const Center(
+                              child: CircularProgressIndicator(
+                                  color: Colors.green));
                         } else if (state is WorkerRequestError) {
                           return Center(
-                            child: Text('Error: ${state.message}', style: const TextStyle(color: Colors.red)),
+                            child: Text('Error: ${state.message}',
+                                style: const TextStyle(color: Colors.red)),
                           );
                         } else if (state is WorkerRequestsLoaded) {
                           final requests = state.requests;
@@ -98,7 +119,8 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
                             return Center(
                               child: Text(
                                 'No ${selectedTab.toLowerCase()} requests found',
-                                style: const TextStyle(color: Colors.grey, fontSize: 16),
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 16),
                               ),
                             );
                           }
@@ -124,7 +146,8 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
                             },
                           );
                         }
-                        return const Center(child: Text('No requests available'));
+                        return const Center(
+                            child: Text('No requests available'));
                       },
                     ),
                   ),
