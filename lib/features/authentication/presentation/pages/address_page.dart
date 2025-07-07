@@ -8,6 +8,7 @@ import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/widgets/Dropdown.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class City {
   final int id;
@@ -57,7 +58,7 @@ class _AddressPageState extends State<AddressPage> {
     return BlocConsumer<AuthenticationCubit, AuthenticationState>(
       listener: (context, state) {
         if (state is AuthenticationLoading) {
-          // Handle loading state if needed
+          // CircularProgressIndicator(color: kPrimaryColor,);
         } else if (state is AuthenticationSuccess) {
           Navigator.pushNamedAndRemoveUntil(
             context,
@@ -73,133 +74,147 @@ class _AddressPageState extends State<AddressPage> {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-              leading: const BackButton(
-                color: Colors.green,
-              ),
-              elevation: 0),
-          body: Padding(
-            padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Image.asset(
-                      ksignup,
-                      width: 200,
-                      height: 200,
-                    ),
-                    const SizedBox(height: 20),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Enter your address',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+        final isLoading = state is AuthenticationLoading;
+        return ModalProgressHUD(
+          inAsyncCall: isLoading,
+          progressIndicator: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+          ),
+          child: Scaffold(
+            appBar: AppBar(
+                leading: const BackButton(
+                  color: Colors.green,
+                ),
+                elevation: 0),
+            body: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        ksignup,
+                        width: 200,
+                        height: 200,
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    CustomDropdown<City>(
-                      items: cities,
-                      selectedItem: selectedCity,
-                      onChanged: (value) =>
-                          setState(() => selectedCity = value),
-                      getName: (city) => city.name,
-                      label: 'Select Governoment',
-                      title: 'Governoment',
-                    ),
-                    const SizedBox(height: 10),
-                    Textfield(
-                        title: 'City',
-                        headtextfield: 'Enter your city name',
-                        controller: cityController),
-                    const SizedBox(height: 10),
-                    Textfield(
-                        title: 'Street Name',
-                        headtextfield: 'Enter your street name',
-                        controller: streetController),
-                    const SizedBox(height: 10),
-                    Textfield(
-                        title: 'Building Number',
-                        headtextfield: 'Enter your building number',
-                        controller: buildingController),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Checkbox(
-                            value: agreed,
-                            onChanged: (val) =>
-                                setState(() => agreed = val ?? false)),
-                        const Text.rich(TextSpan(
-                          children: [
-                            TextSpan(text: "I agree to the "),
-                            TextSpan(
-                              text: "terms & policy",
-                              style: TextStyle(
-                                color: Colors.green,
-                                decoration: TextDecoration.underline,
-                              ),
-                            )
-                          ],
-                        )),
-                      ],
-                    ),
-                    if (errorText != null) ...[
-                      Align(
+                      const SizedBox(height: 20),
+                      const Align(
                         alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 5),
-                          child: Text(
-                            errorText!,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
+                        child: Text(
+                          'Enter your address',
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ],
-                    const SizedBox(height: 10),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Button(
-                          title: 'Continue',
-                          ontap: () async {
-                            setState(() {
-                              errorText = null;
-                            });
+                      const SizedBox(height: 20),
+                      CustomDropdown<City>(
+                        items: cities,
+                        selectedItem: selectedCity,
+                        onChanged: (value) =>
+                            setState(() => selectedCity = value),
+                        getName: (city) => city.name,
+                        label: 'Select Governoment',
+                        title: 'Governoment',
+                      ),
+                      const SizedBox(height: 10),
+                      Textfield(
+                          title: 'City',
+                          headtextfield: 'Enter your city name',
+                          controller: cityController),
+                      const SizedBox(height: 10),
+                      Textfield(
+                          title: 'Street Name',
+                          headtextfield: 'Enter your street name',
+                          controller: streetController),
+                      const SizedBox(height: 10),
+                      Textfield(
+                          title: 'Building Number',
+                          headtextfield: 'Enter your building number',
+                          controller: buildingController),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Checkbox(
+                              value: agreed,
+                              onChanged: (val) =>
+                                  setState(() => agreed = val ?? false)),
+                          const Text.rich(TextSpan(
+                            children: [
+                              TextSpan(text: "I agree to the "),
+                              TextSpan(
+                                text: "terms & policy",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              )
+                            ],
+                          )),
+                        ],
+                      ),
+                      if (errorText != null) ...[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 5),
+                            child: Text(
+                              errorText!,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 10),
+                      SizedBox(
+                          width: double.infinity,
+                          child: Button(
+                            title: 'Continue',
+                            ontap: () async {
+                              setState(() {
+                                errorText = null;
+                              });
 
-                            if (_formKey.currentState!.validate() && agreed) {
-                              final updatedCustomer = Customer(
-                                email: customer.email,
-                                password: customer.password,
-                                fullName: customer.fullName,
-                                phoneNumber: customer.phoneNumber,
-                                address:
-                                    '${cityController.text}, ${streetController.text}, ${buildingController.text}',
-                              );
-                              context
-                                  .read<AuthenticationCubit>()
-                                  .registerCustomer(updatedCustomer);
-                            } else if (!agreed) {
-                              setState(() {
-                                errorText =
-                                    'You must agree to the terms & policy';
-                              });
-                            } else {
-                              setState(() {
-                                errorText = 'Please fill all fields correctly';
-                              });
-                            }
-                          },
-                        ))
-                  ],
+                              if (_formKey.currentState!.validate() && agreed) {
+                                final updatedCustomer = Customer(
+                                  email: customer.email,
+                                  password: customer.password,
+                                  confirmPassword: customer.password,
+                                  name: customer.name,
+                                  phoneNumber: customer.phoneNumber,
+                                  address:
+                                      '${cityController.text}, ${streetController.text}, ${buildingController.text}',
+                                  buildingNumber: buildingController.text,
+                                  cityId: selectedCity?.id ?? 0,
+                                  age: 20,
+                                );
+                                print(updatedCustomer);
+                                context
+                                    .read<AuthenticationCubit>()
+                                    .registerCustomer(updatedCustomer);
+                              } else if (!agreed) {
+                                setState(() {
+                                  errorText =
+                                      'You must agree to the terms & policy';
+                                });
+                              } else {
+                                setState(() {
+                                  errorText =
+                                      'Please fill all fields correctly';
+                                });
+                              }
+                            },
+                          ))
+                    ],
+                  ),
                 ),
               ),
             ),

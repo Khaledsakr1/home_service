@@ -70,9 +70,9 @@ class _SignUpClientPageState extends State<SignUpClientPage> {
                     final updatedCustomer = Customer(
                       email: customer.email,
                       password: customer.password,
-                      fullName: '${firstNameController.text} ${lastNameController.text}',
+                      name: '${firstNameController.text} ${lastNameController.text}',
                       phoneNumber: customer.phoneNumber,
-                      address: customer.address,
+                      address: customer.address, confirmPassword: customer.password, buildingNumber: customer.buildingNumber, cityId: customer.cityId,
                     );
                     Navigator.pushNamed(context, PhoneNumberPage.id, arguments: updatedCustomer);
                   } else {

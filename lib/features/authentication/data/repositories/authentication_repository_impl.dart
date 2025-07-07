@@ -12,16 +12,30 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   AuthenticationRepositoryImpl({required this.remoteDataSource});
 
-  @override
-  Future<Either<Failure, String>> registerCustomer(Customer customer) async {
-    try {
-      final result =
-          await remoteDataSource.registerCustomer(customer as CustomerModel);
-      return Right(result);
-    } catch (e) {
-      return Left(ServerFailure());
-    }
+@override
+Future<Either<Failure, String>> registerCustomer(Customer customer) async {
+  try {
+    // Convert Customer to CustomerModel
+    final model = CustomerModel(
+      name: customer.name,
+      email: customer.email,
+      password: customer.password,
+      confirmPassword: customer.confirmPassword,
+      phoneNumber: customer.phoneNumber,
+      address: customer.address,
+      buildingNumber: customer.buildingNumber,
+      cityId: customer.cityId,
+      age: customer.age ?? 0,
+    );
+
+    final result = await remoteDataSource.registerCustomer(model);
+    return Right(result);
+  } catch (e) {
+    print('registerCustomer repo error: $e');
+    return Left(ServerFailure());
   }
+}
+
 
   @override
   Future<Either<Failure, bool>> checkEmailExists(String email) async {

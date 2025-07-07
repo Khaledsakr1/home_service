@@ -107,9 +107,12 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                       final updatedCustomer = Customer(
                         email: customer.email,
                         password: customer.password,
-                        fullName: customer.fullName,
+                        confirmPassword: customer.confirmPassword,
+                        name: customer.name,
                         phoneNumber: phoneController.text,
                         address: customer.address,
+                        buildingNumber: customer.buildingNumber,
+                        cityId: customer.cityId,
                       );
                       Navigator.pushNamed(context, AddressPage.id, arguments: updatedCustomer);
                     } else {

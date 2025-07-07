@@ -28,6 +28,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }) : super(AuthenticationInitial());
 
 Future<void> registerCustomer(Customer customer) async {
+   print("registerCustomer called with: $customer");
   emit(AuthenticationLoading());
   final failureOrSuccess = await registerCustomerUseCase(customer);
   failureOrSuccess.fold(
