@@ -5,6 +5,7 @@ class Request extends Equatable {
   final int workerId;
   final int customerId;
   final int projectId;
+  final String customerName;
   final String status;
   final String projectName;
   final String service;
@@ -28,6 +29,7 @@ class Request extends Equatable {
     required this.workerId,
     required this.customerId,
     required this.projectId,
+    required this.customerName,
     required this.status,
     required this.projectName,
     required this.service,
@@ -42,14 +44,30 @@ class Request extends Equatable {
     required this.maxBudget,
     required this.projectDetails,
     required this.projectImages,
-     this.workerOfferedPrice,
+    this.workerOfferedPrice,
   });
 
   @override
   List<Object?> get props => [
-    id, workerId, customerId, projectId, status,
-    projectName, service, date, location, statusCode,
-    apartmentType, apartmentSize, preferredStyle, materialQuality,
-    minBudget, maxBudget, projectDetails, projectImages,workerOfferedPrice,
-  ];
+        id,
+        workerId,
+        customerId,
+        projectId,
+        status,
+        projectName,
+        service,
+        date,
+        location,
+        statusCode,
+        apartmentType,
+        apartmentSize,
+        preferredStyle,
+        materialQuality,
+        minBudget,
+        maxBudget,
+        projectDetails,
+        projectImages,
+        workerOfferedPrice,
+        customerName,
+      ];
 }

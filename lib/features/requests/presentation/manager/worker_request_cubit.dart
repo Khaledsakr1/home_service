@@ -1,5 +1,3 @@
-// lib/features/requests/presentation/manager/worker_request_cubit.dart
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/request.dart';
@@ -29,9 +27,9 @@ class WorkerRequestCubit extends Cubit<WorkerRequestState> {
     );
   }
 
-  Future<void> acceptRequest(int requestId) async {
+  Future<void> acceptRequest(int requestId, double price) async {
     emit(WorkerRequestLoading());
-    final result = await acceptRequestUseCase(requestId);
+    final result = await acceptRequestUseCase(AcceptRequestParams(requestId: requestId, price: price));
     result.fold(
       (failure) => emit(WorkerRequestError(failure.message ?? "Failed to accept request")),
       (request) => emit(WorkerRequestAccepted(request)),

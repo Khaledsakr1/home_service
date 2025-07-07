@@ -1,20 +1,16 @@
-// lib/features/requests/data/datasources/worker_request_remote_data_source.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../../core/services/token_service.dart';
 import '../../../../../injection_container.dart';
-
 import '../model/request_model.dart';
 
 abstract class WorkerRequestRemoteDataSource {
   Future<List<RequestModel>> getReceivedRequests({int? status});
-  Future<RequestModel> acceptRequest(int requestId);
+  Future<RequestModel> acceptRequest(int requestId, double price);
   Future<RequestModel> rejectRequest(int requestId);
 }
 
-class WorkerRequestRemoteDataSourceImpl
-    implements WorkerRequestRemoteDataSource {
+class WorkerRequestRemoteDataSourceImpl implements WorkerRequestRemoteDataSource {
   final http.Client client;
   static const String baseUrl =
       'https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net';
@@ -44,7 +40,7 @@ class WorkerRequestRemoteDataSourceImpl
   }
 
   @override
-  Future<RequestModel> acceptRequest(int requestId) async {
+  Future<RequestModel> acceptRequest(int requestId, double price) async {
     final token = sl<TokenService>().token ?? '';
     final uri = Uri.parse('$baseUrl/api/Requests/worker-accept/$requestId');
     final response = await client.put(
@@ -53,11 +49,14 @@ class WorkerRequestRemoteDataSourceImpl
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
+      body: price.toString() // This sends just 250.6
+
     );
     if (response.statusCode == 200) {
       return RequestModel.fromJson(jsonDecode(response.body));
     } else {
-      print(response.statusCode);
+      print('Accept request failed with status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       throw Exception('Failed to accept request');
     }
   }

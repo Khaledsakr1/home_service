@@ -175,7 +175,7 @@ class _RequestsscreenState extends State<Requestsscreen> {
       ),
       body: BlocListener<RequestCubit, RequestState>(
         listener: (context, state) {
-          if (state is RequestCancelled || state is RequestSent) {
+          if (state is RequestCancelled || state is RequestSent || state is RequestApproved) {
             // Refresh the requests after cancelling or sending a request
             final tabStatus = tabToStatusCode[selectedTab];
             context.read<RequestCubit>().fetchCustomerRequests(status: tabStatus);
@@ -201,7 +201,7 @@ class _RequestsscreenState extends State<Requestsscreen> {
                     child: BlocBuilder<RequestCubit, RequestState>(
                       builder: (context, state) {
                         if (state is RequestLoading) {
-                          return const Center(child: CircularProgressIndicator(color: Colors.green));
+                          // return const Center(child: CircularProgressIndicator(color: Colors.green));
                         } else if (state is RequestError) {
                           return Center(
                             child: Text('Error: ${state.message}', style: const TextStyle(color: Colors.red)),

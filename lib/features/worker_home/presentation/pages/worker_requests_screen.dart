@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/widgets/request_card.dart';
+import '../widgets/filter_tabs.dart';
 import 'requestviewdetails.dart';
 
 class WorkerRequestsScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
     2: 'rejected',
     3: 'cancelled',
     4: 'completed',
+    5: 'approve',
   };
 
   final Map<String, int?> tabToStatusCode = {
@@ -29,6 +31,7 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
     'Rejected': 2,
     'Cancelled': 3,
     'Completed': 4,
+    'Approve': 5,
   };
 
   @override
@@ -38,7 +41,9 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
   }
 
   void _onTabChanged(String tab) {
-    setState(() => selectedTab = tab);
+    setState(() {
+      selectedTab = tab;
+    });
     final statusCode = tabToStatusCode[tab];
     context.read<WorkerRequestCubit>().fetchReceivedRequests(status: statusCode);
   }
@@ -46,97 +51,88 @@ class _WorkerRequestsScreenState extends State<WorkerRequestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Received Requests"), centerTitle: true),
-      body: BlocConsumer<WorkerRequestCubit, WorkerRequestState>(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Received Requests', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: BlocListener<WorkerRequestCubit, WorkerRequestState>(
         listener: (context, state) {
           if (state is WorkerRequestAccepted || state is WorkerRequestRejected) {
-            final statusCode = tabToStatusCode[selectedTab];
-            context.read<WorkerRequestCubit>().fetchReceivedRequests(status: statusCode);
+            final tabStatus = tabToStatusCode[selectedTab];
+            context.read<WorkerRequestCubit>().fetchReceivedRequests(status: tabStatus);
           }
         },
-        builder: (context, state) {
-          return Column(
-            children: [
-              _FilterTabs(
-                selectedTab: selectedTab,
-                onTabChanged: _onTabChanged,
-              ),
-              Expanded(
-                child: () {
-                  if (state is WorkerRequestLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is WorkerRequestsLoaded) {
-                    if (state.requests.isEmpty) {
-                      return const Center(child: Text('No requests found'));
-                    }
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(12),
-                      itemCount: state.requests.length,
-                      itemBuilder: (context, i) {
-                        final req = state.requests[i];
-                        return WorkerRequestCard(
-                          request: req,
-                          statusCodeToName: statusCodeToName,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => Requestviewdetails(
-                                  request: req,
-                                ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: BlocBuilder<WorkerRequestCubit, WorkerRequestState>(
+            builder: (context, state) {
+              int pendingCount = 0;
+              if (state is WorkerRequestsLoaded) {
+                pendingCount = state.requests.where((r) => r.statusCode == 0).length;
+              }
+              return Column(
+                children: [
+                  FilterTabs(
+                    selectedTab: selectedTab,
+                    onTabChanged: _onTabChanged,
+                    approveCount: pendingCount,
+                    isWorkerView: true, // Enable worker view to show notification on Pending
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: BlocBuilder<WorkerRequestCubit, WorkerRequestState>(
+                      builder: (context, state) {
+                        if (state is WorkerRequestLoading) {
+                          return const Center(child: CircularProgressIndicator(color: Colors.green));
+                        } else if (state is WorkerRequestError) {
+                          return Center(
+                            child: Text('Error: ${state.message}', style: const TextStyle(color: Colors.red)),
+                          );
+                        } else if (state is WorkerRequestsLoaded) {
+                          final requests = state.requests;
+                          if (requests.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No ${selectedTab.toLowerCase()} requests found',
+                                style: const TextStyle(color: Colors.grey, fontSize: 16),
                               ),
                             );
-                          },
-                        );
+                          }
+                          return ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: requests.length,
+                            itemBuilder: (context, index) {
+                              final request = requests[index];
+                              return WorkerRequestCard(
+                                request: request,
+                                statusCodeToName: statusCodeToName,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Requestviewdetails(
+                                        request: request,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        }
+                        return const Center(child: Text('No requests available'));
                       },
-                    );
-                  } else if (state is WorkerRequestError) {
-                    return Center(child: Text('Error: ${state.message}'));
-                  }
-                  return const SizedBox.shrink();
-                }(),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-// Simple tabs (reusable)
-class _FilterTabs extends StatelessWidget {
-  final String selectedTab;
-  final ValueChanged<String> onTabChanged;
-  const _FilterTabs({required this.selectedTab, required this.onTabChanged, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final tabs = ['All', 'Pending', 'Accepted', 'Rejected', 'Cancelled', 'Completed'];
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: tabs.map((tab) {
-          final isSelected = selectedTab == tab;
-          return GestureDetector(
-            onTap: () => onTabChanged(tab),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.green : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                tab,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          );
-        }).toList(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

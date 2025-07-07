@@ -1,4 +1,3 @@
-// lib/features/requests/data/repositories/worker_request_repository_impl.dart
 import 'package:dartz/dartz.dart';
 import '../../../../../core/error/failures.dart';
 import '../../domain/entities/request.dart';
@@ -21,9 +20,9 @@ class WorkerRequestRepositoryImpl implements WorkerRequestRepository {
   }
 
   @override
-  Future<Either<Failure, Request>> acceptRequest(int requestId) async {
+  Future<Either<Failure, Request>> acceptRequest(int requestId, double price) async {
     try {
-      final result = await remote.acceptRequest(requestId);
+      final result = await remote.acceptRequest(requestId, price);
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
