@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/services/token_service.dart';
+import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/worker_details/presentation/pages/service_view_details.dart.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:home_service/injection_container.dart' as di;
 
 class RequestedProjectDetailsScreen extends StatefulWidget {
   final int projectId;
@@ -27,7 +33,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
     super.dispose();
   }
 
- 
   @override
   Widget build(BuildContext context) {
     // Initialize here!
@@ -222,17 +227,59 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
                   // --- Only show message button for pending/accepted ---
                   if (widget.request.status == 'pending' ||
-                      widget.request.status == 'accepted' ||  widget.request.status == 'approve') ...[
+                      widget.request.status == 'accepted' ||
+                      widget.request.status == 'approve') ...[
                     Row(
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () {
-                              // Implement your message logic here
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Messaging feature coming soon!')),
+                            onPressed: () async {
+                              final token =
+                                  await di.sl<TokenService>().getToken();
+                              if (token == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Missing token')),
+                                );
+                                return;
+                              }
+
+                              final userData = JwtDecoder.decode(token);
+
+                              final userId = userData.containsKey('workerId')
+                                  ? userData['workerId']
+                                  : userData.containsKey('customerId')
+                                      ? userData['customerId']
+                                      : userData.containsKey(
+                                              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                                          ? int.tryParse(userData[
+                                                  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                                              .toString())
+                                          : null;
+
+                              if (userId == null ||
+                                  widget.request.id == null ||
+                                  widget.request.workerId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Missing required chat info')),
+                                );
+                                return;
+                              }
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => di.sl<ChatCubit>(),
+                                    child: ChatScreen(
+                                      userId: userId,
+                                      requestId: widget.request.id!,
+                                      receiverId: widget.request.workerId!,
+                                    ),
+                                  ),
+                                ),
                               );
                             },
                             icon: const Icon(Icons.message_outlined,

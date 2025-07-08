@@ -1,10 +1,11 @@
-// lib/features/worker_details/presentation/pages/service_view_details.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/client_project/presentation/pages/project_list_page.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
@@ -23,6 +24,8 @@ import 'package:home_service/features/worker_details/presentation/widgets/worker
 import 'package:home_service/features/worker_details/presentation/widgets/worker_reviews_section.dart';
 import 'package:home_service/injection_container.dart' as di;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:http/http.dart' as http;
+
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
@@ -58,7 +61,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   bool _requestLoading = false;
   String? _currentRequestStatus;
   bool _hasReviewed = false; // This will track if review has been submitted
-  bool _showReviewDialogValiable = false; // This will control when to show the dialog
+  bool _showReviewDialogValiable =
+      false; // This will control when to show the dialog
 
   @override
   void initState() {
@@ -73,7 +77,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
     // If coming from a completed request, don't show review dialog yet
     if (_currentRequestStatus == 'completed') {
-      _hasReviewed = true; // Assume already reviewed if coming from completed status
+      _hasReviewed =
+          true; // Assume already reviewed if coming from completed status
     }
 
     // Decode user type from JWT token
@@ -148,46 +153,48 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   }
 
   void _onAcceptOfferPressed() async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => const ConfirmationDialog(
-      title: 'Accept Final Offer',
-      content: 'Are you sure you want to accept this final offer? This will proceed with the project.',
-      confirmText: 'Accept Offer',
-      cancelText: 'Cancel',
-      isDestructive: false,
-    ),
-  );
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationDialog(
+        title: 'Accept Final Offer',
+        content:
+            'Are you sure you want to accept this final offer? This will proceed with the project.',
+        confirmText: 'Accept Offer',
+        cancelText: 'Cancel',
+        isDestructive: false,
+      ),
+    );
 
-  if (confirmed == true) {
-    setState(() => _requestLoading = true);
-    final requestId = _sentRequestId ?? widget.requestId;
-    if (requestId != null) {
-      context.read<RequestCubit>().approveFinalOffer(requestId, true);
+    if (confirmed == true) {
+      setState(() => _requestLoading = true);
+      final requestId = _sentRequestId ?? widget.requestId;
+      if (requestId != null) {
+        context.read<RequestCubit>().approveFinalOffer(requestId, true);
+      }
     }
   }
-}
 
-void _onRejectOfferPressed() async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => const ConfirmationDialog(
-      title: 'Reject Final Offer',
-      content: 'Are you sure you want to reject this final offer? This will end the project negotiation.',
-      confirmText: 'Reject Offer',
-      cancelText: 'Keep Offer',
-      isDestructive: true,
-    ),
-  );
+  void _onRejectOfferPressed() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationDialog(
+        title: 'Reject Final Offer',
+        content:
+            'Are you sure you want to reject this final offer? This will end the project negotiation.',
+        confirmText: 'Reject Offer',
+        cancelText: 'Keep Offer',
+        isDestructive: true,
+      ),
+    );
 
-  if (confirmed == true) {
-    setState(() => _requestLoading = true);
-    final requestId = _sentRequestId ?? widget.requestId;
-    if (requestId != null) {
-      context.read<RequestCubit>().approveFinalOffer(requestId, false);
+    if (confirmed == true) {
+      setState(() => _requestLoading = true);
+      final requestId = _sentRequestId ?? widget.requestId;
+      if (requestId != null) {
+        context.read<RequestCubit>().approveFinalOffer(requestId, false);
+      }
     }
   }
-}
 
   void _onFinishPressed() async {
     final confirmed = await showDialog<bool>(
@@ -228,8 +235,53 @@ void _onRejectOfferPressed() async {
   }
 
   void _onMessagePressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Messaging feature coming soon!')),
+    final token = di.sl<TokenService>().token;
+    final requestId = _sentRequestId ?? widget.requestId;
+
+    print(
+        "token: $token | requestId: $requestId | workerId: ${widget.workerId}");
+
+    if (token == null || requestId == null || widget.workerId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Missing required chat information')),
+      );
+      return;
+    }
+
+    final userData = JwtDecoder.decode(token);
+
+    final userId = userData.containsKey('workerId')
+        ? userData['workerId']
+        : userData.containsKey('customerId')
+            ? userData['customerId']
+            : userData.containsKey(
+                    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                ? int.tryParse(userData[
+                        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                    .toString())
+                : null;
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User ID not found in token')),
+      );
+      return;
+    }
+
+    final receiverId = widget.workerId!;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => di.sl<ChatCubit>(),
+          child: ChatScreen(
+            userId: userId,
+            requestId: requestId,
+            receiverId: receiverId,
+          ),
+        ),
+      ),
     );
   }
 
@@ -261,7 +313,7 @@ void _onRejectOfferPressed() async {
             _hasReviewed = false; // Reset this to allow review
             _showReviewDialogValiable = true; // Enable review dialog
           });
-          
+
           // Show review dialog after completion ONLY if user is customer
           if (_userType != 'Worker') {
             Future.delayed(const Duration(milliseconds: 1000), () {
@@ -269,14 +321,13 @@ void _onRejectOfferPressed() async {
             });
           }
         } else if (state is RequestApproved) {
-    // Don't show review dialog here!
-    setState(() {
-      _currentRequestStatus = 'accepted'; // or 'approve', as needed
-    });
-    showCustomOverlayMessage(context, message: "Offer accepted successfully!");
-  }
-        
-         else if (state is ReviewAdded) {
+          // Don't show review dialog here!
+          setState(() {
+            _currentRequestStatus = 'accepted'; // or 'approve', as needed
+          });
+          showCustomOverlayMessage(context,
+              message: "Offer accepted successfully!");
+        } else if (state is ReviewAdded) {
           setState(() {
             _hasReviewed = true; // Mark as reviewed
             _showReviewDialogValiable = false;
@@ -323,6 +374,29 @@ void _onRejectOfferPressed() async {
                   ),
                 ),
                 centerTitle: true,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.bug_report, color: Colors.red),
+                    onPressed: () async {
+                      final token = await di.sl<TokenService>().getToken();
+                      print("🔑 Token: $token");
+
+                      final uri = Uri.parse(
+                          "https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net/chatHub/negotiate");
+
+                      try {
+                        final response = await http.post(uri, headers: {
+                          'Authorization': 'Bearer $token',
+                        });
+
+                        print("📡 Status Code: ${response.statusCode}");
+                        print("📄 Response Body: ${response.body}");
+                      } catch (e) {
+                        print("❌ Network error: $e");
+                      }
+                    },
+                  ),
+                ],
               ),
               body: SingleChildScrollView(
                 controller: scrollController,
@@ -365,17 +439,17 @@ void _onRejectOfferPressed() async {
 
                     // Action buttons section
                     if (_userType != 'Worker') ...[
-  WorkerActionButtons(
-    status: _currentRequestStatus ?? '',
-    requestLoading: _requestLoading,
-    onSendRequest: _onSendRequestPressed,
-    onCancelRequest: _onCancelRequestPressed,
-    onFinish: _onFinishPressed,
-    onMessage: _onMessagePressed,
-    onAcceptOffer: _onAcceptOfferPressed,  // Add this
-    onRejectOffer: _onRejectOfferPressed,  // Add this
-  ),
-],
+                      WorkerActionButtons(
+                        status: _currentRequestStatus ?? '',
+                        requestLoading: _requestLoading,
+                        onSendRequest: _onSendRequestPressed,
+                        onCancelRequest: _onCancelRequestPressed,
+                        onFinish: _onFinishPressed,
+                        onMessage: _onMessagePressed,
+                        onAcceptOffer: _onAcceptOfferPressed, // Add this
+                        onRejectOffer: _onRejectOfferPressed, // Add this
+                      ),
+                    ],
 
                     const SizedBox(height: 20),
                     const SectionDivider(),

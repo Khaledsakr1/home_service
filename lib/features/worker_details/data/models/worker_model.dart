@@ -22,6 +22,7 @@ class WorkerModel extends Worker {
     required bool isBlocked,
     required List<ReviewModel> reviews,
     required List<PortfolioItemModel> portfolioItems,
+     int? requestId,
   }) : super(
     id: id,
     userId: userId,
@@ -41,6 +42,7 @@ class WorkerModel extends Worker {
     isBlocked: isBlocked,
     reviews: reviews,
     portfolioItems: portfolioItems,
+    requestId: requestId,
   );
 
   factory WorkerModel.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,7 @@ class WorkerModel extends Worker {
           ? []
           : List<PortfolioItemModel>.from(
               json['portfolioItems'].map((x) => PortfolioItemModel.fromJson(x))),
+               requestId: json['requestId'],
     );
   }
 }
@@ -122,5 +125,6 @@ class PortfolioItemModel extends PortfolioItem {
         : List<String>.from(json['imageUrls']),
     );
   }
+
 }
 

@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
+import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
+import 'package:http/http.dart' as http;
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/data/datasources/authentication_remote_data_source.dart';
 import 'package:home_service/features/authentication/data/repositories/authentication_repository_impl.dart';
@@ -65,116 +68,52 @@ import 'package:home_service/features/worker_settings/domain/usecases/fetch_work
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
-import 'package:http/http.dart' as http;
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Features - Authentication
-  sl.registerFactory(
-    () => AuthenticationCubit(
-      loginUserUseCase: sl(),
-      registerCustomerUseCase: sl(),
-      registerWorkerUseCase: sl(),
-      checkEmailExistsUseCase: sl(),
-    ),
-  );
+  // External
+  sl.registerLazySingleton(() => http.Client());
 
-  // Use cases
+  // Services
+  sl.registerLazySingleton<TokenService>(() => TokenService());
+
+  // ✅ Chat SignalR Service
+  sl.registerLazySingleton<ChatSignalRService>(() => ChatSignalRService());
+
+  // Chat Cubit
+  sl.registerFactory(() => ChatCubit(chatService: sl()));
+
+
+  // ===================== AUTH =====================
+  sl.registerFactory(() => AuthenticationCubit(
+        loginUserUseCase: sl(),
+        registerCustomerUseCase: sl(),
+        registerWorkerUseCase: sl(),
+        checkEmailExistsUseCase: sl(),
+      ));
   sl.registerLazySingleton(() => LoginUser(sl()));
   sl.registerLazySingleton(() => RegisterCustomer(sl()));
   sl.registerLazySingleton(() => RegisterWorker(sl()));
   sl.registerLazySingleton(() => CheckEmailExists(sl()));
-
-  // Repository
   sl.registerLazySingleton<AuthenticationRepository>(
     () => AuthenticationRepositoryImpl(remoteDataSource: sl()),
   );
-
-  // Data sources
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
     () => AuthenticationRemoteDataSourceImpl(client: sl()),
   );
 
-  // Features - Services
-  sl.registerFactory(
-    () => ServicesCubit(
-      getServicesUseCase: sl(),
-    ),
-  );
-
-  // Use cases
+  // ===================== SERVICES =====================
+  sl.registerFactory(() => ServicesCubit(getServicesUseCase: sl()));
   sl.registerLazySingleton(() => GetServices(sl()));
-
-  // Repository
   sl.registerLazySingleton<ServiceRepository>(
     () => ServiceRepositoryImpl(remoteDataSource: sl()),
   );
-
-  // Data sources
   sl.registerLazySingleton<ServiceRemoteDataSource>(
     () => ServiceRemoteDataSourceImpl(client: sl()),
   );
 
-  // Features - Portfolio
-  sl.registerFactory(
-    () => PortfolioCubit(
-      addPortfolioUseCase: sl(),
-      updatePortfolioUseCase: sl(),
-      addPortfolioImagesUseCase: sl(),
-      getPortfoliosUseCase: sl(),
-      deletePortfolioUseCase: sl(),
-    ),
-  );
-
-  // Use cases
-  sl.registerLazySingleton(() => AddPortfolio(sl()));
-  sl.registerLazySingleton(() => UpdatePortfolio(sl()));
-  sl.registerLazySingleton(() => DeletePortfolio(sl()));
-  sl.registerLazySingleton(() => GetPortfolios(sl()));
-  sl.registerLazySingleton(() => AddPortfolioImages(sl()));
-
-  // Repository
-  sl.registerLazySingleton<PortfolioRepository>(
-    () => PortfolioRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // Data sources
-  sl.registerLazySingleton<PortfolioRemoteDataSource>(
-    () => PortfolioRemoteDataSourceImpl(client: sl()),
-  );
-
-  // Features - Worker Settings
-  sl.registerFactory(
-    () => WorkerSettingsCubit(
-      fetchWorkerProfileUseCase: sl(),
-      updateWorkerProfileUseCase: sl(),
-      updateProfilePictureUseCase: sl(),
-      changePasswordUseCase: sl(),
-      deleteAccountUseCase: sl(),
-      deactivateAccountUseCase: sl(),
-    ),
-  );
-
-  // Use cases
-  sl.registerLazySingleton(() => FetchWorkerProfile(sl()));
-  sl.registerLazySingleton(() => UpdateWorkerProfile(sl()));
-  sl.registerLazySingleton(() => UpdateWorkerProfileWithImage(sl()));
-  sl.registerLazySingleton(() => ChangePassword(sl()));
-  sl.registerLazySingleton(() => DeleteAccount(sl()));
-  sl.registerLazySingleton(() => DeactivateAccount(sl()));
-
-  // Repository
-  sl.registerLazySingleton<WorkerSettingsRepository>(
-    () => WorkerSettingsRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // Data sources
-  sl.registerLazySingleton<WorkerSettingsRemoteDataSource>(
-    () => WorkerSettingsRemoteDataSourceImpl(),
-  );
-
-// Worker
+  // ===================== WORKER =====================
   sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
   sl.registerLazySingleton(() => GetWorkerById(sl()));
   sl.registerLazySingleton<WorkerRepository>(
@@ -182,17 +121,33 @@ Future<void> init() async {
   sl.registerLazySingleton<WorkerRemoteDataSource>(
       () => WorkerRemoteDataSourceImpl(client: sl()));
 
+  // ===================== PORTFOLIO =====================
+  sl.registerFactory(() => PortfolioCubit(
+        addPortfolioUseCase: sl(),
+        updatePortfolioUseCase: sl(),
+        addPortfolioImagesUseCase: sl(),
+        getPortfoliosUseCase: sl(),
+        deletePortfolioUseCase: sl(),
+      ));
+  sl.registerLazySingleton(() => AddPortfolio(sl()));
+  sl.registerLazySingleton(() => UpdatePortfolio(sl()));
+  sl.registerLazySingleton(() => DeletePortfolio(sl()));
+  sl.registerLazySingleton(() => GetPortfolios(sl()));
+  sl.registerLazySingleton(() => AddPortfolioImages(sl()));
+  sl.registerLazySingleton<PortfolioRepository>(
+    () => PortfolioRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<PortfolioRemoteDataSource>(
+    () => PortfolioRemoteDataSourceImpl(client: sl()),
+  );
 
-// Add this in your getIt (sl) registrations
+  // ===================== CLIENT PROJECT =====================
   sl.registerLazySingleton<ClientProjectRemoteDataSource>(
     () => ClientProjectRemoteDataSourceImpl(client: sl()),
   );
-
   sl.registerLazySingleton<ClientProjectRepository>(
     () => ClientProjectRepositoryImpl(sl()),
   );
-
-// Register use cases...
   sl.registerFactory(() => AddProject(sl()));
   sl.registerFactory(() => UpdateProject(sl()));
   sl.registerFactory(() => GetProject(sl()));
@@ -200,8 +155,6 @@ Future<void> init() async {
   sl.registerFactory(() => DeleteProject(sl()));
   sl.registerFactory(() => AddProjectImages(sl()));
   sl.registerFactory(() => DeleteProjectImage(sl()));
-
-// Register cubit
   sl.registerFactory(() => ClientProjectCubit(
         addProjectUseCase: sl(),
         updateProjectUseCase: sl(),
@@ -212,67 +165,63 @@ Future<void> init() async {
         deleteProjectImageUseCase: sl(),
       ));
 
-  
-
-  sl.registerFactory(
-    () => RequestCubit(
-      sendRequestUseCase: sl(),
-      cancelRequestUseCase: sl(), 
-      getCustomerRequestsUseCase: (sl()),
-      completeRequestUseCase: sl(),
-      addReviewUseCase: sl(),
-      approveFinalOfferUseCase: sl(),
-    ),
-  );
-
-  // Use cases
+  // ===================== REQUESTS =====================
+  sl.registerFactory(() => RequestCubit(
+        sendRequestUseCase: sl(),
+        cancelRequestUseCase: sl(),
+        getCustomerRequestsUseCase: sl(),
+        completeRequestUseCase: sl(),
+        addReviewUseCase: sl(),
+        approveFinalOfferUseCase: sl(),
+      ));
   sl.registerLazySingleton(() => SendRequest(sl()));
   sl.registerLazySingleton(() => CancelRequest(sl()));
   sl.registerLazySingleton(() => GetCustomerRequests(sl()));
   sl.registerLazySingleton(() => CompleteRequest(sl()));
   sl.registerLazySingleton(() => AddReview(sl()));
   sl.registerLazySingleton(() => ApproveFinalOffer(sl()));
-
-
-  // Repository
   sl.registerLazySingleton<RequestRepository>(
     () => RequestRepositoryImpl(sl()),
   );
-
-  // Data sources
   sl.registerLazySingleton<RequestRemoteDataSource>(
     () => RequestRemoteDataSourceImpl(client: sl()),
   );
 
-
-    // --- Worker Requests Feature (Received requests for worker) ---
-  // Data source
+  // ===================== WORKER REQUESTS =====================
   sl.registerLazySingleton<WorkerRequestRemoteDataSource>(
     () => WorkerRequestRemoteDataSourceImpl(client: sl()),
   );
-
-  // Repository
   sl.registerLazySingleton<WorkerRequestRepository>(
     () => WorkerRequestRepositoryImpl(sl()),
   );
-
-  // Use Cases
   sl.registerLazySingleton(() => GetReceivedRequests(sl()));
   sl.registerLazySingleton(() => AcceptRequest(sl()));
   sl.registerLazySingleton(() => RejectRequest(sl()));
-
-  // Cubit
   sl.registerFactory(() => WorkerRequestCubit(
-    getReceivedRequestsUseCase: sl(),
-    acceptRequestUseCase: sl(),
-    rejectRequestUseCase: sl(),
-  ));
+        getReceivedRequestsUseCase: sl(),
+        acceptRequestUseCase: sl(),
+        rejectRequestUseCase: sl(),
+      ));
 
-
-
-// Register singleton
-  sl.registerLazySingleton<TokenService>(() => TokenService());
-
-  // External
-  sl.registerLazySingleton(() => http.Client());
+  // ===================== WORKER SETTINGS =====================
+  sl.registerFactory(() => WorkerSettingsCubit(
+        fetchWorkerProfileUseCase: sl(),
+        updateWorkerProfileUseCase: sl(),
+        updateProfilePictureUseCase: sl(),
+        changePasswordUseCase: sl(),
+        deleteAccountUseCase: sl(),
+        deactivateAccountUseCase: sl(),
+      ));
+  sl.registerLazySingleton(() => FetchWorkerProfile(sl()));
+  sl.registerLazySingleton(() => UpdateWorkerProfile(sl()));
+  sl.registerLazySingleton(() => UpdateWorkerProfileWithImage(sl()));
+  sl.registerLazySingleton(() => ChangePassword(sl()));
+  sl.registerLazySingleton(() => DeleteAccount(sl()));
+  sl.registerLazySingleton(() => DeactivateAccount(sl()));
+  sl.registerLazySingleton<WorkerSettingsRepository>(
+    () => WorkerSettingsRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<WorkerSettingsRemoteDataSource>(
+    () => WorkerSettingsRemoteDataSourceImpl(),
+  );
 }

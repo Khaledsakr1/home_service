@@ -27,20 +27,19 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required this.registerWorkerUseCase,
   }) : super(AuthenticationInitial());
 
-Future<void> registerCustomer(Customer customer) async {
-  emit(AuthenticationLoading());
-  final failureOrSuccess = await registerCustomerUseCase(customer);
-  failureOrSuccess.fold(
-    (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
-    (token) async {
-      // SAVE TOKEN just like login
-     await di.sl<TokenService>().saveToken(token);
+  Future<void> registerCustomer(Customer customer) async {
+    emit(AuthenticationLoading());
+    final failureOrSuccess = await registerCustomerUseCase(customer);
+    failureOrSuccess.fold(
+      (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
+      (token) async {
+        // SAVE TOKEN just like login
+        await di.sl<TokenService>().saveToken(token);
 
-      emit(AuthenticationSuccess(token));
-    },
-  );
-}
-
+        emit(AuthenticationSuccess(token));
+      },
+    );
+  }
 
   Future<void> checkEmail(String email) async {
     emit(AuthenticationLoading());
@@ -57,11 +56,11 @@ Future<void> registerCustomer(Customer customer) async {
         await loginUserUseCase(LoginParams(email: email, password: password));
     failureOrUser.fold(
         (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
-        (userData) async{
-       final token = userData['token'];
+        (userData) async {
+      print('LOGIN RESPONSE: $userData'); // ✅ هنا المكان الصح
+      final token = userData['token'];
       // 2. Save it to shared preferences
       await di.sl<TokenService>().saveToken(token);
-
 
       emit(LoginSuccess(userData));
     });
@@ -76,19 +75,18 @@ Future<void> registerCustomer(Customer customer) async {
         print('AuthenticationCubit registerWorker failure: $failure');
         emit(AuthenticationError(_mapFailureToMessage(failure)));
       },
-(token) async {
-  print('AuthenticationCubit registerWorker success token: $token');
-  if (token == null || token.isEmpty) {
-    print('AuthenticationCubit registerWorker invalid token');
-    emit(AuthenticationError('Invalid token received'));
-  } else {
-    // SAVE TOKEN exactly like login
-  await di.sl<TokenService>().saveToken(token);
+      (token) async {
+        print('AuthenticationCubit registerWorker success token: $token');
+        if (token == null || token.isEmpty) {
+          print('AuthenticationCubit registerWorker invalid token');
+          emit(AuthenticationError('Invalid token received'));
+        } else {
+          // SAVE TOKEN exactly like login
+          await di.sl<TokenService>().saveToken(token);
 
-    emit(AuthenticationSuccess(token));
-  }
-},
-
+          emit(AuthenticationSuccess(token));
+        }
+      },
     );
   }
 
