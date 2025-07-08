@@ -66,6 +66,16 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+Future<Either<Failure, bool>> deletePortfolioImage(int portfolioId, int imageId) async {
+  try {
+    final result = await remoteDataSource.deletePortfolioImage(portfolioId, imageId);
+    return Right(result);
+  } catch (e) {
+    return Left(ServerFailure());
+  }
+}
 }
 
 

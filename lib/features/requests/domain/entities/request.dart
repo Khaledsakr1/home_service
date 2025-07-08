@@ -23,29 +23,30 @@ class Request extends Equatable {
   final String projectDetails;
   final List<String> projectImages;
   final double? workerOfferedPrice;
+  final String? customerProfilePicture;
 
-  const Request({
-    required this.id,
-    required this.workerId,
-    required this.customerId,
-    required this.projectId,
-    required this.customerName,
-    required this.status,
-    required this.projectName,
-    required this.service,
-    required this.date,
-    required this.location,
-    required this.statusCode,
-    required this.apartmentType,
-    required this.apartmentSize,
-    required this.preferredStyle,
-    required this.materialQuality,
-    required this.minBudget,
-    required this.maxBudget,
-    required this.projectDetails,
-    required this.projectImages,
-    this.workerOfferedPrice,
-  });
+  const Request(
+      {required this.id,
+      required this.workerId,
+      required this.customerId,
+      required this.projectId,
+      required this.customerName,
+      required this.status,
+      required this.projectName,
+      required this.service,
+      required this.date,
+      required this.location,
+      required this.statusCode,
+      required this.apartmentType,
+      required this.apartmentSize,
+      required this.preferredStyle,
+      required this.materialQuality,
+      required this.minBudget,
+      required this.maxBudget,
+      required this.projectDetails,
+      required this.projectImages,
+      this.workerOfferedPrice,
+      this.customerProfilePicture});
 
   @override
   List<Object?> get props => [
@@ -69,5 +70,6 @@ class Request extends Equatable {
         projectImages,
         workerOfferedPrice,
         customerName,
+        customerProfilePicture
       ];
 }

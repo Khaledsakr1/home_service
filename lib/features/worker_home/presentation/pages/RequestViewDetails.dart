@@ -371,7 +371,7 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(shape: BoxShape.circle),
                         child: Image.network(
-                          'https://via.placeholder.com/150',
+                          widget.request.customerProfilePicture!,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(

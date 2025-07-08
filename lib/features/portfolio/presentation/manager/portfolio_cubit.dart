@@ -6,6 +6,7 @@ import 'package:home_service/features/portfolio/domain/entities/project.dart';
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio.dart';
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio_images.dart';
 import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio.dart';
+import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio_image.dart';
 import 'package:home_service/features/portfolio/domain/usecases/get_portfolios.dart';
 import 'package:home_service/features/portfolio/domain/usecases/update_portfolio.dart';
 import 'dart:io';
@@ -18,6 +19,7 @@ class PortfolioCubit extends Cubit<PortfolioState> {
   final AddPortfolioImages addPortfolioImagesUseCase;
   final GetPortfolios getPortfoliosUseCase;
   final DeletePortfolio deletePortfolioUseCase;
+    final DeletePortfolioImage deletePortfolioImageUseCase;
 
   PortfolioCubit({
     required this.addPortfolioUseCase,
@@ -25,6 +27,7 @@ class PortfolioCubit extends Cubit<PortfolioState> {
     required this.addPortfolioImagesUseCase,
     required this.getPortfoliosUseCase,
     required this.deletePortfolioUseCase,
+    required this.deletePortfolioImageUseCase
   }) : super(PortfolioInitial());
 
 Future<void> addPortfolio({
@@ -78,6 +81,19 @@ Future<void> addPortfolio({
       (success) => emit(PortfolioDeleted(success)),
     );
   }
+
+  // Add this method
+Future<void> deletePortfolioImage(int portfolioId, int imageId) async {
+  emit(PortfolioLoading());
+  final failureOrSuccess = await deletePortfolioImageUseCase(
+    DeletePortfolioImageParams(portfolioId: portfolioId, imageId: imageId)
+  );
+  failureOrSuccess.fold(
+    (failure) => emit(PortfolioError(_mapFailureToMessage(failure))),
+    (success) => emit(PortfolioImageDeleted(success)),
+  );
+}
+
 
 String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

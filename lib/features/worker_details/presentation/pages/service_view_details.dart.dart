@@ -58,7 +58,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   bool _requestLoading = false;
   String? _currentRequestStatus;
   bool _hasReviewed = false; // This will track if review has been submitted
-  bool _showReviewDialogValiable = false; // This will control when to show the dialog
+  bool _showReviewDialogValiable =
+      false; // This will control when to show the dialog
 
   @override
   void initState() {
@@ -73,7 +74,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
     // If coming from a completed request, don't show review dialog yet
     if (_currentRequestStatus == 'completed') {
-      _hasReviewed = true; // Assume already reviewed if coming from completed status
+      _hasReviewed =
+          true; // Assume already reviewed if coming from completed status
     }
 
     // Decode user type from JWT token
@@ -148,46 +150,48 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   }
 
   void _onAcceptOfferPressed() async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => const ConfirmationDialog(
-      title: 'Accept Final Offer',
-      content: 'Are you sure you want to accept this final offer? This will proceed with the project.',
-      confirmText: 'Accept Offer',
-      cancelText: 'Cancel',
-      isDestructive: false,
-    ),
-  );
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationDialog(
+        title: 'Accept Final Offer',
+        content:
+            'Are you sure you want to accept this final offer? This will proceed with the project.',
+        confirmText: 'Accept Offer',
+        cancelText: 'Cancel',
+        isDestructive: false,
+      ),
+    );
 
-  if (confirmed == true) {
-    setState(() => _requestLoading = true);
-    final requestId = _sentRequestId ?? widget.requestId;
-    if (requestId != null) {
-      context.read<RequestCubit>().approveFinalOffer(requestId, true);
+    if (confirmed == true) {
+      setState(() => _requestLoading = true);
+      final requestId = _sentRequestId ?? widget.requestId;
+      if (requestId != null) {
+        context.read<RequestCubit>().approveFinalOffer(requestId, true);
+      }
     }
   }
-}
 
-void _onRejectOfferPressed() async {
-  final confirmed = await showDialog<bool>(
-    context: context,
-    builder: (context) => const ConfirmationDialog(
-      title: 'Reject Final Offer',
-      content: 'Are you sure you want to reject this final offer? This will end the project negotiation.',
-      confirmText: 'Reject Offer',
-      cancelText: 'Keep Offer',
-      isDestructive: true,
-    ),
-  );
+  void _onRejectOfferPressed() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => const ConfirmationDialog(
+        title: 'Reject Final Offer',
+        content:
+            'Are you sure you want to reject this final offer? This will end the project negotiation.',
+        confirmText: 'Reject Offer',
+        cancelText: 'Keep Offer',
+        isDestructive: true,
+      ),
+    );
 
-  if (confirmed == true) {
-    setState(() => _requestLoading = true);
-    final requestId = _sentRequestId ?? widget.requestId;
-    if (requestId != null) {
-      context.read<RequestCubit>().approveFinalOffer(requestId, false);
+    if (confirmed == true) {
+      setState(() => _requestLoading = true);
+      final requestId = _sentRequestId ?? widget.requestId;
+      if (requestId != null) {
+        context.read<RequestCubit>().approveFinalOffer(requestId, false);
+      }
     }
   }
-}
 
   void _onFinishPressed() async {
     final confirmed = await showDialog<bool>(
@@ -261,7 +265,7 @@ void _onRejectOfferPressed() async {
             _hasReviewed = false; // Reset this to allow review
             _showReviewDialogValiable = true; // Enable review dialog
           });
-          
+
           // Show review dialog after completion ONLY if user is customer
           if (_userType != 'Worker') {
             Future.delayed(const Duration(milliseconds: 1000), () {
@@ -269,14 +273,13 @@ void _onRejectOfferPressed() async {
             });
           }
         } else if (state is RequestApproved) {
-    // Don't show review dialog here!
-    setState(() {
-      _currentRequestStatus = 'accepted'; // or 'approve', as needed
-    });
-    showCustomOverlayMessage(context, message: "Offer accepted successfully!");
-  }
-        
-         else if (state is ReviewAdded) {
+          // Don't show review dialog here!
+          setState(() {
+            _currentRequestStatus = 'accepted'; // or 'approve', as needed
+          });
+          showCustomOverlayMessage(context,
+              message: "Offer accepted successfully!");
+        } else if (state is ReviewAdded) {
           setState(() {
             _hasReviewed = true; // Mark as reviewed
             _showReviewDialogValiable = false;
@@ -365,17 +368,17 @@ void _onRejectOfferPressed() async {
 
                     // Action buttons section
                     if (_userType != 'Worker') ...[
-  WorkerActionButtons(
-    status: _currentRequestStatus ?? '',
-    requestLoading: _requestLoading,
-    onSendRequest: _onSendRequestPressed,
-    onCancelRequest: _onCancelRequestPressed,
-    onFinish: _onFinishPressed,
-    onMessage: _onMessagePressed,
-    onAcceptOffer: _onAcceptOfferPressed,  // Add this
-    onRejectOffer: _onRejectOfferPressed,  // Add this
-  ),
-],
+                      WorkerActionButtons(
+                        status: _currentRequestStatus ?? '',
+                        requestLoading: _requestLoading,
+                        onSendRequest: _onSendRequestPressed,
+                        onCancelRequest: _onCancelRequestPressed,
+                        onFinish: _onFinishPressed,
+                        onMessage: _onMessagePressed,
+                        onAcceptOffer: _onAcceptOfferPressed, // Add this
+                        onRejectOffer: _onRejectOfferPressed, // Add this
+                      ),
+                    ],
 
                     const SizedBox(height: 20),
                     const SectionDivider(),

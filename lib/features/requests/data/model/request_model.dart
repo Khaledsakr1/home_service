@@ -22,6 +22,7 @@ class RequestModel extends Request {
     required String projectDetails,
     required List<String> projectImages,
     final double? workerOfferedPrice,
+    final String? customerProfilePicture,
   }) : super(
           id: id,
           workerId: workerId,
@@ -43,6 +44,7 @@ class RequestModel extends Request {
           projectDetails: projectDetails,
           projectImages: projectImages,
           workerOfferedPrice: workerOfferedPrice,
+          customerProfilePicture: customerProfilePicture,
         );
 
   factory RequestModel.fromJson(Map<String, dynamic> json) {
@@ -116,6 +118,7 @@ class RequestModel extends Request {
       workerOfferedPrice: json['workerOfferedPrice'] != null
     ? double.tryParse(json['workerOfferedPrice'].toString())
     : null,
+    customerProfilePicture: json['customerProfilePicture'],
     );
   }
 }

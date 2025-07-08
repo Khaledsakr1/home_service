@@ -25,6 +25,7 @@ import 'package:home_service/features/portfolio/domain/repositories/portfolio_re
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio.dart';
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio_images.dart';
 import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio.dart';
+import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio_image.dart';
 import 'package:home_service/features/portfolio/domain/usecases/get_portfolios.dart';
 import 'package:home_service/features/portfolio/domain/usecases/update_portfolio.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
@@ -124,6 +125,7 @@ Future<void> init() async {
       addPortfolioImagesUseCase: sl(),
       getPortfoliosUseCase: sl(),
       deletePortfolioUseCase: sl(),
+      deletePortfolioImageUseCase: sl(),
     ),
   );
 
@@ -133,6 +135,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeletePortfolio(sl()));
   sl.registerLazySingleton(() => GetPortfolios(sl()));
   sl.registerLazySingleton(() => AddPortfolioImages(sl()));
+  sl.registerLazySingleton(() => DeletePortfolioImage(sl()));
 
   // Repository
   sl.registerLazySingleton<PortfolioRepository>(

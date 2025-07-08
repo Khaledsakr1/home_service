@@ -11,6 +11,7 @@ abstract class PortfolioRemoteDataSource {
   Future<bool> addPortfolioImages(int id, List<File> images);
   Future<List<ProjectModel>> getPortfolios();
   Future<bool> deletePortfolio(int id);
+  Future<bool> deletePortfolioImage(int portfolioId, int imageId);
 }
 
 class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
@@ -160,4 +161,26 @@ Future<List<ProjectModel>> getPortfolios() async {
       throw Exception('Failed to delete portfolio: ${response.statusCode} ${response.body}');
     }
   }
+
+  @override
+Future<bool> deletePortfolioImage(int portfolioId, int imageId) async {
+  final token = sl<TokenService>().token ?? '';
+  if (token.isEmpty) throw Exception('No token found');
+
+  final uri = Uri.parse('$baseUrl/api/Portfolio/$portfolioId/images/$imageId');
+  final response = await client.delete(
+    uri,
+    headers: {
+      'Authorization': 'Bearer ${authToken ?? token}',
+      'Content-Type': 'application/json',
+    },
+  );
+  print('Delete image status: ${response.statusCode}, body: ${response.body}');
+
+  if (response.statusCode == 200 || response.statusCode == 204) {
+    return true;
+  } else {
+    throw Exception('Failed to delete image: ${response.statusCode} ${response.body}');
+  }
+}
 }
