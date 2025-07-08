@@ -102,9 +102,11 @@ class _MainServicePageState extends State<MainServicePage> {
                             textAlignVertical: TextAlignVertical.center,
                             decoration: InputDecoration(
                               hintText: 'Find the perfect job you need',
-                              prefixIcon: Icon(Icons.search, color: Colors.grey),
+                              prefixIcon:
+                                  Icon(Icons.search, color: Colors.grey),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 10),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 10),
                             ),
                           ),
                         ),
@@ -126,24 +128,73 @@ class _MainServicePageState extends State<MainServicePage> {
                         ),
                         SizedBox(
                           height: 120,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: jobs.length,
-                            itemBuilder: (context, index) {
-                              final service = jobs[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ServiceDetailsPage(service: service),
+                          child: jobs.isEmpty
+                              ? Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 20),
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.grey[50]!,
+                                        Colors.grey[100]!
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                  );
-                                },
-                                child: PopularServiceList(service.name, service.imageUrl),
-                              );
-                            },
-                          ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                        color: Colors.grey[300]!, width: 1.5),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.work_off_outlined,
+                                        size: 32,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'No Jobs Available',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Check back later for new opportunities',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: jobs.length,
+                                  itemBuilder: (context, index) {
+                                    final service = jobs[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ServiceDetailsPage(
+                                                service: service),
+                                          ),
+                                        );
+                                      },
+                                      child: PopularServiceList(
+                                          service.name, service.imageUrl),
+                                    );
+                                  },
+                                ),
                         ),
 
                         // Home Jobs Section
@@ -163,24 +214,73 @@ class _MainServicePageState extends State<MainServicePage> {
                         ),
                         SizedBox(
                           height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: homeJobs.length,
-                            itemBuilder: (context, index) {
-                              final service = homeJobs[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ServiceDetailsPage(service: service),
+                          child: homeJobs.isEmpty
+                              ? Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 20),
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.grey[50]!,
+                                        Colors.grey[100]!
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                  );
-                                },
-                                child: HomeServicelist(service.name, service.imageUrl),
-                              );
-                            },
-                          ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                        color: Colors.grey[300]!, width: 1.5),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.home_repair_service_outlined,
+                                        size: 32,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'No Home Jobs Available',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Check back later for new opportunities',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: homeJobs.length,
+                                  itemBuilder: (context, index) {
+                                    final service = homeJobs[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ServiceDetailsPage(
+                                                service: service),
+                                          ),
+                                        );
+                                      },
+                                      child: HomeServicelist(
+                                          service.name, service.imageUrl),
+                                    );
+                                  },
+                                ),
                         ),
 
                         // Repair Section
@@ -200,24 +300,73 @@ class _MainServicePageState extends State<MainServicePage> {
                         ),
                         SizedBox(
                           height: 230,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: repair.length,
-                            itemBuilder: (context, index) {
-                              final service = repair[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ServiceDetailsPage(service: service),
+                          child: repair.isEmpty
+                              ? Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 20),
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.grey[50]!,
+                                        Colors.grey[100]!
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                  );
-                                },
-                                child: Repairandinstallationlist(service.name, service.imageUrl),
-                              );
-                            },
-                          ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                        color: Colors.grey[300]!, width: 1.5),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.build_outlined,
+                                        size: 32,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'No Repair Services Available',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey[700],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Check back later for new opportunities',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: repair.length,
+                                  itemBuilder: (context, index) {
+                                    final service = repair[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => ServiceDetailsPage(
+                                                service: service),
+                                          ),
+                                        );
+                                      },
+                                      child: Repairandinstallationlist(
+                                          service.name, service.imageUrl),
+                                    );
+                                  },
+                                ),
                         ),
                       ],
                     ),

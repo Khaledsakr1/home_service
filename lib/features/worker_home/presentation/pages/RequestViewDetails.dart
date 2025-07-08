@@ -6,6 +6,7 @@ import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
 import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
+import 'package:home_service/features/worker_details/presentation/widgets/confirmation_dialog.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:home_service/injection_container.dart' as di;
 
@@ -176,6 +177,23 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
       },
     );
   }
+
+  void _onRejectRequestPressed() async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => const ConfirmationDialog(
+      title: 'Reject Request',
+      content: 'Are you sure you want to reject this request? This action cannot be undone.',
+      confirmText: 'Reject Request',
+      cancelText: 'Keep Request',
+      isDestructive: true,
+    ),
+  );
+
+  if (confirmed == true) {
+    context.read<WorkerRequestCubit>().rejectRequest(widget.request.id);
+  }
+}
 
   Widget _infoCard({required List<Widget> children}) {
     return Container(
@@ -689,41 +707,35 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: loading
-                              ? null
-                              : () {
-                                  context
-                                      .read<WorkerRequestCubit>()
-                                      .rejectRequest(widget.request.id);
-                                },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: loading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.red,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'Reject Request',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                        ),
-                      ),
+  width: double.infinity,
+  child: OutlinedButton(
+    onPressed: loading ? null : _onRejectRequestPressed,
+    style: OutlinedButton.styleFrom(
+      side: const BorderSide(color: Colors.red),
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    child: loading
+        ? const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: Colors.red,
+              strokeWidth: 2,
+            ),
+          )
+        : const Text(
+            'Reject Request',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+  ),
+),
                       const SizedBox(height: 12),
                       // Add message button for pending
                       SizedBox(

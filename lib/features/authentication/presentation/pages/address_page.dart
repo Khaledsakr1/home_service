@@ -77,8 +77,8 @@ class _AddressPageState extends State<AddressPage> {
         final isLoading = state is AuthenticationLoading;
         return ModalProgressHUD(
           inAsyncCall: isLoading,
-          progressIndicator: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+          progressIndicator: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),
           ),
           child: Scaffold(
             appBar: AppBar(

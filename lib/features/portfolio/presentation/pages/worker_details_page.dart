@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/authentication/data/models/worker_model.dart';
 import 'package:home_service/features/authentication/domain/entities/worker.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
@@ -101,6 +102,9 @@ class _WorkerDetailsPageState extends State<WorkerDetailsPage> {
       ],
       child: ModalProgressHUD(
         inAsyncCall: isLoading,
+        progressIndicator: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),
+          ),
         child: Scaffold(
           appBar: AppBar(
             leading: const BackButton(

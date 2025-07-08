@@ -85,7 +85,6 @@ Future<void> init() async {
   // Chat Cubit
   sl.registerFactory(() => ChatCubit(chatService: sl()));
 
-
   // ===================== AUTH =====================
   sl.registerFactory(() => AuthenticationCubit(
         loginUserUseCase: sl(),
@@ -122,6 +121,7 @@ Future<void> init() async {
       addPortfolioImagesUseCase: sl(),
       getPortfoliosUseCase: sl(),
       deletePortfolioUseCase: sl(),
+      deletePortfolioImageUseCase: sl(),
     ),
   );
 
@@ -131,6 +131,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeletePortfolio(sl()));
   sl.registerLazySingleton(() => GetPortfolios(sl()));
   sl.registerLazySingleton(() => AddPortfolioImages(sl()));
+  sl.registerLazySingleton(() => DeletePortfolioImage(sl()));
 
   // Repository
   sl.registerLazySingleton<PortfolioRepository>(
