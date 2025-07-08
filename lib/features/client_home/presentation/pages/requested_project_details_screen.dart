@@ -33,12 +33,85 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
     super.dispose();
   }
 
+  Widget _buildImagePlaceholder({required bool isLoading}) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.green.shade50,
+            Colors.green.shade100,
+          ],
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (isLoading)
+            Column(
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.green,
+                  strokeWidth: 2,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading image...',
+                  style: TextStyle(
+                    color: Colors.green.shade600,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            )
+          else
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade200,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.image_outlined,
+                    size: 48,
+                    color: Colors.green.shade700,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No Images Available',
+                  style: TextStyle(
+                    color: Colors.green.shade700,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Images will appear here when added',
+                  style: TextStyle(
+                    color: Colors.green.shade600,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Initialize here!
     final List<String> projectImages = widget.request.projectImages.isNotEmpty
         ? widget.request.projectImages
-        : ['https://via.placeholder.com/400x300?text=No+Image'];
+        : ['placeholder'];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -74,16 +147,32 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            image: NetworkImage(projectImages[index]),
-                            fit: BoxFit.cover,
-                          ),
+                          color: Colors.grey.shade100,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: widget.request.projectImages.isNotEmpty
+                              ? Image.network(
+                                  projectImages[index],
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return _buildImagePlaceholder(
+                                        isLoading: true);
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return _buildImagePlaceholder(
+                                        isLoading: false);
+                                  },
+                                )
+                              : _buildImagePlaceholder(isLoading: false),
                         ),
                       );
                     },
                   ),
-                  // Navigation arrows ...
-                  // (rest of carousel code unchanged)
                   Positioned(
                     left: 8,
                     top: 0,
@@ -135,7 +224,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ),
                     ),
                   ),
-                  // Page indicators ...
                   Positioned(
                     bottom: 16,
                     left: 0,
@@ -164,7 +252,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
             const SizedBox(height: 16),
 
-            // Project Information
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -186,22 +273,18 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                   _buildDetailItem('Details', widget.request.projectDetails),
 
                   const SizedBox(height: 32),
-                  // Buttons...
 
-                  // --- Always show the View Worker Profile button ---
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // Go to worker profile, replace Serviceviewdetails with your actual worker profile page class
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => Serviceviewdetails(
                                     workerId: widget.request.workerId,
-                                    requestStatus: widget.request
-                                        .status, // or .statusCode if you prefer int
+                                    requestStatus: widget.request.status,
                                     requestId: widget.request.id,
                                     formRequsted: true,
                                   ),
@@ -225,7 +308,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
                   const SizedBox(height: 16),
 
-                  // --- Only show message button for pending/accepted ---
                   if (widget.request.status == 'pending' ||
                       widget.request.status == 'accepted' ||
                       widget.request.status == 'approve') ...[
@@ -298,6 +380,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ],
                     ),
                   ],
+
                   const SizedBox(height: 16),
                 ],
               ),

@@ -78,16 +78,18 @@ class _WorkerDetailsPageState extends State<WorkerDetailsPage> {
                 isLoading = true;
               });
             } else if (state is AuthenticationSuccess) {
-              final token = state.message; // Assuming the token is in the message
-              
+              final token =
+                  state.message; // Assuming the token is in the message
+
               setState(() {
                 isLoading = false;
               });
               // Assuming the token is returned in the message for now
               // In a real app, you'd parse the token and store it securely
-                PortfolioRemoteDataSourceImpl.authToken = token;
- // This line needs to be handled by a proper auth manager
-              Navigator.pushNamed(context, SuceesscreenasWorker.id);
+              PortfolioRemoteDataSourceImpl.authToken = token;
+              // This line needs to be handled by a proper auth manager
+              Navigator.pushNamedAndRemoveUntil(
+                  context, SuceesscreenasWorker.id, (route) => false);
             } else if (state is AuthenticationError) {
               setState(() {
                 isLoading = false;

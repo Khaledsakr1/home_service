@@ -20,19 +20,21 @@ class AuthenticationRemoteDataSourceImpl implements AuthenticationRemoteDataSour
 
   AuthenticationRemoteDataSourceImpl({required this.client});
 
-  @override
-  Future<String> registerCustomer(CustomerModel customer) async {
-    final uri = Uri.parse('$baseUrl/api/Account/register/customer')
-        .replace(queryParameters: customer.toQueryParams());
+@override
+Future<String> registerCustomer(CustomerModel customer) async {
+  final uri = Uri.parse('$baseUrl/api/Account/register/customer')
+      .replace(queryParameters: customer.toQueryParams());
 
-    final response = await client.post(uri);
+  final response = await client.post(uri);
 
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Failed to register customer: ${response.statusCode} ${response.body}');
-    }
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    return json['token']; // return token correctly
+  } else {
+    throw Exception('Failed to register customer: ${response.statusCode} ${response.body}');
   }
+}
+
 
   @override
   Future<bool> checkEmailExists(String email) async {

@@ -30,74 +30,104 @@ class WorkerSettingsCubit extends Cubit<WorkerSettingsState> {
   }) : super(WorkerSettingsInitial());
 
   Future<void> fetchProfile() async {
+    if (isClosed) return;
     emit(WorkerSettingsLoading());
     try {
       final profile = await fetchWorkerProfileUseCase();
+      if (isClosed) return;
       emit(WorkerSettingsLoaded(profile));
     } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
+     if (!isClosed) emit(WorkerSettingsError(e.toString()));
     }
   }
 
-  Future<void> updateProfile(WorkerProfileUpdateModel profile) async {
-    emit(WorkerSettingsLoading());
-    try {
-      await updateWorkerProfileUseCase(profile);
-      emit(WorkerSettingsUpdateSuccess());
-      emit(WorkerSettingsLoaded(profile));
-      fetchProfile();
-    } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
-    }
-  }
-
-  Future<void> updateProfilePicture(File image) async {
-    emit(WorkerSettingsLoading());
-    try {
-      await updateProfilePictureUseCase(image);
-      emit(WorkerSettingsUpdateSuccess());
-      // Optionally, refresh the profile
-      await fetchProfile();
-    } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
-    }
-  }
-
-   Future<void> changePassword({
-    required String currentPassword,
-    required String newPassword,
-    required String confirmPassword,
-  }) async {
-    emit(WorkerSettingsLoading());
-    try {
-      await changePasswordUseCase(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        confirmPassword: confirmPassword,
-      );
-      emit(WorkerSettingsPasswordChangeSuccess());
-    } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
-    }
-  }
+Future<void> updateProfile(WorkerProfileUpdateModel profile) async {
+  if (isClosed) return;
   
-    Future<void> deleteAccount() async {
-    emit(WorkerSettingsLoading());
-    try {
-      await deleteAccountUseCase();
-      emit(WorkerSettingsDeleteSuccess());
-    } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
-    }
+  emit(WorkerSettingsLoading());
+  
+  try {
+    await updateWorkerProfileUseCase(profile);
+    if (isClosed) return;
+    
+    emit(WorkerSettingsUpdateSuccess());
+    if (isClosed) return;
+    
+    emit(WorkerSettingsLoaded(profile));
+    fetchProfile(); // This will have its own isClosed checks
+  } catch (e) {
+    if (!isClosed) emit(WorkerSettingsError(e.toString()));
   }
+}
 
-   Future<void> deactivateAccount() async {
-    emit(WorkerSettingsLoading());
-    try {
-      await deactivateAccountUseCase();
-      emit(WorkerSettingsDeactivateSuccess());
-    } catch (e) {
-      emit(WorkerSettingsError(e.toString()));
-    }
+Future<void> updateProfilePicture(File image) async {
+  if (isClosed) return;
+  
+  emit(WorkerSettingsLoading());
+  
+  try {
+    await updateProfilePictureUseCase(image);
+    if (isClosed) return;
+    
+    emit(WorkerSettingsUpdateSuccess());
+    
+    // Optionally, refresh the profile
+    await fetchProfile(); // This will have its own isClosed checks
+  } catch (e) {
+    if (!isClosed) emit(WorkerSettingsError(e.toString()));
   }
+}
+
+ Future<void> changePassword({
+  required String currentPassword,
+  required String newPassword,
+  required String confirmPassword,
+}) async {
+  if (isClosed) return;
+  
+  emit(WorkerSettingsLoading());
+  
+  try {
+    await changePasswordUseCase(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    );
+    if (isClosed) return;
+    
+    emit(WorkerSettingsPasswordChangeSuccess());
+  } catch (e) {
+    if (!isClosed) emit(WorkerSettingsError(e.toString()));
+  }
+}
+
+Future<void> deleteAccount() async {
+  if (isClosed) return;
+  
+  emit(WorkerSettingsLoading());
+  
+  try {
+    await deleteAccountUseCase();
+    if (isClosed) return;
+    
+    emit(WorkerSettingsDeleteSuccess());
+  } catch (e) {
+    if (!isClosed) emit(WorkerSettingsError(e.toString()));
+  }
+}
+
+Future<void> deactivateAccount() async {
+  if (isClosed) return;
+  
+  emit(WorkerSettingsLoading());
+  
+  try {
+    await deactivateAccountUseCase();
+    if (isClosed) return;
+    
+    emit(WorkerSettingsDeactivateSuccess());
+  } catch (e) {
+    if (!isClosed) emit(WorkerSettingsError(e.toString()));
+  }
+}
 }

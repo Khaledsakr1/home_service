@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/features/chatpot/worker%20chatpot/StartChatBotWorker.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
+import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/pages/worker_requests_screen.dart';
 import 'package:home_service/features/services/presentation/pages/main_service_page.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
@@ -30,6 +31,7 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
   @override
   void initState() {
     super.initState();
+    context.read<WorkerRequestCubit>().fetchReceivedRequests();
     _currentIndex = widget.initialIndex ?? 0;
   }
 
@@ -85,6 +87,7 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
           );
         },
         backgroundColor: Colors.green,
+        shape: const CircleBorder(),
         child: const Icon(
           Icons.person_search,
           size: 30,
@@ -99,16 +102,31 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
           padding: const EdgeInsets.symmetric(horizontal: 9.0),
           child: SizedBox(
             height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildNavItem(icon: Icons.home, label: 'Home', index: 0),
-                _buildNavItem(
-                    icon: Icons.assignment, label: 'Requests', index: 1),
-                const SizedBox(width: 40), // FAB space
-                _buildNavItem(icon: Icons.chat, label: 'ChatBot', index: 2),
-                _buildNavItem(icon: Icons.settings, label: 'Setting', index: 3),
-              ],
+            child: BlocBuilder<WorkerRequestCubit, WorkerRequestState>(
+              builder: (context, state) {
+                int totalRequestsCount = 0;
+                if (state is WorkerRequestsLoaded) {
+                  totalRequestsCount = state.requests
+                      .where((r) => r.statusCode == 0 || r.statusCode == 5)
+                      .length;
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildNavItem(icon: Icons.home, label: 'Home', index: 0),
+                    _buildNavItem(
+                        icon: Icons.assignment,
+                        label: 'Requests',
+                        index: 1,
+                        badgeCount: totalRequestsCount),
+                    const SizedBox(width: 40), // FAB space
+                    _buildNavItem(icon: Icons.chat, label: 'ChatBot', index: 2),
+                    _buildNavItem(
+                        icon: Icons.settings, label: 'Setting', index: 3),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -117,7 +135,10 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
   }
 
   Widget _buildNavItem(
-      {required IconData icon, required String label, required int index}) {
+      {required IconData icon,
+      required String label,
+      required int index,
+      int? badgeCount}) {
     final isActive = _currentIndex == index;
 
     return GestureDetector(
@@ -126,30 +147,55 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
           _currentIndex = index;
         });
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Icon(
-            icon,
-            color: isActive ? Colors.green : Colors.grey,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isActive ? Colors.green : Colors.grey,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? Colors.green : Colors.grey,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  fontSize: 12,
+                ),
+              ),
+              if (isActive)
+                Container(
+                  margin: const EdgeInsets.only(top: 2),
+                  height: 3,
+                  width: 50,
+                  color: Colors.green,
+                )
+            ],
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? Colors.green : Colors.grey,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              fontSize: 12,
+          if (badgeCount != null && badgeCount > 0)
+            Positioned(
+              right: -6,
+              top: -6,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  '$badgeCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-          ),
-          if (isActive)
-            Container(
-              margin: const EdgeInsets.only(top: 2),
-              height: 3,
-              width: 50,
-              color: Colors.green,
-            )
         ],
       ),
     );

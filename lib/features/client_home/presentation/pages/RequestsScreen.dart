@@ -27,11 +27,11 @@ class _RequestsscreenState extends State<Requestsscreen> {
   final Map<String, int?> tabToStatusCode = {
     'All': null,
     'Pending': 0,
+    'Approve': 5,
     'Accepted': 1,
+    'Completed': 4,
     'Rejected': 2,
     'Cancelled': 3,
-    'Completed': 4,
-    'Approve': 5,
   };
 
   @override
@@ -175,10 +175,14 @@ class _RequestsscreenState extends State<Requestsscreen> {
       ),
       body: BlocListener<RequestCubit, RequestState>(
         listener: (context, state) {
-          if (state is RequestCancelled || state is RequestSent || state is RequestApproved) {
+          if (state is RequestCancelled ||
+              state is RequestSent ||
+              state is RequestApproved) {
             // Refresh the requests after cancelling or sending a request
             final tabStatus = tabToStatusCode[selectedTab];
-            context.read<RequestCubit>().fetchCustomerRequests(status: tabStatus);
+            context
+                .read<RequestCubit>()
+                .fetchCustomerRequests(status: tabStatus);
           }
         },
         child: Padding(
@@ -187,7 +191,8 @@ class _RequestsscreenState extends State<Requestsscreen> {
             builder: (context, state) {
               int approveCount = 0;
               if (state is RequestsLoaded) {
-                approveCount = state.requests.where((r) => r.statusCode == 5).length;
+                approveCount =
+                    state.requests.where((r) => r.statusCode == 5).length;
               }
               return Column(
                 children: [
@@ -201,10 +206,13 @@ class _RequestsscreenState extends State<Requestsscreen> {
                     child: BlocBuilder<RequestCubit, RequestState>(
                       builder: (context, state) {
                         if (state is RequestLoading) {
-                          // return const Center(child: CircularProgressIndicator(color: Colors.green));
+                          return const Center(
+                              child: CircularProgressIndicator(
+                                  color: Colors.green));
                         } else if (state is RequestError) {
                           return Center(
-                            child: Text('Error: ${state.message}', style: const TextStyle(color: Colors.red)),
+                            child: Text('Error: ${state.message}',
+                                style: const TextStyle(color: Colors.red)),
                           );
                         } else if (state is RequestsLoaded) {
                           final requests = state.requests;
@@ -212,7 +220,8 @@ class _RequestsscreenState extends State<Requestsscreen> {
                             return Center(
                               child: Text(
                                 'No ${selectedTab.toLowerCase()} requests found',
-                                style: const TextStyle(color: Colors.grey, fontSize: 16),
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 16),
                               ),
                             );
                           }
@@ -229,7 +238,8 @@ class _RequestsscreenState extends State<Requestsscreen> {
                             },
                           );
                         }
-                        return const Center(child: Text('No requests available'));
+                        return const Center(
+                            child: Text('No requests available'));
                       },
                     ),
                   ),

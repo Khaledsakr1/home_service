@@ -25,7 +25,8 @@ class WorkerPortfolioSection extends StatelessWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: worker.portfolioItems.length + 1,
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     if (index < worker.portfolioItems.length) {
                       final portfolio = worker.portfolioItems[index];
@@ -54,15 +55,52 @@ class WorkerPortfolioSection extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : const SizedBox(
-                              height: 70,
-                              width: 70,
-                              child: Center(
-                                child: Text(
-                                  "No image",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PortfolioDetailsPage(
+                                      portfolio: portfolio,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.image_outlined,
+                                        color: Colors.grey.shade400,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        portfolio
+                                            .name, // or portfolio.title - use whatever property holds the name
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

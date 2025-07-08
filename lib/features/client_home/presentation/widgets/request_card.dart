@@ -275,8 +275,8 @@ class RequestCard extends StatelessWidget {
         statusIcon = Icons.done_all;
         break;
       case 'approve':
-        statusColor = Colors.green;
-        statusIcon = Icons.attach_money;
+        statusColor = Colors.grey;
+        statusIcon = Icons.pending_outlined;
         break;
       default:
         statusColor = Colors.grey;
@@ -379,100 +379,229 @@ class RequestCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (statusName == 'approve') ...[
-              const SizedBox(height: 16),
-              // Modern Final Price Display
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.green.shade50, Colors.green.shade100],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.green.shade200),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade200,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.monetization_on_outlined,
-                            color: Colors.green.shade700,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'Final Offer',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      '${request.workerOfferedPrice?.toStringAsFixed(2) ?? "N/A"} EGP',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green.shade700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Worker has provided their final pricing',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
+
+          // For accepted status - show final price
+if (statusName == 'accepted') ...[
+  const SizedBox(height: 16),
+  Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.green.shade50, Colors.green.shade100],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.green.shade200),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.green.shade200,
+                borderRadius: BorderRadius.circular(8),
               ),
-              const SizedBox(height: 16),
-              // Simple Text Buttons like pending status
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      context.read<RequestCubit>().approveFinalOffer(request.id, true);
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                    child: const Text(
-                      'Accept Offer',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => _showRejectConfirmDialog(context, request.id),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                    child: const Text(
-                      'Reject Offer',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
+              child: Icon(
+                Icons.monetization_on_outlined,
+                color: Colors.green.shade700,
+                size: 20,
               ),
-            ],
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Final Price',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          '${request.workerOfferedPrice?.toStringAsFixed(2) ?? "N/A"} EGP',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.green.shade700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Job in progress',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    ),
+  ),
+],
+
+// For completed status - show final price
+if (statusName == 'completed') ...[
+  const SizedBox(height: 16),
+  Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.blue.shade50, Colors.blue.shade100],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.blue.shade200),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade200,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.monetization_on_outlined,
+                color: Colors.blue.shade700,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Final Price',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          '${request.workerOfferedPrice?.toStringAsFixed(2) ?? "N/A"} EGP',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue.shade700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Job completed',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    ),
+  ),
+],
+
+        if (statusName == 'approve') ...[
+  const SizedBox(height: 16),
+  // Modern Final Price Display (same as WorkerRequestCard - grey theme)
+  Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [Colors.grey.shade50, Colors.grey.shade100],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.grey.shade300),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.monetization_on_outlined,
+                color: Colors.grey.shade700,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Final Offer',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          '${request.workerOfferedPrice?.toStringAsFixed(2) ?? "N/A"} EGP',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Worker has provided their final pricing',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    ),
+  ),
+  const SizedBox(height: 16),
+  // Keep the action buttons for client to accept/reject
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      TextButton(
+        onPressed: () {
+          context.read<RequestCubit>().approveFinalOffer(request.id, true);
+        },
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.green,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        ),
+        child: const Text(
+          'Accept Offer',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+      TextButton(
+        onPressed: () => _showRejectConfirmDialog(context, request.id),
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.red,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        ),
+        child: const Text(
+          'Reject Offer',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+    ],
+  ),
+],
           ],
         ),
       ),

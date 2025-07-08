@@ -28,6 +28,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }) : super(AuthenticationInitial());
 
   Future<void> registerCustomer(Customer customer) async {
+    print("registerCustomer called with: $customer");
     emit(AuthenticationLoading());
     final failureOrSuccess = await registerCustomerUseCase(customer);
     failureOrSuccess.fold(
@@ -35,7 +36,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       (token) async {
         // SAVE TOKEN just like login
         await di.sl<TokenService>().saveToken(token);
-
         emit(AuthenticationSuccess(token));
       },
     );
@@ -55,21 +55,24 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     final failureOrUser =
         await loginUserUseCase(LoginParams(email: email, password: password));
     failureOrUser.fold(
-        (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
-        (userData) async {
-      print('LOGIN RESPONSE: $userData'); // ✅ هنا المكان الصح
-      final token = userData['token'];
-      // 2. Save it to shared preferences
-      await di.sl<TokenService>().saveToken(token);
+      (failure) => emit(AuthenticationError(_mapFailureToMessage(failure))),
+      (userData) async {
+        print('LOGIN RESPONSE: $userData'); // ✅ هنا المكان الصح
+        final token = userData['token'];
+        // 2. Save it to shared preferences
+        await di.sl<TokenService>().saveToken(token);
 
-      emit(LoginSuccess(userData));
-    });
+        emit(LoginSuccess(userData));
+      },
+    );
   }
 
   Future<void> registerWorker(Worker worker, String? profilePicturePath) async {
     emit(AuthenticationLoading());
     final failureOrSuccess = await registerWorkerUseCase(RegisterWorkerParams(
-        worker: worker, profilePicturePath: profilePicturePath));
+      worker: worker,
+      profilePicturePath: profilePicturePath,
+    ));
     failureOrSuccess.fold(
       (failure) {
         print('AuthenticationCubit registerWorker failure: $failure');
@@ -83,7 +86,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         } else {
           // SAVE TOKEN exactly like login
           await di.sl<TokenService>().saveToken(token);
-
           emit(AuthenticationSuccess(token));
         }
       },
@@ -93,7 +95,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
-        // Check if the ServerFailure has a specific message
         if (failure is ServerFailure && failure.message != null) {
           return failure.message!;
         }

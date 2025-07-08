@@ -43,6 +43,12 @@ class _RegisterPageState extends State<RegisterPage> {
             final customer = Customer(
               email: email!,
               password: password!,
+              confirmPassword: confirmPassword ?? '',
+              name: '',
+              phoneNumber: '',
+              address: '',
+              buildingNumber: '',
+              cityId: 0,
             );
             Navigator.pushNamed(context, SignUpClientPage.id, arguments: customer);
           }
