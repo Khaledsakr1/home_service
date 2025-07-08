@@ -1,7 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
-import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
-import 'package:http/http.dart' as http;
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/data/datasources/authentication_remote_data_source.dart';
 import 'package:home_service/features/authentication/data/repositories/authentication_repository_impl.dart';
@@ -11,6 +8,8 @@ import 'package:home_service/features/authentication/domain/usecases/login_user.
 import 'package:home_service/features/authentication/domain/usecases/register_customer.dart';
 import 'package:home_service/features/authentication/domain/usecases/register_worker.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
+import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
 import 'package:home_service/features/client_project/data/datasources/client_project_remote_data_source.dart';
 import 'package:home_service/features/client_project/data/repositories/client_project_repository_impl.dart';
 import 'package:home_service/features/client_project/domain/repositories/client_project_repository.dart';
@@ -69,46 +68,53 @@ import 'package:home_service/features/worker_settings/domain/usecases/fetch_work
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile.dart';
 import 'package:home_service/features/worker_settings/domain/usecases/update_worker_profile_with_image.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
+import 'package:http/http.dart' as http;
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // External
-  sl.registerLazySingleton(() => http.Client());
+  // Features - Authentication
+  sl.registerFactory(
+    () => AuthenticationCubit(
+      loginUserUseCase: sl(),
+      registerCustomerUseCase: sl(),
+      registerWorkerUseCase: sl(),
+      checkEmailExistsUseCase: sl(),
+    ),
+  );
 
-  // Services
-  sl.registerLazySingleton<TokenService>(() => TokenService());
-
-  // ✅ Chat SignalR Service
-  sl.registerLazySingleton<ChatSignalRService>(() => ChatSignalRService());
-
-  // Chat Cubit
-  sl.registerFactory(() => ChatCubit(chatService: sl()));
-
-  // ===================== AUTH =====================
-  sl.registerFactory(() => AuthenticationCubit(
-        loginUserUseCase: sl(),
-        registerCustomerUseCase: sl(),
-        registerWorkerUseCase: sl(),
-        checkEmailExistsUseCase: sl(),
-      ));
+  // Use cases
   sl.registerLazySingleton(() => LoginUser(sl()));
   sl.registerLazySingleton(() => RegisterCustomer(sl()));
   sl.registerLazySingleton(() => RegisterWorker(sl()));
   sl.registerLazySingleton(() => CheckEmailExists(sl()));
+
+  // Repository
   sl.registerLazySingleton<AuthenticationRepository>(
     () => AuthenticationRepositoryImpl(remoteDataSource: sl()),
   );
+
+  // Data sources
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
     () => AuthenticationRemoteDataSourceImpl(client: sl()),
   );
 
-  // ===================== SERVICES =====================
-  sl.registerFactory(() => ServicesCubit(getServicesUseCase: sl()));
+  // Features - Services
+  sl.registerFactory(
+    () => ServicesCubit(
+      getServicesUseCase: sl(),
+    ),
+  );
+
+  // Use cases
   sl.registerLazySingleton(() => GetServices(sl()));
+
+  // Repository
   sl.registerLazySingleton<ServiceRepository>(
     () => ServiceRepositoryImpl(remoteDataSource: sl()),
   );
+
+  // Data sources
   sl.registerLazySingleton<ServiceRemoteDataSource>(
     () => ServiceRemoteDataSourceImpl(client: sl()),
   );
@@ -137,17 +143,60 @@ Future<void> init() async {
   sl.registerLazySingleton<PortfolioRepository>(
     () => PortfolioRepositoryImpl(remoteDataSource: sl()),
   );
+
+  // Data sources
   sl.registerLazySingleton<PortfolioRemoteDataSource>(
     () => PortfolioRemoteDataSourceImpl(client: sl()),
   );
 
-  // ===================== CLIENT PROJECT =====================
+  // Features - Worker Settings
+  sl.registerFactory(
+    () => WorkerSettingsCubit(
+      fetchWorkerProfileUseCase: sl(),
+      updateWorkerProfileUseCase: sl(),
+      updateProfilePictureUseCase: sl(),
+      changePasswordUseCase: sl(),
+      deleteAccountUseCase: sl(),
+      deactivateAccountUseCase: sl(),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => FetchWorkerProfile(sl()));
+  sl.registerLazySingleton(() => UpdateWorkerProfile(sl()));
+  sl.registerLazySingleton(() => UpdateWorkerProfileWithImage(sl()));
+  sl.registerLazySingleton(() => ChangePassword(sl()));
+  sl.registerLazySingleton(() => DeleteAccount(sl()));
+  sl.registerLazySingleton(() => DeactivateAccount(sl()));
+
+  // Repository
+  sl.registerLazySingleton<WorkerSettingsRepository>(
+    () => WorkerSettingsRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<WorkerSettingsRemoteDataSource>(
+    () => WorkerSettingsRemoteDataSourceImpl(),
+  );
+
+// Worker
+  sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
+  sl.registerLazySingleton(() => GetWorkerById(sl()));
+  sl.registerLazySingleton<WorkerRepository>(
+      () => WorkerRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<WorkerRemoteDataSource>(
+      () => WorkerRemoteDataSourceImpl(client: sl()));
+
+// Add this in your getIt (sl) registrations
   sl.registerLazySingleton<ClientProjectRemoteDataSource>(
     () => ClientProjectRemoteDataSourceImpl(client: sl()),
   );
+
   sl.registerLazySingleton<ClientProjectRepository>(
     () => ClientProjectRepositoryImpl(sl()),
   );
+
+// Register use cases...
   sl.registerFactory(() => AddProject(sl()));
   sl.registerFactory(() => UpdateProject(sl()));
   sl.registerFactory(() => GetProject(sl()));
@@ -155,6 +204,8 @@ Future<void> init() async {
   sl.registerFactory(() => DeleteProject(sl()));
   sl.registerFactory(() => AddProjectImages(sl()));
   sl.registerFactory(() => DeleteProjectImage(sl()));
+
+// Register cubit
   sl.registerFactory(() => ClientProjectCubit(
         addProjectUseCase: sl(),
         updateProjectUseCase: sl(),
@@ -165,63 +216,67 @@ Future<void> init() async {
         deleteProjectImageUseCase: sl(),
       ));
 
-  // ===================== REQUESTS =====================
-  sl.registerFactory(() => RequestCubit(
-        sendRequestUseCase: sl(),
-        cancelRequestUseCase: sl(),
-        getCustomerRequestsUseCase: sl(),
-        completeRequestUseCase: sl(),
-        addReviewUseCase: sl(),
-        approveFinalOfferUseCase: sl(),
-      ));
+  sl.registerFactory(
+    () => RequestCubit(
+      sendRequestUseCase: sl(),
+      cancelRequestUseCase: sl(),
+      getCustomerRequestsUseCase: (sl()),
+      completeRequestUseCase: sl(),
+      addReviewUseCase: sl(),
+      approveFinalOfferUseCase: sl(),
+    ),
+  );
+
+  // Use cases
   sl.registerLazySingleton(() => SendRequest(sl()));
   sl.registerLazySingleton(() => CancelRequest(sl()));
   sl.registerLazySingleton(() => GetCustomerRequests(sl()));
   sl.registerLazySingleton(() => CompleteRequest(sl()));
   sl.registerLazySingleton(() => AddReview(sl()));
   sl.registerLazySingleton(() => ApproveFinalOffer(sl()));
+
+  // Repository
   sl.registerLazySingleton<RequestRepository>(
     () => RequestRepositoryImpl(sl()),
   );
+
+  // Data sources
   sl.registerLazySingleton<RequestRemoteDataSource>(
     () => RequestRemoteDataSourceImpl(client: sl()),
   );
 
-  // ===================== WORKER REQUESTS =====================
+  // --- Worker Requests Feature (Received requests for worker) ---
+  // Data source
   sl.registerLazySingleton<WorkerRequestRemoteDataSource>(
     () => WorkerRequestRemoteDataSourceImpl(client: sl()),
   );
+
+  // Repository
   sl.registerLazySingleton<WorkerRequestRepository>(
     () => WorkerRequestRepositoryImpl(sl()),
   );
+
+  // Use Cases
   sl.registerLazySingleton(() => GetReceivedRequests(sl()));
   sl.registerLazySingleton(() => AcceptRequest(sl()));
   sl.registerLazySingleton(() => RejectRequest(sl()));
+
+  // Cubit
   sl.registerFactory(() => WorkerRequestCubit(
         getReceivedRequestsUseCase: sl(),
         acceptRequestUseCase: sl(),
         rejectRequestUseCase: sl(),
       ));
 
-  // ===================== WORKER SETTINGS =====================
-  sl.registerFactory(() => WorkerSettingsCubit(
-        fetchWorkerProfileUseCase: sl(),
-        updateWorkerProfileUseCase: sl(),
-        updateProfilePictureUseCase: sl(),
-        changePasswordUseCase: sl(),
-        deleteAccountUseCase: sl(),
-        deactivateAccountUseCase: sl(),
-      ));
-  sl.registerLazySingleton(() => FetchWorkerProfile(sl()));
-  sl.registerLazySingleton(() => UpdateWorkerProfile(sl()));
-  sl.registerLazySingleton(() => UpdateWorkerProfileWithImage(sl()));
-  sl.registerLazySingleton(() => ChangePassword(sl()));
-  sl.registerLazySingleton(() => DeleteAccount(sl()));
-  sl.registerLazySingleton(() => DeactivateAccount(sl()));
-  sl.registerLazySingleton<WorkerSettingsRepository>(
-    () => WorkerSettingsRepositoryImpl(remoteDataSource: sl()),
-  );
-  sl.registerLazySingleton<WorkerSettingsRemoteDataSource>(
-    () => WorkerSettingsRemoteDataSourceImpl(),
-  );
+  // ✅ Chat SignalR Service
+  sl.registerLazySingleton<ChatSignalRService>(() => ChatSignalRService());
+
+  // Chat Cubit
+  sl.registerFactory(() => ChatCubit(chatService: sl()));
+
+// Register singleton
+  sl.registerLazySingleton<TokenService>(() => TokenService());
+
+  // External
+  sl.registerLazySingleton(() => http.Client());
 }

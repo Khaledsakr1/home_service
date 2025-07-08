@@ -374,29 +374,29 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                   ),
                 ),
                 centerTitle: true,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.bug_report, color: Colors.red),
-                    onPressed: () async {
-                      final token = await di.sl<TokenService>().getToken();
-                      print("🔑 Token: $token");
+                // actions: [
+                //   IconButton(
+                //     icon: const Icon(Icons.bug_report, color: Colors.red),
+                //     onPressed: () async {
+                //       final token = await di.sl<TokenService>().getToken();
+                //       print("🔑 Token: $token");
 
-                      final uri = Uri.parse(
-                          "https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net/chatHub/negotiate");
+                //       final uri = Uri.parse(
+                //           "https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net/chatHub/negotiate");
 
-                      try {
-                        final response = await http.post(uri, headers: {
-                          'Authorization': 'Bearer $token',
-                        });
+                //       try {
+                //         final response = await http.post(uri, headers: {
+                //           'Authorization': 'Bearer $token',
+                //         });
 
-                        print("📡 Status Code: ${response.statusCode}");
-                        print("📄 Response Body: ${response.body}");
-                      } catch (e) {
-                        print("❌ Network error: $e");
-                      }
-                    },
-                  ),
-                ],
+                //         print("📡 Status Code: ${response.statusCode}");
+                //         print("📄 Response Body: ${response.body}");
+                //       } catch (e) {
+                //         print("❌ Network error: $e");
+                //       }
+                //     },
+                //   ),
+                // ],
               ),
               body: SingleChildScrollView(
                 controller: scrollController,
