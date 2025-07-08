@@ -96,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
           if (state is ChatMessagesLoaded) {
             messages = List.from(state.messages);
 
-            // ✅ ترتيب الرسائل حسب sentAt لو موجود
+            // ترتيب الرسائل حسب sentAt لو موجود
             messages.sort((a, b) {
               final aTime = DateTime.tryParse(a['sentAt'] ?? '') ?? DateTime.now();
               final bTime = DateTime.tryParse(b['sentAt'] ?? '') ?? DateTime.now();
@@ -127,10 +127,14 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemBuilder: (context, index) {
                               final message = messages[index];
 
-                              final int? senderId = int.tryParse(message['senderId'].toString());
+                              final senderIdRaw = message['senderId'];
+                              final int senderId = senderIdRaw is int
+                                  ? senderIdRaw
+                                  : int.tryParse(senderIdRaw.toString()) ?? -1;
+
                               final bool isMe = senderId == widget.userId;
 
-                              print("💬 الرسالة من: $senderId | المستخدم الحالي: ${widget.userId} | isMe: $isMe");
+                              print("💬 senderIdRaw: $senderIdRaw, senderId: $senderId, widget.userId: ${widget.userId}, isMe: $isMe");
 
                               return Align(
                                 alignment: isMe
