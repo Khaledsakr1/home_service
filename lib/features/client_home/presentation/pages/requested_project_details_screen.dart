@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/services/token_service.dart';
+import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/worker_details/presentation/pages/service_view_details.dart.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:home_service/injection_container.dart' as di;
 
 class RequestedProjectDetailsScreen extends StatefulWidget {
   final int projectId;
@@ -103,10 +109,9 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize here!
     final List<String> projectImages = widget.request.projectImages.isNotEmpty
         ? widget.request.projectImages
-        : ['placeholder']; // We'll handle empty state in the UI
+        : ['placeholder'];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -168,8 +173,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       );
                     },
                   ),
-                  // Navigation arrows ...
-                  // (rest of carousel code unchanged)
                   Positioned(
                     left: 8,
                     top: 0,
@@ -221,7 +224,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ),
                     ),
                   ),
-                  // Page indicators ...
                   Positioned(
                     bottom: 16,
                     left: 0,
@@ -250,7 +252,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
             const SizedBox(height: 16),
 
-            // Project Information
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -272,22 +273,18 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                   _buildDetailItem('Details', widget.request.projectDetails),
 
                   const SizedBox(height: 32),
-                  // Buttons...
 
-                  // --- Always show the View Worker Profile button ---
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // Go to worker profile, replace Serviceviewdetails with your actual worker profile page class
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => Serviceviewdetails(
                                     workerId: widget.request.workerId,
-                                    requestStatus: widget.request
-                                        .status, // or .statusCode if you prefer int
+                                    requestStatus: widget.request.status,
                                     requestId: widget.request.id,
                                     formRequsted: true,
                                   ),
@@ -311,7 +308,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
 
                   const SizedBox(height: 16),
 
-                  // --- Only show message button for pending/accepted ---
                   if (widget.request.status == 'pending' ||
                       widget.request.status == 'accepted' ||
                       widget.request.status == 'approve') ...[
@@ -319,12 +315,53 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () {
-                              // Implement your message logic here
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Messaging feature coming soon!')),
+                            onPressed: () async {
+                              final token =
+                                  await di.sl<TokenService>().getToken();
+                              if (token == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Missing token')),
+                                );
+                                return;
+                              }
+
+                              final userData = JwtDecoder.decode(token);
+
+                              final userId = userData.containsKey('workerId')
+                                  ? userData['workerId']
+                                  : userData.containsKey('customerId')
+                                      ? userData['customerId']
+                                      : userData.containsKey(
+                                              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                                          ? int.tryParse(userData[
+                                                  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                                              .toString())
+                                          : null;
+
+                              if (userId == null ||
+                                  widget.request.id == null ||
+                                  widget.request.workerId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Missing required chat info')),
+                                );
+                                return;
+                              }
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => di.sl<ChatCubit>(),
+                                    child: ChatScreen(
+                                      userId: userId,
+                                      requestId: widget.request.id!,
+                                      receiverId: widget.request.workerId!,
+                                    ),
+                                  ),
+                                ),
                               );
                             },
                             icon: const Icon(Icons.message_outlined,
@@ -343,6 +380,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ],
                     ),
                   ],
+
                   const SizedBox(height: 16),
                 ],
               ),

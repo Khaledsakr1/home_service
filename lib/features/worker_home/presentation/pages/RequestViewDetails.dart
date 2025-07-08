@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:home_service/injection_container.dart' as di;
 
 class Requestviewdetails extends StatefulWidget {
   final Request request;
@@ -724,11 +729,52 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Messaging feature coming soon!')),
+                          onPressed: () async {
+                            final token =
+                                await di.sl<TokenService>().getToken();
+                            if (token == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Missing token')),
+                              );
+                              return;
+                            }
+
+                            final userData = JwtDecoder.decode(token);
+
+                            final userId = userData.containsKey('workerId')
+                                ? userData['workerId']
+                                : userData.containsKey('customerId')
+                                    ? userData['customerId']
+                                    : userData.containsKey(
+                                            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                                        ? int.tryParse(userData[
+                                                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                                            .toString())
+                                        : null;
+
+                            if (userId == null ||
+                                widget.request.id == null ||
+                                widget.request.customerId == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Missing required chat info')),
+                              );
+                              return;
+                            }
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => di.sl<ChatCubit>(),
+                                  child: ChatScreen(
+                                    userId: userId,
+                                    requestId: widget.request.id!,
+                                    receiverId: widget.request.customerId!,
+                                  ),
+                                ),
+                              ),
                             );
                           },
                           icon: const Icon(Icons.message_outlined,
@@ -752,10 +798,50 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Messaging feature coming soon!')),
+                      onPressed: () async {
+                        final token = await di.sl<TokenService>().getToken();
+                        if (token == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Missing token')),
+                          );
+                          return;
+                        }
+
+                        final userData = JwtDecoder.decode(token);
+
+                        final userId = userData.containsKey('workerId')
+                            ? userData['workerId']
+                            : userData.containsKey('customerId')
+                                ? userData['customerId']
+                                : userData.containsKey(
+                                        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                                    ? int.tryParse(userData[
+                                            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                                        .toString())
+                                    : null;
+
+                        if (userId == null ||
+                            widget.request.id == null ||
+                            widget.request.customerId == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Missing required chat info')),
+                          );
+                          return;
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider(
+                              create: (_) => di.sl<ChatCubit>(),
+                              child: ChatScreen(
+                                userId: userId,
+                                requestId: widget.request.id!,
+                                receiverId: widget.request.customerId!,
+                              ),
+                            ),
+                          ),
                         );
                       },
                       icon: const Icon(Icons.message_outlined,

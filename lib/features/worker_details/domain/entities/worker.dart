@@ -21,6 +21,9 @@ class Worker extends Equatable {
   final bool isBlocked;
   final List<Review> reviews;
   final List<PortfolioItem> portfolioItems;
+  final int? requestId;
+
+
 
   const Worker({
     required this.id,
@@ -41,6 +44,7 @@ class Worker extends Equatable {
     required this.isBlocked,
     required this.reviews,
     required this.portfolioItems,
+    this.requestId,
   });
 
   @override
@@ -63,6 +67,7 @@ class Worker extends Equatable {
     isBlocked,
     reviews,
     portfolioItems,
+    requestId,
   ];
 }
 
@@ -101,4 +106,3 @@ class PortfolioItem extends Equatable {
   @override
   List<Object?> get props => [id, name, description, imageUrls];
 }
-

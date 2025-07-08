@@ -1,10 +1,11 @@
-// lib/features/worker_details/presentation/pages/service_view_details.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
+import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/client_project/presentation/pages/project_list_page.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
@@ -23,6 +24,8 @@ import 'package:home_service/features/worker_details/presentation/widgets/worker
 import 'package:home_service/features/worker_details/presentation/widgets/worker_reviews_section.dart';
 import 'package:home_service/injection_container.dart' as di;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:http/http.dart' as http;
+
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
@@ -232,8 +235,53 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
   }
 
   void _onMessagePressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Messaging feature coming soon!')),
+    final token = di.sl<TokenService>().token;
+    final requestId = _sentRequestId ?? widget.requestId;
+
+    print(
+        "token: $token | requestId: $requestId | workerId: ${widget.workerId}");
+
+    if (token == null || requestId == null || widget.workerId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Missing required chat information')),
+      );
+      return;
+    }
+
+    final userData = JwtDecoder.decode(token);
+
+    final userId = userData.containsKey('workerId')
+        ? userData['workerId']
+        : userData.containsKey('customerId')
+            ? userData['customerId']
+            : userData.containsKey(
+                    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
+                ? int.tryParse(userData[
+                        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+                    .toString())
+                : null;
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User ID not found in token')),
+      );
+      return;
+    }
+
+    final receiverId = widget.workerId!;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => di.sl<ChatCubit>(),
+          child: ChatScreen(
+            userId: userId,
+            requestId: requestId,
+            receiverId: receiverId,
+          ),
+        ),
+      ),
     );
   }
 
@@ -326,6 +374,29 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
                   ),
                 ),
                 centerTitle: true,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.bug_report, color: Colors.red),
+                    onPressed: () async {
+                      final token = await di.sl<TokenService>().getToken();
+                      print("🔑 Token: $token");
+
+                      final uri = Uri.parse(
+                          "https://projectapi-ekhpcndsdgbahqhm.canadacentral-01.azurewebsites.net/chatHub/negotiate");
+
+                      try {
+                        final response = await http.post(uri, headers: {
+                          'Authorization': 'Bearer $token',
+                        });
+
+                        print("📡 Status Code: ${response.statusCode}");
+                        print("📄 Response Body: ${response.body}");
+                      } catch (e) {
+                        print("❌ Network error: $e");
+                      }
+                    },
+                  ),
+                ],
               ),
               body: SingleChildScrollView(
                 controller: scrollController,

@@ -71,7 +71,10 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         address: worker.address,
                         showAcceptButton: false,
                         ViewdetailsPage:
-                            Serviceviewdetails(workerId: worker.id,requestStatus: 'request',),
+                            Serviceviewdetails(
+                            workerId: worker.id,
+                            requestStatus: 'request',
+                            ),
                       ),
                     ),
                   ],
