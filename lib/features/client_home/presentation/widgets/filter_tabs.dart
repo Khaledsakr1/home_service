@@ -14,7 +14,7 @@ class FilterTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = ['All', 'Pending', 'Approve', 'Accepted', 'Completed' 'Rejected' 'Cancelled'];
+    final tabs = ['All', 'Pending', 'Approve', 'Accepted', 'Completed', 'Rejected', 'Cancelled'];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 8),
