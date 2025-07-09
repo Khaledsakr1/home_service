@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../manager/furniture_image_cubit.dart';
 import '../widgets/image_display_widget.dart';
 import '../widgets/prompt_input_widget.dart';
 import '../widgets/modern_app_bar.dart';

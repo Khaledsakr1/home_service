@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/history_page.dart';
 
 class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -49,7 +50,12 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: 20,
             ),
             onPressed: () {
-              // Add history functionality
+               Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => HistoryPage(),
+    ),
+  );
             },
           ),
         ),

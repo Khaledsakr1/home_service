@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/services/history_service.dart';
+import 'package:home_service/core/utils/image_utils.dart';
 import '../manager/furniture_image_cubit.dart';
 
 class ImageDisplayWidget extends StatelessWidget {
@@ -153,11 +155,19 @@ class ImageDisplayWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Add save functionality
-                      },
-                      icon: const Icon(Icons.download),
-                      label: const Text('Save'),
+    onPressed: () async {
+    // bool success = await saveImageToGallery(state.image.imageBytes);
+    // Also save to history if you want:
+    await HistoryService().saveToHistory(
+      state.image.prompt,
+      state.image.imageBytes,
+    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text(success ? 'Image saved to gallery!' : 'Failed to save image.')),
+    // );
+  },
+  icon: const Icon(Icons.download),
+  label: const Text('Save'),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.green.shade600,
                         side: BorderSide(color: Colors.green.shade600),
@@ -169,23 +179,23 @@ class ImageDisplayWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Add share functionality
-                      },
-                      icon: const Icon(Icons.share),
-                      label: const Text('Share'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.green.shade600,
-                        side: BorderSide(color: Colors.green.shade600),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: OutlinedButton.icon(
+                  //     onPressed: () {
+                  //       // Add share functionality
+                  //     },
+                  //     icon: const Icon(Icons.share),
+                  //     label: const Text('Share'),
+                  //     style: OutlinedButton.styleFrom(
+                  //       foregroundColor: Colors.green.shade600,
+                  //       side: BorderSide(color: Colors.green.shade600),
+                  //       padding: const EdgeInsets.symmetric(vertical: 12),
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ],
