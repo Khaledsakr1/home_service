@@ -13,6 +13,7 @@ import 'package:home_service/features/authentication/presentation/pages/register
 import 'package:home_service/features/authentication/presentation/pages/register_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_client_name_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_worker_name_page.dart';
+import 'package:home_service/features/chatpot/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
 import 'package:home_service/features/client_home/presentation/pages/SuceesScreen.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
 import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
@@ -74,6 +75,10 @@ class Homeservice extends StatelessWidget {
         ),
          BlocProvider<WorkerRequestCubit>(
           create: (context) => di.sl<WorkerRequestCubit>(),
+        ),
+
+         BlocProvider<FurnitureImageCubit>(
+          create: (context) => di.sl<FurnitureImageCubit>(),
         ),
       ],
       child: MaterialApp(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/ChatBotScreen.dart';
+import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/ChatBotScreen.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/navigationbar.dart';
 
@@ -81,7 +81,7 @@ class Chatbotwelcome extends StatelessWidget {
                   ontap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ChatBotScreen()),
+                      MaterialPageRoute(builder: (context) => FurnitureImagePage()),
                     );
                   },
                 )

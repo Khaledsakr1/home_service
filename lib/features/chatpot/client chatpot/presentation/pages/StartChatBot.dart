@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:home_service/features/chatpot/client%20chatpot/ChatBotWelcome.dart';
+import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/ChatBotWelcome.dart';
 
 class Startchatbot extends StatefulWidget {
   const Startchatbot({super.key});
