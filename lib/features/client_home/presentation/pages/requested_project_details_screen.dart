@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
 import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
+import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
 import 'package:home_service/features/requests/domain/entities/request.dart';
 import 'package:home_service/features/worker_details/presentation/pages/service_view_details.dart.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -354,7 +355,8 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => BlocProvider(
-                                    create: (_) => di.sl<ChatCubit>(),
+                                    //create: (_) => di.sl<ChatCubit>(),
+                                     create: (context) => ChatCubit(chatService: di.sl<ChatSignalRService>()),
                                     child: ChatScreen(
                                       userId: userId,
                                       requestId: widget.request.id!,

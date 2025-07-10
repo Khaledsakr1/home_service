@@ -6,6 +6,7 @@ import 'package:home_service/core/utils/ErrorMessage.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
 import 'package:home_service/features/chat/Presentation/Pages/chatscreen.dart';
 import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
+import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
 import 'package:home_service/features/client_project/presentation/pages/project_list_page.dart';
 import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
 import 'package:home_service/features/requests/presentation/manager/request_state.dart';
@@ -274,7 +275,8 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider(
-          create: (_) => di.sl<ChatCubit>(),
+         // create: (_) => di.sl<ChatCubit>(),
+          create: (context) => ChatCubit(chatService: di.sl<ChatSignalRService>()),
           child: ChatScreen(
             userId: userId,
             requestId: requestId,

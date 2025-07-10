@@ -8,7 +8,6 @@ import 'package:home_service/core/services/token_service.dart';
 class ChatSignalRService {
   HubConnection? _connection;
   int? _userId;
-  bool _isConnected = false;
   bool _isInitialized = false;
 
   // Listeners
@@ -19,21 +18,15 @@ class ChatSignalRService {
   Function()? onConnected;
   Function()? onDisconnected;
 
-  bool get isConnected => _isConnected;
+  bool get isConnected => _connection?.state == HubConnectionState.connected;
 
   //================= Init ===================
   Future<void> init({required int currentUserId}) async {
-    if (_isInitialized && !_isConnected) {
+    if (_isInitialized && _connection?.state != HubConnectionState.connected) {
       print('♻️ Retrying SignalR connection...');
-
-      if (_connection?.state != HubConnectionState.disconnected) {
-        print('⚠️ Connection not in disconnected state: ${_connection?.state}');
-        return;
-      }
 
       try {
         await _connection!.start();
-        _isConnected = true;
         onConnected?.call();
         return;
       } catch (e) {
@@ -43,7 +36,7 @@ class ChatSignalRService {
       }
     }
 
-    if (_isInitialized && _isConnected) {
+    if (_isInitialized && _connection?.state == HubConnectionState.connected) {
       print('⚠️ Already initialized and connected');
       return;
     }
@@ -69,18 +62,15 @@ class ChatSignalRService {
 
       _connection!.onclose((error) {
         print('❌ Connection Closed: $error');
-        _isConnected = false;
         onDisconnected?.call();
       });
 
       _connection!.onreconnecting((error) {
         print('🔄 Reconnecting: $error');
-        _isConnected = false;
       });
 
       _connection!.onreconnected((connectionId) {
         print('✅ Reconnected: $connectionId');
-        _isConnected = true;
         onConnected?.call();
       });
 
@@ -98,7 +88,6 @@ class ChatSignalRService {
       await _connection!.start();
 
       print('✅ Connected successfully');
-      _isConnected = true;
       onConnected?.call();
     } catch (e) {
       print('❌ Init Error: $e');
@@ -110,7 +99,7 @@ class ChatSignalRService {
   //================= Join / Leave Chat ===================
   Future<void> joinChat(int requestId) async {
     try {
-      if (!_isConnected) throw Exception('SignalR not connected');
+      if (!isConnected) throw Exception('SignalR not connected');
       await _connection!.invoke('JoinRequestChat', args: [requestId]);
       print('🏠 Joined chat for request: $requestId');
     } catch (e) {
@@ -122,7 +111,7 @@ class ChatSignalRService {
 
   Future<void> leaveChat(int requestId) async {
     try {
-      if (!_isConnected) return;
+      if (!isConnected) return;
       await _connection!.invoke('LeaveRequestChat', args: [requestId]);
       print('🚪 Left chat for request: $requestId');
     } catch (e) {
@@ -138,7 +127,7 @@ class ChatSignalRService {
     required String content,
   }) async {
     try {
-      if (!_isConnected) throw Exception('SignalR not connected');
+      if (!isConnected) throw Exception('SignalR not connected');
       if (content.trim().isEmpty) throw Exception('Empty message');
 
       await _connection!.invoke('SendMessage', args: [requestId, receiverId, content]);
@@ -217,9 +206,10 @@ class ChatSignalRService {
   //================= Connection Utilities ===================
   Future<void> reconnect() async {
     try {
-      if (_isConnected) await _connection!.stop();
+      if (_connection != null && _connection!.state == HubConnectionState.connected) {
+        await _connection!.stop();
+      }
       await _connection!.start();
-      _isConnected = true;
       onConnected?.call();
       print('🔁 Manual reconnect successful');
     } catch (e) {
@@ -231,9 +221,10 @@ class ChatSignalRService {
 
   Future<void> dispose() async {
     try {
-      if (_isConnected) await _connection!.stop();
+      if (_connection != null && _connection!.state == HubConnectionState.connected) {
+        await _connection!.stop();
+      }
       _connection = null;
-      _isConnected = false;
       _isInitialized = false;
       print('🔌 SignalR disposed');
     } catch (e) {

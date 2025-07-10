@@ -15,7 +15,7 @@ class ChatCubit extends Cubit<ChatState> {
 
       final completer = Completer<void>();
 
-      // تسجيل الاتصال
+      // 🟢 تعيين الكولباكات دائمًا
       chatService.onConnected = () {
         _safeEmit(ChatReconnected());
         if (!completer.isCompleted) {
@@ -31,32 +31,38 @@ class ChatCubit extends Cubit<ChatState> {
         _safeEmit(ChatDisconnected());
       };
 
-      await chatService.init(currentUserId: userId);
-      await completer.future; // ✨ انتظر الاتصال
-
-      await chatService.joinChat(requestId);
-      final messages = await chatService.getMessages(requestId);
-      _safeEmit(ChatMessagesLoaded(messages));
-
-      // استقبال الرسائل
       chatService.onMessageReceived = (message) {
         final previousMessages = state is ChatMessagesLoaded
             ? (state as ChatMessagesLoaded).messages
             : [];
-        final updatedMessages = List<dynamic>.from(previousMessages)
-          ..add(message);
+        final updatedMessages = List<dynamic>.from(previousMessages)..add(message);
         _safeEmit(ChatMessagesLoaded(updatedMessages));
       };
 
-      // تأكيد الرسائل المرسلة
       chatService.onMessageSent = (sentMessage) {
         final previousMessages = state is ChatMessagesLoaded
             ? (state as ChatMessagesLoaded).messages
             : [];
-        final updatedMessages = List<dynamic>.from(previousMessages)
-          ..add(sentMessage);
+        final updatedMessages = List<dynamic>.from(previousMessages)..add(sentMessage);
         _safeEmit(ChatMessagesLoaded(updatedMessages));
       };
+
+      // ✅ لو الاتصال شغال بالفعل، نكمل عادي
+      if (chatService.isConnected) {
+        print('⚠️ Already initialized and connected (handled)');
+        await chatService.joinChat(requestId);
+        final messages = await chatService.getMessages(requestId);
+        _safeEmit(ChatMessagesLoaded(messages));
+        return;
+      }
+
+      // ✅ أول مرة
+      await chatService.init(currentUserId: userId);
+      await completer.future;
+
+      await chatService.joinChat(requestId);
+      final messages = await chatService.getMessages(requestId);
+      _safeEmit(ChatMessagesLoaded(messages));
     } catch (e) {
       _safeEmit(ChatError('فشل في تهيئة المحادثة: $e'));
     }
@@ -79,12 +85,23 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   void _safeEmit(ChatState state) {
-    if (!_isClosed) emit(state);
+    if (!_isClosed && !isClosed) {
+      emit(state);
+    }
   }
 
   Future<void> dispose() async {
     _isClosed = true;
+
+    chatService.onConnected = null;
+    chatService.onError = null;
+    chatService.onDisconnected = null;
+    chatService.onMessageReceived = null;
+    chatService.onMessageSent = null;
+
     await chatService.dispose();
+
     close();
   }
 }
+

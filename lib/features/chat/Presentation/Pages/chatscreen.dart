@@ -22,13 +22,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  late ChatCubit _chatCubit;
 
   @override
   void initState() {
     super.initState();
-    _chatCubit = BlocProvider.of<ChatCubit>(context);
-    _chatCubit.init(
+    context.read<ChatCubit>().init(
       userId: widget.userId,
       requestId: widget.requestId,
     );
@@ -38,14 +36,13 @@ class _ChatScreenState extends State<ChatScreen> {
     final content = _messageController.text.trim();
     if (content.isEmpty) return;
 
-    _chatCubit.sendMessage(
+    context.read<ChatCubit>().sendMessage(
       requestId: widget.requestId,
       receiverId: widget.receiverId,
       content: content,
     );
 
     _messageController.clear();
-    _scrollToBottom();
     FocusScope.of(context).unfocus();
   }
 
@@ -75,7 +72,9 @@ class _ChatScreenState extends State<ChatScreen> {
       body: BlocConsumer<ChatCubit, ChatState>(
         listener: (context, state) {
           if (state is ChatMessagesLoaded) {
-            _scrollToBottom();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _scrollToBottom();
+            });
           } else if (state is ChatError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
@@ -95,8 +94,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
           if (state is ChatMessagesLoaded) {
             messages = List.from(state.messages);
-
-            // ترتيب الرسائل حسب sentAt لو موجود
             messages.sort((a, b) {
               final aTime = DateTime.tryParse(a['sentAt'] ?? '') ?? DateTime.now();
               final bTime = DateTime.tryParse(b['sentAt'] ?? '') ?? DateTime.now();
@@ -127,31 +124,24 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemBuilder: (context, index) {
                               final message = messages[index];
 
-                              final senderIdRaw = message['senderId'];
-                              final int senderId = senderIdRaw is int
-                                  ? senderIdRaw
-                                  : int.tryParse(senderIdRaw.toString()) ?? -1;
-
-                              final bool isMe = senderId == widget.userId;
-
-                              print("💬 senderIdRaw: $senderIdRaw, senderId: $senderId, widget.userId: ${widget.userId}, isMe: $isMe");
+                              final senderId = int.tryParse(message['senderId']?.toString() ?? '') ?? -1;
+                              final isMe = senderId == widget.userId;
 
                               return Align(
                                 alignment: isMe
                                     ? Alignment.centerRight
                                     : Alignment.centerLeft,
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: isMe
-                                        ? Colors.blue[200]
-                                        : Colors.grey[300],
+                                    color: isMe ? Colors.blue[200] : Colors.grey[300],
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: isMe
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         isMe ? "أنت" : message['senderName'] ?? "مستخدم",
@@ -164,6 +154,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                       Text(
                                         message['content'] ?? '',
                                         style: const TextStyle(fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        message['sentAt'] != null
+                                            ? message['sentAt'].toString().substring(11, 16)
+                                            : '',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey[600],
+                                        ),
                                       ),
                                     ],
                                   ),
