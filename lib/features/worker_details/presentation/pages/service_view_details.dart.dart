@@ -27,7 +27,6 @@ import 'package:home_service/injection_container.dart' as di;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 
-
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';
   final int? workerId;
@@ -251,16 +250,14 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
 
     final userData = JwtDecoder.decode(token);
 
-    final userId = userData.containsKey('workerId')
-        ? userData['workerId']
-        : userData.containsKey('customerId')
-            ? userData['customerId']
-            : userData.containsKey(
-                    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
-                ? int.tryParse(userData[
-                        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-                    .toString())
-                : null;
+    final userId = int.tryParse(
+      userData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+              ?.toString() ??
+          '',
+    );
+
+    print('✅ Client userId: $userId');
+    print('📨 Receiver (workerId): ${widget.workerId}');
 
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -275,8 +272,9 @@ class _ServiceviewdetailsState extends State<Serviceviewdetails> {
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider(
-         // create: (_) => di.sl<ChatCubit>(),
-          create: (context) => ChatCubit(chatService: di.sl<ChatSignalRService>()),
+          // create: (_) => di.sl<ChatCubit>(),
+          create: (context) =>
+              ChatCubit(chatService: di.sl<ChatSignalRService>()),
           child: ChatScreen(
             userId: userId,
             requestId: requestId,

@@ -272,9 +272,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       '${widget.request.minBudget} EGP - ${widget.request.maxBudget} EGP'),
                   _buildDetailItem('Location', widget.request.location),
                   _buildDetailItem('Details', widget.request.projectDetails),
-
                   const SizedBox(height: 32),
-
                   Row(
                     children: [
                       Expanded(
@@ -306,9 +304,7 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
                   if (widget.request.status == 'pending' ||
                       widget.request.status == 'accepted' ||
                       widget.request.status == 'approve') ...[
@@ -333,16 +329,26 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                                   ? userData['workerId']
                                   : userData.containsKey('customerId')
                                       ? userData['customerId']
-                                      : userData.containsKey(
-                                              'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')
-                                          ? int.tryParse(userData[
+                                      : int.tryParse(userData[
                                                   'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
-                                              .toString())
-                                          : null;
+                                              ?.toString() ??
+                                          '');
+
+                              final isWorker = userData[
+                                      'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ==
+                                  'Worker';
+
+                              final receiverId = isWorker
+                                  ? widget.request.customerId
+                                  : widget.request.workerId;
+
+                              print('👨‍💼 My userId: $userId');
+                              print('📩 ReceiverId: $receiverId');
+                              print('📦 Request ID: ${widget.request.id}');
 
                               if (userId == null ||
-                                  widget.request.id == null ||
-                                  widget.request.workerId == null) {
+                                  receiverId == null ||
+                                  widget.request.id == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content:
@@ -355,12 +361,13 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => BlocProvider(
-                                    //create: (_) => di.sl<ChatCubit>(),
-                                     create: (context) => ChatCubit(chatService: di.sl<ChatSignalRService>()),
+                                    create: (_) => ChatCubit(
+                                        chatService:
+                                            di.sl<ChatSignalRService>()),
                                     child: ChatScreen(
                                       userId: userId,
                                       requestId: widget.request.id!,
-                                      receiverId: widget.request.workerId!,
+                                      receiverId: receiverId,
                                     ),
                                   ),
                                 ),
@@ -382,7 +389,6 @@ class _ProjectDetailsScreenState extends State<RequestedProjectDetailsScreen> {
                       ],
                     ),
                   ],
-
                   const SizedBox(height: 16),
                 ],
               ),

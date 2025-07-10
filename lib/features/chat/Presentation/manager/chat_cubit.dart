@@ -15,7 +15,6 @@ class ChatCubit extends Cubit<ChatState> {
 
       final completer = Completer<void>();
 
-      // 🟢 تعيين الكولباكات دائمًا
       chatService.onConnected = () {
         _safeEmit(ChatReconnected());
         if (!completer.isCompleted) {
@@ -35,7 +34,13 @@ class ChatCubit extends Cubit<ChatState> {
         final previousMessages = state is ChatMessagesLoaded
             ? (state as ChatMessagesLoaded).messages
             : [];
-        final updatedMessages = List<dynamic>.from(previousMessages)..add(message);
+
+        final updatedMessage = {
+          ...message,
+          'isMe': message['senderId'].toString() == userId.toString(),
+        };
+
+        final updatedMessages = List<dynamic>.from(previousMessages)..add(updatedMessage);
         _safeEmit(ChatMessagesLoaded(updatedMessages));
       };
 
@@ -43,26 +48,41 @@ class ChatCubit extends Cubit<ChatState> {
         final previousMessages = state is ChatMessagesLoaded
             ? (state as ChatMessagesLoaded).messages
             : [];
-        final updatedMessages = List<dynamic>.from(previousMessages)..add(sentMessage);
+
+        final updatedMessage = {
+          ...sentMessage,
+          'isMe': true,
+        };
+
+        final updatedMessages = List<dynamic>.from(previousMessages)..add(updatedMessage);
         _safeEmit(ChatMessagesLoaded(updatedMessages));
       };
 
-      // ✅ لو الاتصال شغال بالفعل، نكمل عادي
       if (chatService.isConnected) {
-        print('⚠️ Already initialized and connected (handled)');
         await chatService.joinChat(requestId);
         final messages = await chatService.getMessages(requestId);
-        _safeEmit(ChatMessagesLoaded(messages));
+
+        final updatedMessages = messages.map((msg) => {
+              ...msg,
+              'isMe': msg['senderId'].toString() == userId.toString(),
+            }).toList();
+
+        _safeEmit(ChatMessagesLoaded(updatedMessages));
         return;
       }
 
-      // ✅ أول مرة
       await chatService.init(currentUserId: userId);
       await completer.future;
 
       await chatService.joinChat(requestId);
       final messages = await chatService.getMessages(requestId);
-      _safeEmit(ChatMessagesLoaded(messages));
+
+      final updatedMessages = messages.map((msg) => {
+            ...msg,
+            'isMe': msg['senderId'].toString() == userId.toString(),
+          }).toList();
+
+      _safeEmit(ChatMessagesLoaded(updatedMessages));
     } catch (e) {
       _safeEmit(ChatError('فشل في تهيئة المحادثة: $e'));
     }
@@ -104,4 +124,3 @@ class ChatCubit extends Cubit<ChatState> {
     close();
   }
 }
-

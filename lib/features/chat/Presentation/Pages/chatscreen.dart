@@ -22,14 +22,18 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  bool _initialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    context.read<ChatCubit>().init(
-      userId: widget.userId,
-      requestId: widget.requestId,
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      context.read<ChatCubit>().init(
+            userId: widget.userId,
+            requestId: widget.requestId,
+          );
+      _initialized = true;
+    }
   }
 
   void _sendMessage() {
@@ -37,13 +41,14 @@ class _ChatScreenState extends State<ChatScreen> {
     if (content.isEmpty) return;
 
     context.read<ChatCubit>().sendMessage(
-      requestId: widget.requestId,
-      receiverId: widget.receiverId,
-      content: content,
-    );
+          requestId: widget.requestId,
+          receiverId: widget.receiverId,
+          content: content,
+        );
 
     _messageController.clear();
     FocusScope.of(context).unfocus();
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -123,14 +128,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final message = messages[index];
-
-                              final senderId = int.tryParse(message['senderId']?.toString() ?? '') ?? -1;
-                              final isMe = senderId == widget.userId;
+                              final isMe = message['isMe'] == true;
 
                               return Align(
-                                alignment: isMe
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
+                                alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                                 child: Container(
                                   margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                   padding: const EdgeInsets.all(10),
@@ -139,9 +140,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: isMe
-                                        ? CrossAxisAlignment.end
-                                        : CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         isMe ? "أنت" : message['senderName'] ?? "مستخدم",
@@ -181,9 +181,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         controller: _messageController,
                         enabled: !isDisconnected,
                         decoration: InputDecoration(
-                          hintText: isDisconnected
-                              ? 'جاري إعادة الاتصال...'
-                              : 'اكتب رسالتك...',
+                          hintText: isDisconnected ? 'جاري إعادة الاتصال...' : 'اكتب رسالتك...',
                           border: const OutlineInputBorder(),
                         ),
                       ),

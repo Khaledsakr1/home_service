@@ -807,7 +807,6 @@ class _RequestviewdetailsState extends State<Requestviewdetails> {
                       ),
                     ],
                   )
-// Add message button for approve and accepted status
                 else if (widget.request.status.toLowerCase() == 'approve' ||
                     widget.request.status.toLowerCase() == 'accepted')
                   SizedBox(
