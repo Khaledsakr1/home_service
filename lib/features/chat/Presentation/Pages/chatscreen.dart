@@ -73,7 +73,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Chat")),
+      appBar: AppBar(
+        leading: IconButton(
+          color: Colors.white,
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Chat",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.green,
+        centerTitle: true,
+      ),
       body: BlocConsumer<ChatCubit, ChatState>(
         listener: (context, state) {
           if (state is ChatMessagesLoaded) {
@@ -86,11 +98,11 @@ class _ChatScreenState extends State<ChatScreen> {
             );
           } else if (state is ChatDisconnected) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('❌ الاتصال انقطع، جاري إعادة المحاولة...')),
+              const SnackBar(content: Text('❌Bad Connection....')),
             );
           } else if (state is ChatReconnected) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('✅ تم إعادة الاتصال بنجاح')),
+              const SnackBar(content: Text('✅Connected')),
             );
           }
         },
@@ -100,8 +112,10 @@ class _ChatScreenState extends State<ChatScreen> {
           if (state is ChatMessagesLoaded) {
             messages = List.from(state.messages);
             messages.sort((a, b) {
-              final aTime = DateTime.tryParse(a['sentAt'] ?? '') ?? DateTime.now();
-              final bTime = DateTime.tryParse(b['sentAt'] ?? '') ?? DateTime.now();
+              final aTime =
+                  DateTime.tryParse(a['sentAt'] ?? '') ?? DateTime.now();
+              final bTime =
+                  DateTime.tryParse(b['sentAt'] ?? '') ?? DateTime.now();
               return aTime.compareTo(bTime);
             });
           }
@@ -114,7 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 const Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    '🚫 تم فقد الاتصال، جاري إعادة الاتصال...',
+                    '🚫Lost Connection ,Please Try Again...',
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
@@ -122,47 +136,79 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: state is ChatLoading
                     ? const Center(child: CircularProgressIndicator())
                     : messages.isEmpty
-                        ? const Center(child: Text("لا توجد رسائل بعد"))
+                        ? const Center(child: Text("No Messages"))
                         : ListView.builder(
                             controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final message = messages[index];
                               final isMe = message['isMe'] == true;
 
                               return Align(
-                                alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                                alignment: isMe
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                  padding: const EdgeInsets.all(10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 6),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 10),
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.75),
                                   decoration: BoxDecoration(
-                                    color: isMe ? Colors.blue[200] : Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: isMe
+                                        ? const Color(0xFFDCF8C6)
+                                        : const Color(0xFFF1F0F0),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: const Radius.circular(16),
+                                      topRight: const Radius.circular(16),
+                                      bottomLeft:
+                                          Radius.circular(isMe ? 16 : 0),
+                                      bottomRight:
+                                          Radius.circular(isMe ? 0 : 16),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 2,
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                    crossAxisAlignment: isMe
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        isMe ? "أنت" : message['senderName'] ?? "مستخدم",
+                                        isMe
+                                            ? "You"
+                                            : message['senderName'] ?? "User",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12,
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 6),
                                       Text(
                                         message['content'] ?? '',
-                                        style: const TextStyle(fontSize: 16),
+                                        style: const TextStyle(fontSize: 15),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 6),
                                       Text(
                                         message['sentAt'] != null
-                                            ? message['sentAt'].toString().substring(11, 16)
+                                            ? message['sentAt']
+                                                .toString()
+                                                .substring(11, 16)
                                             : '',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.grey[600],
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ],
@@ -172,25 +218,41 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                           ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8),
+              const Divider(height: 1),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                color: Colors.white,
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _messageController,
-                        enabled: !isDisconnected,
-                        decoration: InputDecoration(
-                          hintText: isDisconnected ? 'جاري إعادة الاتصال...' : 'اكتب رسالتك...',
-                          border: const OutlineInputBorder(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: TextField(
+                          controller: _messageController,
+                          enabled: !isDisconnected,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: isDisconnected
+                                ? 'Way To Connect...'
+                                : 'Write Your Message',
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: isDisconnected ? null : _sendMessage,
-                      color: Colors.blue,
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: isDisconnected ? null : _sendMessage,
+                      borderRadius: BorderRadius.circular(50),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.green,
+                        child: const Icon(Icons.send, color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
