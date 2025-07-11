@@ -9,7 +9,7 @@ abstract class FurnitureImageRemoteDataSource {
 
 class FurnitureImageRemoteDataSourceImpl implements FurnitureImageRemoteDataSource {
   final http.Client client;
-  static const String baseUrl = 'http://10.0.2.2:8000';
+  static const String baseUrl = 'https://b1dce5eeee2c.ngrok-free.app';
 
   FurnitureImageRemoteDataSourceImpl({required this.client});
 
@@ -17,7 +17,7 @@ class FurnitureImageRemoteDataSourceImpl implements FurnitureImageRemoteDataSour
   Future<FurnitureImageModel> generateImage(String prompt) async {
     print("generateImage called with prompt: $prompt");
     
-    final url = Uri.parse('$baseUrl/generate');
+    final url = Uri.parse('$baseUrl/generate-furniture-design');
     print('Sending HTTP POST...');
     
     final response = await client.post(
