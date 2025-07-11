@@ -26,6 +26,7 @@ import 'package:home_service/features/requests/presentation/manager/worker_reque
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
+import 'package:home_service/features/worker_search/presentation/manager/worker_search_cubit.dart';
 import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
 import 'package:home_service/injection_container.dart' as di;
 import 'package:home_service/widgets/navigationbar.dart';
@@ -79,6 +80,10 @@ class Homeservice extends StatelessWidget {
 
          BlocProvider<FurnitureImageCubit>(
           create: (context) => di.sl<FurnitureImageCubit>(),
+        ),
+
+           BlocProvider<WorkerSearchCubit>(
+          create: (context) => di.sl<WorkerSearchCubit>(),
         ),
       ],
       child: MaterialApp(

@@ -25,7 +25,6 @@ import 'package:home_service/features/worker_details/presentation/widgets/worker
 import 'package:home_service/features/worker_details/presentation/widgets/worker_reviews_section.dart';
 import 'package:home_service/injection_container.dart' as di;
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:http/http.dart' as http;
 
 class Serviceviewdetails extends StatefulWidget {
   static const routeName = '/serviceviewdetails';

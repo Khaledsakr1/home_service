@@ -63,6 +63,11 @@ import 'package:home_service/features/worker_details/data/repositories/worker_re
 import 'package:home_service/features/worker_details/domain/repositories/worker_repository.dart';
 import 'package:home_service/features/worker_details/domain/usecases/get_worker_by_id.dart';
 import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
+import 'package:home_service/features/worker_search/data/datasources/worker_search_remote_data_source.dart';
+import 'package:home_service/features/worker_search/data/repositories/worker_search_repository_impl.dart';
+import 'package:home_service/features/worker_search/domain/repositories/worker_search_repository.dart';
+import 'package:home_service/features/worker_search/domain/usecases/search_workers.dart';
+import 'package:home_service/features/worker_search/presentation/manager/worker_search_cubit.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
 import 'package:home_service/features/worker_settings/domain/repositories/worker_settings_repository.dart';
@@ -300,6 +305,17 @@ Future<void> init() async {
     () => FurnitureImageRemoteDataSourceImpl(client: sl()),
   );
 
+    // Data sources
+  sl.registerLazySingleton<WorkerSearchRemoteDataSource>(() => WorkerSearchRemoteDataSourceImpl(client: sl()));
+
+  // Repository
+  sl.registerLazySingleton<WorkerSearchRepository>(() => WorkerSearchRepositoryImpl(remoteDataSource: sl()));
+
+  // Usecase
+  sl.registerLazySingleton(() => SearchWorkers(sl()));
+
+  // Cubit
+  sl.registerFactory(() => WorkerSearchCubit(searchWorkersUseCase: sl()));
 
 // Register singleton
   sl.registerLazySingleton<TokenService>(() => TokenService());
