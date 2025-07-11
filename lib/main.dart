@@ -13,7 +13,8 @@ import 'package:home_service/features/authentication/presentation/pages/register
 import 'package:home_service/features/authentication/presentation/pages/register_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_client_name_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_worker_name_page.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/similarity_search_cubit.dart';
 import 'package:home_service/features/client_home/presentation/pages/SuceesScreen.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
 import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
@@ -84,6 +85,10 @@ class Homeservice extends StatelessWidget {
 
            BlocProvider<WorkerSearchCubit>(
           create: (context) => di.sl<WorkerSearchCubit>(),
+        ),
+
+         BlocProvider<SimilaritySearchCubit>(
+          create: (context) => di.sl<SimilaritySearchCubit>(),
         ),
       ],
       child: MaterialApp(

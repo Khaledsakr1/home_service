@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/StartChatBot.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/pages/start_ai.dart';
 import 'package:home_service/features/client_home/presentation/pages/RequestsScreen.dart';
 import 'package:home_service/features/client_project/presentation/pages/project_list_page.dart';
 import 'package:home_service/features/services/presentation/pages/main_service_page.dart';
@@ -80,7 +80,7 @@ class _NavigationbarState extends State<Navigationbar> {
                       badgeCount: approveCount,
                     ),
                     const SizedBox(width: 40), // مكان زر الفاب
-                    _buildNavItem(icon: Icons.chat, label: 'ChatBot', index: 2),
+                    _buildNavItem(icon: Icons.auto_fix_high, label: 'AI', index: 2),
                     _buildNavItem(icon: Icons.settings, label: 'Setting', index: 3),
                   ],
                 );

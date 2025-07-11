@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/ChatBotScreen.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/pages/ai_service_choice_page.dart';
 import 'package:home_service/widgets/button.dart';
 import 'package:home_service/widgets/navigationbar.dart';
 
@@ -46,11 +46,11 @@ class Chatbotwelcome extends StatelessWidget {
                     style: TextStyle(fontSize: 20, color: Colors.black),
                     children: [
                       TextSpan(
-                          text: 'Welcome to ',
+                          text: 'Welcome to our ',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20)),
                       TextSpan(
-                          text: 'chatbot',
+                          text: 'AI',
                           style: TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -66,12 +66,12 @@ class Chatbotwelcome extends StatelessWidget {
 
                 // وصف إضافي
                 const Text(
-                  'Start chatting with ChattyAI now.',
+                  'Try our AI now.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 const Text(
-                  'You can ask me anything.',
+                  'Change your dreem into reality.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
@@ -81,7 +81,7 @@ class Chatbotwelcome extends StatelessWidget {
                   ontap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FurnitureImagePage()),
+                      MaterialPageRoute(builder: (context) => AIServicesChoicePage ()),
                     );
                   },
                 )

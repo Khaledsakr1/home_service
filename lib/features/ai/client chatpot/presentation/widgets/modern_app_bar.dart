@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/history_page.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/pages/history_page.dart';
 
 class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override

@@ -10,11 +10,16 @@ import 'package:home_service/features/authentication/domain/usecases/register_wo
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
 import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/data/datasources/furniture_image_remote_data_source.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/data/repositories/furniture_image_repository_impl.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/domain/repositories/furniture_image_repository.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/domain/usecases/generate_furniture_image.dart';
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/datasources/furniture_image_remote_data_source.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/datasources/similarity_search_remote_data_source.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/repositories/furniture_image_repository_impl.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/repositories/similarity_search_repository_impl.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/repositories/furniture_image_repository.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/repositories/similarity_search_repository.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/usecases/find_similar_images.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/usecases/generate_furniture_image.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/similarity_search_cubit.dart';
 import 'package:home_service/features/client_project/data/datasources/client_project_remote_data_source.dart';
 import 'package:home_service/features/client_project/data/repositories/client_project_repository_impl.dart';
 import 'package:home_service/features/client_project/domain/repositories/client_project_repository.dart';
@@ -284,8 +289,7 @@ Future<void> init() async {
   // Chat Cubit
   sl.registerFactory(() => ChatCubit(chatService: sl()));
 
-
-    // Cubit
+  // Cubit
   sl.registerFactory(
     () => FurnitureImageCubit(
       generateFurnitureImageUseCase: sl(),
@@ -305,17 +309,28 @@ Future<void> init() async {
     () => FurnitureImageRemoteDataSourceImpl(client: sl()),
   );
 
-    // Data sources
-  sl.registerLazySingleton<WorkerSearchRemoteDataSource>(() => WorkerSearchRemoteDataSourceImpl(client: sl()));
+  // Data sources
+  sl.registerLazySingleton<WorkerSearchRemoteDataSource>(
+      () => WorkerSearchRemoteDataSourceImpl(client: sl()));
 
   // Repository
-  sl.registerLazySingleton<WorkerSearchRepository>(() => WorkerSearchRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<WorkerSearchRepository>(
+      () => WorkerSearchRepositoryImpl(remoteDataSource: sl()));
 
   // Usecase
   sl.registerLazySingleton(() => SearchWorkers(sl()));
 
   // Cubit
   sl.registerFactory(() => WorkerSearchCubit(searchWorkersUseCase: sl()));
+
+  sl.registerLazySingleton<SimilaritySearchRemoteDataSource>(
+    () => SimilaritySearchRemoteDataSourceImpl(client: sl()),
+  );
+  sl.registerLazySingleton<SimilaritySearchRepository>(
+    () => SimilaritySearchRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => FindSimilarImages(sl()));
+  sl.registerFactory(() => SimilaritySearchCubit(findSimilarImages: sl()));
 
 // Register singleton
   sl.registerLazySingleton<TokenService>(() => TokenService());

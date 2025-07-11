@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:home_service/features/chatpot/client%20chatpot/presentation/pages/ChatBotWelcome.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/pages/ai_welcome.dart';
 
 class Startchatbot extends StatefulWidget {
   const Startchatbot({super.key});
@@ -14,7 +14,7 @@ class _StartChatBotState extends State<Startchatbot> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Chatbotwelcome()),

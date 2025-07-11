@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_service/features/chatpot/worker%20chatpot/StartChatBotWorker.dart';
+import 'package:home_service/features/ai/worker%20chatpot/StartChatBotWorker.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
 import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/pages/worker_requests_screen.dart';
@@ -121,7 +121,7 @@ class _NavigationbarWorkerState extends State<NavigationbarWorker> {
                         index: 1,
                         badgeCount: totalRequestsCount),
                     const SizedBox(width: 40), // FAB space
-                    _buildNavItem(icon: Icons.chat, label: 'ChatBot', index: 2),
+                    _buildNavItem(icon: Icons.auto_fix_high, label: 'AI', index: 2),
                     _buildNavItem(
                         icon: Icons.settings, label: 'Setting', index: 3),
                   ],
