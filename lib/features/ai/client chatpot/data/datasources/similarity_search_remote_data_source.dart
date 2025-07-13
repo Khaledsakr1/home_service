@@ -10,7 +10,7 @@ abstract class SimilaritySearchRemoteDataSource {
 }
 
 class SimilaritySearchRemoteDataSourceImpl implements SimilaritySearchRemoteDataSource {
-  static const String baseUrl = 'https://cd2a41b6c06f.ngrok-free.app';
+  static const String baseUrl = 'https://400ceb8b3a67.ngrok-free.app';
   final http.Client client;
 
   SimilaritySearchRemoteDataSourceImpl({required this.client});
