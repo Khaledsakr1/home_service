@@ -68,6 +68,9 @@ class _RegisterAsWorkerState extends State<RegisterAsWorker> {
       builder: (context, state) {
         return ModalProgressHUD(
           inAsyncCall: isLoading,
+          progressIndicator: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),
+          ),
           child: Scaffold(
             backgroundColor: Colors.white,
             body: SingleChildScrollView(

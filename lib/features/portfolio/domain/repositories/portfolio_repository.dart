@@ -10,6 +10,7 @@ abstract class PortfolioRepository {
   Future<Either<Failure, bool>> addPortfolioImages(int id, List<File> images);
   Future<Either<Failure, List<Project>>> getPortfolios();
   Future<Either<Failure, bool>> deletePortfolio(int id);
+  Future<Either<Failure, bool>> deletePortfolioImage(int portfolioId, int imageId);
 }
 
 

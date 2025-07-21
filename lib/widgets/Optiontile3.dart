@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:home_service/widgets/button.dart';
 
 class Optiontile3 extends StatefulWidget {
-  const Optiontile3({Key? key}) : super(key: key);
+  final void Function(String)? onSelected;
+  const Optiontile3({Key? key,this.onSelected}) : super(key: key);
 
   @override
   State<Optiontile3> createState() => _Optiontile3State();
@@ -72,7 +73,20 @@ class _Optiontile3State extends State<Optiontile3> {
           ),
           const SizedBox(height: 12),
 
-          Button(title: "ok"),
+          Button(
+  title: "ok",
+  ontap: () {
+    final loc = "${countryController.text}, "
+      "${governorateController.text}, "
+      "${streetNameController.text}, "
+      "${buildingNumberController.text}";
+    if (widget.onSelected != null) {
+      widget.onSelected!(loc);
+    }
+    // Optionally close or show a message
+  },
+),
+
         ],
       ),
     );

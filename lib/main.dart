@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/common/pages/SplashAnimatedPage.dart';
 import 'package:home_service/core/services/token_service.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/authentication/presentation/pages/address_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/address_worker_page.dart';
-import 'package:home_service/features/authentication/presentation/pages/check_worker_already_login.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/phone_number_page.dart';
@@ -13,39 +13,42 @@ import 'package:home_service/features/authentication/presentation/pages/register
 import 'package:home_service/features/authentication/presentation/pages/register_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_client_name_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/sign_up_worker_name_page.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/similarity_search_cubit.dart';
 import 'package:home_service/features/client_home/presentation/pages/SuceesScreen.dart';
 import 'package:home_service/common/pages/client_and_worker_start_page.dart';
-import 'package:home_service/common/pages/start_page.dart';
+import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_details_page.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
 import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_page.dart';
+import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
+import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
+import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
 import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
+import 'package:home_service/features/worker_search/presentation/manager/worker_search_cubit.dart';
+import 'package:home_service/features/worker_settings/presentation/manager/worker_settings_cubit.dart';
 import 'package:home_service/injection_container.dart' as di;
 import 'package:home_service/widgets/navigationbar.dart';
 import 'package:home_service/widgets/navigationbarWorker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
 
-    // 2. Restore the token into TokenService singleton
-  await restoreTokenOnAppStart();
+  // 2. Restore the token into TokenService singleton
+  await TokenService().init();
+
+
 
   runApp(const Homeservice());
 }
 
-Future<void> restoreTokenOnAppStart() async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
-  // Save to singleton for runtime access
-  di.sl<TokenService>().token = token;
-}
+
 
 class Homeservice extends StatelessWidget {
-  const Homeservice({super.key});
+  const Homeservice({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +62,33 @@ class Homeservice extends StatelessWidget {
         ),
         BlocProvider<PortfolioCubit>(
           create: (context) => di.sl<PortfolioCubit>(),
+        ),
+        BlocProvider<WorkerCubit>(
+          create: (context) => di.sl<WorkerCubit>(),
+        ),
+        BlocProvider<WorkerSettingsCubit>(
+          create: (context) => di.sl<WorkerSettingsCubit>(),
+        ),
+          BlocProvider<ClientProjectCubit>(
+          create: (context) => di.sl<ClientProjectCubit>(),
+        ),
+         BlocProvider<RequestCubit>(
+          create: (context) => di.sl<RequestCubit>(),
+        ),
+         BlocProvider<WorkerRequestCubit>(
+          create: (context) => di.sl<WorkerRequestCubit>(),
+        ),
+
+         BlocProvider<FurnitureImageCubit>(
+          create: (context) => di.sl<FurnitureImageCubit>(),
+        ),
+
+           BlocProvider<WorkerSearchCubit>(
+          create: (context) => di.sl<WorkerSearchCubit>(),
+        ),
+
+         BlocProvider<SimilaritySearchCubit>(
+          create: (context) => di.sl<SimilaritySearchCubit>(),
         ),
       ],
       child: MaterialApp(
@@ -81,13 +111,10 @@ class Homeservice extends StatelessWidget {
           PortfolioListPage.id: (context) => const PortfolioListPage(),
           Navigationbar.id: (context) => const Navigationbar(),
           NavigationbarWorker.id: (context) => const NavigationbarWorker(),
-          WorkerAlreadLogin.id: (context) => const WorkerAlreadLogin(),
         },
         debugShowCheckedModeBanner: false,
-        home: Startpage(),
+        home: const SplashAnimatedPage(),
       ),
     );
   }
 }
-
-

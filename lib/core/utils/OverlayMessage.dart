@@ -18,7 +18,7 @@ void showCustomOverlayMessage(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           decoration: BoxDecoration(
-            color: const Color(0xFF064D0C),
+            color:  Colors.white,
             borderRadius: BorderRadius.circular(28),
             boxShadow: const [
               BoxShadow(
@@ -39,7 +39,7 @@ void showCustomOverlayMessage(
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: Colors.green,
                   height: 1.4,
                 ),
               ),
@@ -50,7 +50,7 @@ void showCustomOverlayMessage(
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.white70,
+                    color: Colors.green,
                   ),
                 ),
               ]

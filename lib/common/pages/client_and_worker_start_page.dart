@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:home_service/features/authentication/presentation/pages/check_worker_already_login.dart';
+import 'package:home_service/features/authentication/presentation/pages/login_as_worker_page.dart';
 import 'package:home_service/features/authentication/presentation/pages/login_page.dart';
 import 'package:home_service/widgets/button.dart';
 
@@ -39,7 +39,7 @@ class ClientandWorkerstart extends StatelessWidget {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20)),
                       TextSpan(
-                          text: 'logo',
+                          text: 'Apartment Service',
                           style: TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class ClientandWorkerstart extends StatelessWidget {
                 // زر تسجيل الدخول كعميل
                 Button(
                   icon: Icons.person,
-                  title: 'client',
+                  title: 'Client',
                   ontap: () {
                     Navigator.pushNamed(context, LoginPage.id);
                   },
@@ -73,9 +73,9 @@ class ClientandWorkerstart extends StatelessWidget {
                 // زر تسجيل الدخول كمحترف
                 Button(
                   icon: Icons.engineering,
-                  title: 'technical',
+                  title: 'Worker',
                   ontap: () {
-                    Navigator.pushNamed(context, WorkerAlreadLogin.id);
+                    Navigator.pushNamed(context, LoginAsWorker.id);
                   },
                 ),
               ],

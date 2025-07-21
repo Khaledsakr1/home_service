@@ -76,3 +76,12 @@ class PortfolioError extends PortfolioState {
 }
 
 
+class PortfolioImageDeleted extends PortfolioState {
+  final bool success;
+
+  const PortfolioImageDeleted(this.success);
+
+  @override
+  List<Object> get props => [success];
+}
+

@@ -8,20 +8,71 @@ import 'package:home_service/features/authentication/domain/usecases/login_user.
 import 'package:home_service/features/authentication/domain/usecases/register_customer.dart';
 import 'package:home_service/features/authentication/domain/usecases/register_worker.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
+import 'package:home_service/features/chat/Presentation/manager/chat_cubit.dart';
+import 'package:home_service/features/chat/data/datasources/chat_signalr_service.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/datasources/furniture_image_remote_data_source.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/datasources/similarity_search_remote_data_source.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/repositories/furniture_image_repository_impl.dart';
+import 'package:home_service/features/ai/client%20chatpot/data/repositories/similarity_search_repository_impl.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/repositories/furniture_image_repository.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/repositories/similarity_search_repository.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/usecases/find_similar_images.dart';
+import 'package:home_service/features/ai/client%20chatpot/domain/usecases/generate_furniture_image.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/furniture_image_cubit.dart';
+import 'package:home_service/features/ai/client%20chatpot/presentation/manager/similarity_search_cubit.dart';
+import 'package:home_service/features/client_project/data/datasources/client_project_remote_data_source.dart';
+import 'package:home_service/features/client_project/data/repositories/client_project_repository_impl.dart';
+import 'package:home_service/features/client_project/domain/repositories/client_project_repository.dart';
+import 'package:home_service/features/client_project/domain/usecases/add_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/add_project_images.dart';
+import 'package:home_service/features/client_project/domain/usecases/delete_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/delete_project_image.dart';
+import 'package:home_service/features/client_project/domain/usecases/get_project.dart';
+import 'package:home_service/features/client_project/domain/usecases/get_projects.dart';
+import 'package:home_service/features/client_project/domain/usecases/update_project.dart';
+import 'package:home_service/features/client_project/presentation/manager/client_project_cubit.dart';
 import 'package:home_service/features/portfolio/data/datasources/portfolio_remote_data_source.dart';
 import 'package:home_service/features/portfolio/data/repositories/portfolio_repository_impl.dart';
 import 'package:home_service/features/portfolio/domain/repositories/portfolio_repository.dart';
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio.dart';
 import 'package:home_service/features/portfolio/domain/usecases/add_portfolio_images.dart';
 import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio.dart';
+import 'package:home_service/features/portfolio/domain/usecases/delete_portfolio_image.dart';
 import 'package:home_service/features/portfolio/domain/usecases/get_portfolios.dart';
 import 'package:home_service/features/portfolio/domain/usecases/update_portfolio.dart';
 import 'package:home_service/features/portfolio/presentation/manager/portfolio_cubit.dart';
+import 'package:home_service/features/requests/data/datasources/request_remote_data_source.dart';
+import 'package:home_service/features/requests/data/datasources/worker_request_remote_data_source.dart';
+import 'package:home_service/features/requests/data/repositories/request_repository_impl.dart';
+import 'package:home_service/features/requests/data/repositories/worker_request_repository_impl.dart';
+import 'package:home_service/features/requests/domain/repositories/request_repository.dart';
+import 'package:home_service/features/requests/domain/repositories/worker_request_repository.dart';
+import 'package:home_service/features/requests/domain/usecases/accept_request.dart';
+import 'package:home_service/features/requests/domain/usecases/add_review.dart';
+import 'package:home_service/features/requests/domain/usecases/approve_final_offer.dart';
+import 'package:home_service/features/requests/domain/usecases/cancel_request.dart';
+import 'package:home_service/features/requests/domain/usecases/complete_request.dart';
+import 'package:home_service/features/requests/domain/usecases/get_customer_requests.dart';
+import 'package:home_service/features/requests/domain/usecases/get_received_requests.dart';
+import 'package:home_service/features/requests/domain/usecases/reject_request.dart';
+import 'package:home_service/features/requests/domain/usecases/send_request.dart';
+import 'package:home_service/features/requests/presentation/manager/request_cubit.dart';
+import 'package:home_service/features/requests/presentation/manager/worker_request_cubit.dart';
 import 'package:home_service/features/services/data/datasources/service_remote_data_source.dart';
 import 'package:home_service/features/services/data/repositories/service_repository_impl.dart';
 import 'package:home_service/features/services/domain/repositories/service_repository.dart';
 import 'package:home_service/features/services/domain/usecases/get_services.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
+import 'package:home_service/features/worker_details/data/datasources/worker_remote_data_source.dart';
+import 'package:home_service/features/worker_details/data/repositories/worker_repository_impl.dart';
+import 'package:home_service/features/worker_details/domain/repositories/worker_repository.dart';
+import 'package:home_service/features/worker_details/domain/usecases/get_worker_by_id.dart';
+import 'package:home_service/features/worker_details/presentation/manager/worker_cubit.dart';
+import 'package:home_service/features/worker_search/data/datasources/worker_search_remote_data_source.dart';
+import 'package:home_service/features/worker_search/data/repositories/worker_search_repository_impl.dart';
+import 'package:home_service/features/worker_search/domain/repositories/worker_search_repository.dart';
+import 'package:home_service/features/worker_search/domain/usecases/search_workers.dart';
+import 'package:home_service/features/worker_search/presentation/manager/worker_search_cubit.dart';
 import 'package:home_service/features/worker_settings/data/datasources/worker_settings_remote_data_source.dart';
 import 'package:home_service/features/worker_settings/data/repositories/worker_settings_repository_impl.dart';
 import 'package:home_service/features/worker_settings/domain/repositories/worker_settings_repository.dart';
@@ -40,7 +91,7 @@ Future<void> init() async {
   // Features - Authentication
   sl.registerFactory(
     () => AuthenticationCubit(
-      loginUserUseCase : sl(),
+      loginUserUseCase: sl(),
       registerCustomerUseCase: sl(),
       registerWorkerUseCase: sl(),
       checkEmailExistsUseCase: sl(),
@@ -84,16 +135,16 @@ Future<void> init() async {
   );
 
   // Features - Portfolio
-sl.registerFactory(
-  () => PortfolioCubit(
-    addPortfolioUseCase: sl(),
-    updatePortfolioUseCase: sl(),
-    addPortfolioImagesUseCase: sl(),
-    getPortfoliosUseCase: sl(),
-    deletePortfolioUseCase: sl(),
-  ),
-);
-
+  sl.registerFactory(
+    () => PortfolioCubit(
+      addPortfolioUseCase: sl(),
+      updatePortfolioUseCase: sl(),
+      addPortfolioImagesUseCase: sl(),
+      getPortfoliosUseCase: sl(),
+      deletePortfolioUseCase: sl(),
+      deletePortfolioImageUseCase: sl(),
+    ),
+  );
 
   // Use cases
   sl.registerLazySingleton(() => AddPortfolio(sl()));
@@ -101,6 +152,7 @@ sl.registerFactory(
   sl.registerLazySingleton(() => DeletePortfolio(sl()));
   sl.registerLazySingleton(() => GetPortfolios(sl()));
   sl.registerLazySingleton(() => AddPortfolioImages(sl()));
+  sl.registerLazySingleton(() => DeletePortfolioImage(sl()));
 
   // Repository
   sl.registerLazySingleton<PortfolioRepository>(
@@ -111,8 +163,6 @@ sl.registerFactory(
   sl.registerLazySingleton<PortfolioRemoteDataSource>(
     () => PortfolioRemoteDataSourceImpl(client: sl()),
   );
-
-
 
   // Features - Worker Settings
   sl.registerFactory(
@@ -144,13 +194,147 @@ sl.registerFactory(
     () => WorkerSettingsRemoteDataSourceImpl(),
   );
 
+// Worker
+  sl.registerFactory(() => WorkerCubit(getWorkerByIdUseCase: sl()));
+  sl.registerLazySingleton(() => GetWorkerById(sl()));
+  sl.registerLazySingleton<WorkerRepository>(
+      () => WorkerRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<WorkerRemoteDataSource>(
+      () => WorkerRemoteDataSourceImpl(client: sl()));
 
+// Add this in your getIt (sl) registrations
+  sl.registerLazySingleton<ClientProjectRemoteDataSource>(
+    () => ClientProjectRemoteDataSourceImpl(client: sl()),
+  );
+
+  sl.registerLazySingleton<ClientProjectRepository>(
+    () => ClientProjectRepositoryImpl(sl()),
+  );
+
+// Register use cases...
+  sl.registerFactory(() => AddProject(sl()));
+  sl.registerFactory(() => UpdateProject(sl()));
+  sl.registerFactory(() => GetProject(sl()));
+  sl.registerFactory(() => GetProjects(sl()));
+  sl.registerFactory(() => DeleteProject(sl()));
+  sl.registerFactory(() => AddProjectImages(sl()));
+  sl.registerFactory(() => DeleteProjectImage(sl()));
+
+// Register cubit
+  sl.registerFactory(() => ClientProjectCubit(
+        addProjectUseCase: sl(),
+        updateProjectUseCase: sl(),
+        getProjectUseCase: sl(),
+        getProjectsUseCase: sl(),
+        deleteProjectUseCase: sl(),
+        addProjectImagesUseCase: sl(),
+        deleteProjectImageUseCase: sl(),
+      ));
+
+  sl.registerFactory(
+    () => RequestCubit(
+      sendRequestUseCase: sl(),
+      cancelRequestUseCase: sl(),
+      getCustomerRequestsUseCase: (sl()),
+      completeRequestUseCase: sl(),
+      addReviewUseCase: sl(),
+      approveFinalOfferUseCase: sl(),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => SendRequest(sl()));
+  sl.registerLazySingleton(() => CancelRequest(sl()));
+  sl.registerLazySingleton(() => GetCustomerRequests(sl()));
+  sl.registerLazySingleton(() => CompleteRequest(sl()));
+  sl.registerLazySingleton(() => AddReview(sl()));
+  sl.registerLazySingleton(() => ApproveFinalOffer(sl()));
+
+  // Repository
+  sl.registerLazySingleton<RequestRepository>(
+    () => RequestRepositoryImpl(sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<RequestRemoteDataSource>(
+    () => RequestRemoteDataSourceImpl(client: sl()),
+  );
+
+  // --- Worker Requests Feature (Received requests for worker) ---
+  // Data source
+  sl.registerLazySingleton<WorkerRequestRemoteDataSource>(
+    () => WorkerRequestRemoteDataSourceImpl(client: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<WorkerRequestRepository>(
+    () => WorkerRequestRepositoryImpl(sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetReceivedRequests(sl()));
+  sl.registerLazySingleton(() => AcceptRequest(sl()));
+  sl.registerLazySingleton(() => RejectRequest(sl()));
+
+  // Cubit
+  sl.registerFactory(() => WorkerRequestCubit(
+        getReceivedRequestsUseCase: sl(),
+        acceptRequestUseCase: sl(),
+        rejectRequestUseCase: sl(),
+      ));
+
+  // ✅ Chat SignalR Service
+  sl.registerLazySingleton<ChatSignalRService>(() => ChatSignalRService());
+
+  // Chat Cubit
+  sl.registerFactory(() => ChatCubit(chatService: sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => FurnitureImageCubit(
+      generateFurnitureImageUseCase: sl(),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => GenerateFurnitureImage(sl()));
+
+  // Repository
+  sl.registerLazySingleton<FurnitureImageRepository>(
+    () => FurnitureImageRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<FurnitureImageRemoteDataSource>(
+    () => FurnitureImageRemoteDataSourceImpl(client: sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<WorkerSearchRemoteDataSource>(
+      () => WorkerSearchRemoteDataSourceImpl(client: sl()));
+
+  // Repository
+  sl.registerLazySingleton<WorkerSearchRepository>(
+      () => WorkerSearchRepositoryImpl(remoteDataSource: sl()));
+
+  // Usecase
+  sl.registerLazySingleton(() => SearchWorkers(sl()));
+
+  // Cubit
+  sl.registerFactory(() => WorkerSearchCubit(searchWorkersUseCase: sl()));
+
+  sl.registerLazySingleton<SimilaritySearchRemoteDataSource>(
+    () => SimilaritySearchRemoteDataSourceImpl(client: sl()),
+  );
+  sl.registerLazySingleton<SimilaritySearchRepository>(
+    () => SimilaritySearchRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => FindSimilarImages(sl()));
+  sl.registerFactory(() => SimilaritySearchCubit(findSimilarImages: sl()));
 
 // Register singleton
-sl.registerLazySingleton<TokenService>(() => TokenService());
+  sl.registerLazySingleton<TokenService>(() => TokenService());
 
   // External
   sl.registerLazySingleton(() => http.Client());
 }
-
-

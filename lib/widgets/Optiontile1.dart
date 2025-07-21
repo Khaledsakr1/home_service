@@ -5,13 +5,17 @@ import 'package:home_service/widgets/button.dart';
 class Optiontile1 extends StatefulWidget {
   final String title;
   final List<String> options;
-  final ValueChanged<String> onSelected;
+  final Function(String type, String? size) onSelected; // <-- updated
+  final VoidCallback? onOk;
+  final bool closeOnSelect;
 
   const Optiontile1({
     Key? key,
     required this.title,
     required this.options,
     required this.onSelected,
+    this.onOk,
+    this.closeOnSelect = false, 
   }) : super(key: key);
 
   @override
@@ -20,9 +24,21 @@ class Optiontile1 extends StatefulWidget {
 
 class _Optiontile1State extends State<Optiontile1> {
   String? selectedOption;
+  final TextEditingController sizeController = TextEditingController();
+
+  @override
+  void dispose() {
+    sizeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool needSize = selectedOption == 'Villa' ||
+        selectedOption == 'House' ||
+        selectedOption == 'Commercial stores' ||
+        selectedOption == 'Gym';
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.all(36),
@@ -64,24 +80,50 @@ class _Optiontile1State extends State<Optiontile1> {
                 child: Text(option),
               );
             }).toList(),
-            onChanged: (value) {
-              setState(() => selectedOption = value);
-            },
+           onChanged: (value) {
+  setState(() {
+    selectedOption = value;
+    sizeController.clear();
+  });
+  // If closeOnSelect is true, call onSelected and onOk right away
+  if (widget.closeOnSelect && value != null) {
+    widget.onSelected(value, null);
+    if (widget.onOk != null) widget.onOk!();
+  }
+},
             style: const TextStyle(color: Colors.black),
             iconEnabledColor: Colors.green,
             isExpanded: true,
           ),
           const SizedBox(height: 16),
 
-          if (selectedOption == 'Villa' || 
-              selectedOption == 'House' || 
-              selectedOption == 'Commercial stores' ||  
-              selectedOption == 'Gym') ...[
-            const Optionsize(),
+          if (needSize) ...[
+            Optionsize(controller: sizeController),
             const SizedBox(height: 16),
           ],
 
-          Button(title: 'ok')
+          Button(
+            title: 'ok',
+            ontap: () {
+              if (selectedOption == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Please select an option")),
+                );
+                return;
+              }
+              if (needSize && sizeController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Please enter the size")),
+                );
+                return;
+              }
+              widget.onSelected(
+                selectedOption!,
+                needSize ? sizeController.text : null,
+              );
+              if (widget.onOk != null) widget.onOk!();
+            },
+          ),
         ],
       ),
     );

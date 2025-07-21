@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_service/core/constants/constants.dart';
 import 'package:home_service/features/authentication/data/models/worker_model.dart';
 import 'package:home_service/features/authentication/domain/entities/worker.dart';
 import 'package:home_service/features/authentication/presentation/manager/authentication_cubit.dart';
 import 'package:home_service/features/portfolio/data/datasources/portfolio_remote_data_source.dart';
-import 'package:home_service/features/portfolio/presentation/pages/worker_portfolio_list_page.dart';
 import 'package:home_service/features/services/domain/entities/service.dart';
 import 'package:home_service/features/services/presentation/manager/services_cubit.dart';
 import 'package:home_service/core/utils/ErrorMessage.dart';
+import 'package:home_service/features/worker_home/presentation/pages/SuceesScreenAsWorker.dart';
 import 'package:home_service/widgets/Dropdown.dart';
 import 'package:home_service/widgets/Textfield.dart';
 import 'package:home_service/widgets/button.dart';
@@ -78,16 +79,18 @@ class _WorkerDetailsPageState extends State<WorkerDetailsPage> {
                 isLoading = true;
               });
             } else if (state is AuthenticationSuccess) {
-              final token = state.message; // Assuming the token is in the message
-              
+              final token =
+                  state.message; // Assuming the token is in the message
+
               setState(() {
                 isLoading = false;
               });
               // Assuming the token is returned in the message for now
               // In a real app, you'd parse the token and store it securely
-                PortfolioRemoteDataSourceImpl.authToken = token;
- // This line needs to be handled by a proper auth manager
-              Navigator.pushNamed(context, PortfolioListPage.id);
+              PortfolioRemoteDataSourceImpl.authToken = token;
+              // This line needs to be handled by a proper auth manager
+              Navigator.pushNamedAndRemoveUntil(
+                  context, SuceesscreenasWorker.id, (route) => false);
             } else if (state is AuthenticationError) {
               setState(() {
                 isLoading = false;
@@ -99,6 +102,9 @@ class _WorkerDetailsPageState extends State<WorkerDetailsPage> {
       ],
       child: ModalProgressHUD(
         inAsyncCall: isLoading,
+        progressIndicator: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),
+          ),
         child: Scaffold(
           appBar: AppBar(
             leading: const BackButton(

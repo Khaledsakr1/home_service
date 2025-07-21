@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:home_service/core/utils/OverlayMessage.dart';
-import 'package:home_service/features/worker_home/presentation/pages/ViewDetails.dart';
+import 'package:home_service/core/utils/image_helper.dart';
 import 'package:home_service/widgets/Button.dart';
 
 class JobsDetailsCard extends StatelessWidget {
   final String title;
   final String image;
-  final String status; // new
+  final String status;
   final VoidCallback? onDelete;
+  final Widget? ViewdetailsPage;
+  final bool showAcceptButton;
+
+  // New fields for worker info:
+  final String? city;
+  final double? rating;
+  final String? description;
+  final int? experienceYears;
+  final String? address;
 
   const JobsDetailsCard({
     super.key,
     required this.title,
     required this.image,
-    this.status = "normal", // default
+    this.status = "normal",
     this.onDelete,
+    this.ViewdetailsPage,
+    this.showAcceptButton = true,
+    this.city,
+    this.rating,
+    this.description,
+    this.experienceYears,
+    this.address,
   });
 
   @override
@@ -37,159 +53,126 @@ class JobsDetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // الصورة + النصوص جنبها
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  image,
-                  height: 90,
-                  width: 90,
-                  fit: BoxFit.cover,
-                ),
+                child: buildImage(image, width: 90, height: 90),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          title,
+                    // Name/Title
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (description != null && description!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          description!,
                           style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontSize: 13, color: Colors.black54),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Row(
-                      children: [
-                        Icon(Icons.phone, size: 16, color: Colors.grey),
-                        SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'You can contact this customer.',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    const Row(
-                      children: [
-                        Icon(Icons.location_on, size: 16, color: Colors.grey),
-                        SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            'Ismailia ,el salaam',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Customer details..........................',
-                      style: TextStyle(fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // الحالة بناءً على الـ status
-          status == "pending"
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.orange.shade300),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    if (city != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
                           children: [
-                            Icon(Icons.hourglass_empty,
-                                color: Colors.orange, size: 16),
-                            SizedBox(width: 6),
+                            const Icon(Icons.location_on,
+                                size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Text(city!,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
+                          ],
+                        ),
+                      ),
+                    if (experienceYears != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.engineering,
+                                size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
                             Text(
-                              'Pending......',
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontWeight: FontWeight.w500,
+                              '$experienceYears years experience',
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (rating != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star,
+                                size: 14, color: Colors.amber),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating!.toStringAsFixed(1),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (address != null && address!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.home,
+                                size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                address!,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.delete_outline, color: Colors.grey),
-                      onPressed: onDelete,
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: Button(
-                          title: "Accept",
-                          ontap: () {
-                            showCustomOverlayMessage(
-                              context,
-                              message: "Request Accepted",
-                              subMessage:
-                                  "You can now view the project details.",
-                            );
-                          },
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          icon: Icons.check,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: Button(
-                          title: "View details",
-                          ontap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>  Viewdetails(
-                                  title: title,
-                                  image: image,
-                                ),
-                              ),
-                            );
-                          },
-                          backgroundColor: Colors.white,
-                          textColor: Colors.green,
-                          borderColor: Colors.green,
-                          icon: Icons.visibility,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20,),
+          SizedBox(
+            height: 45,
+            child: Button(
+              title: "View details",
+              ontap: () {
+                if (ViewdetailsPage != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ViewdetailsPage!,
+                    ),
+                  );
+                }
+              },
+              backgroundColor: Colors.white,
+              textColor: Colors.green,
+              borderColor: Colors.green,
+              icon: Icons.visibility,
+            ),
+          ),
         ],
       ),
     );

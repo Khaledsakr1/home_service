@@ -43,6 +43,12 @@ class _RegisterPageState extends State<RegisterPage> {
             final customer = Customer(
               email: email!,
               password: password!,
+              confirmPassword: confirmPassword ?? '',
+              name: '',
+              phoneNumber: '',
+              address: '',
+              buildingNumber: '',
+              cityId: 0,
             );
             Navigator.pushNamed(context, SignUpClientPage.id, arguments: customer);
           }
@@ -56,6 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
       builder: (context, state) {
         return ModalProgressHUD(
           inAsyncCall: isLoading,
+          progressIndicator: const CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kPrimaryColor),
+          ),
           child: Scaffold(
             backgroundColor: Colors.white,
             body: SingleChildScrollView(

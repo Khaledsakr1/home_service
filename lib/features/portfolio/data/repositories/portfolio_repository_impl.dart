@@ -53,7 +53,7 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       final result = await remoteDataSource.getPortfolios();
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure());
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -66,6 +66,16 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+Future<Either<Failure, bool>> deletePortfolioImage(int portfolioId, int imageId) async {
+  try {
+    final result = await remoteDataSource.deletePortfolioImage(portfolioId, imageId);
+    return Right(result);
+  } catch (e) {
+    return Left(ServerFailure());
+  }
+}
 }
 
 
