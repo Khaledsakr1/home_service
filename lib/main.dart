@@ -40,15 +40,13 @@ void main() async {
   // 2. Restore the token into TokenService singleton
   await TokenService().init();
 
-
-
   runApp(const Homeservice());
 }
 
-
-
 class Homeservice extends StatelessWidget {
-  const Homeservice({super.key,});
+  const Homeservice({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,25 +67,22 @@ class Homeservice extends StatelessWidget {
         BlocProvider<WorkerSettingsCubit>(
           create: (context) => di.sl<WorkerSettingsCubit>(),
         ),
-          BlocProvider<ClientProjectCubit>(
+        BlocProvider<ClientProjectCubit>(
           create: (context) => di.sl<ClientProjectCubit>(),
         ),
-         BlocProvider<RequestCubit>(
+        BlocProvider<RequestCubit>(
           create: (context) => di.sl<RequestCubit>(),
         ),
-         BlocProvider<WorkerRequestCubit>(
+        BlocProvider<WorkerRequestCubit>(
           create: (context) => di.sl<WorkerRequestCubit>(),
         ),
-
-         BlocProvider<FurnitureImageCubit>(
+        BlocProvider<FurnitureImageCubit>(
           create: (context) => di.sl<FurnitureImageCubit>(),
         ),
-
-           BlocProvider<WorkerSearchCubit>(
+        BlocProvider<WorkerSearchCubit>(
           create: (context) => di.sl<WorkerSearchCubit>(),
         ),
-
-         BlocProvider<SimilaritySearchCubit>(
+        BlocProvider<SimilaritySearchCubit>(
           create: (context) => di.sl<SimilaritySearchCubit>(),
         ),
       ],
